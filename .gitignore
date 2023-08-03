@@ -1,0 +1,18 @@
+# Visual Studio Configuration Files
+.vscode
+
+# Node Modules
+node_modules 
+
+# Distribution Folder
+dist
+lib
+
+# Temporal folder
+temp
+
+# Environment files
+.env
+
+# Example Data
+data
