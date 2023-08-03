@@ -154,6 +154,7 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
         let element: any = column[x];
         if (element === "string")
           element = `${this.#quote}${element}${this.#quote}`;
+        else if (element instanceof Date) element = element.toISOString();
         else element = JSON.stringify(element);
         string += element;
         if (x < column.length - 1) string += this.#delimiter;

@@ -74,6 +74,11 @@ export class ParseContext {
   shouldTransform: boolean;
   /**
    * During the reducer process if the strictMode and transform options are set
+   * if a line has the JavaScript date ISO format it will catch it
+   */
+  isDate: boolean;
+  /**
+   * During the reducer process if the strictMode and transform options are set
    * if a line starts and ends with "{}" or "[]", will be marked as a JSON object
    */
   isJSON: boolean;
@@ -94,6 +99,7 @@ export class ParseContext {
     this.isQuoted = false;
     this.line = "";
     this.isJSON = false;
+    this.isDate = false;
     this.shouldTransform = false;
     this.quoteRegex = new RegExp(format.quote, "gum");
     this.pointer = new ContextPointer();

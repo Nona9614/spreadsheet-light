@@ -19,6 +19,8 @@ export function process() {
 
   // If the processed value is a JSON object process it
   if (context.isJSON) return JSON.parse(context.line);
+  // If it is a date return a Date object
+  if (context.isDate) return new Date(context.line);
 
   // Resets the regex to be used
   context.resetQuoteRegex();

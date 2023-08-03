@@ -81,6 +81,7 @@ primitives allowed for the CSV format:
  - Booleans
  - Numbers
  - Null
+ - JavaScript ISO Dates
  - Objects or Arrays containing the previous ones
 `);
 

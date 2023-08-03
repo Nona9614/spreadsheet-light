@@ -22,8 +22,13 @@ export default function createParserTest(key: TestParser) {
           context.line = item.word;
           context.isQuoted = item.isQuoted;
           context.isJSON = item.isJSON;
+          context.isDate = item.isDate;
           const _process = process();
-          expect(_process).to.eql(item.expected);
+          const value =
+            _process instanceof Date ? _process.toISOString() : _process;
+          expect(value).to.eql(item.expected);
+          if (item.isQuoted)
+            expect(typeof _process === "string").to.equals(true);
         },
         function (
           word: string,
@@ -45,7 +50,10 @@ export default function createParserTest(key: TestParser) {
           expect(_parse.isTable).to.equals(item.expected.isTable);
           expect(_parse.hasHeaders).to.equals(item.expected.hasHeaders);
           expect(_parse.headers).to.eql(item.expected.headers);
-          expect(_parse.toArray(true)).to.eql(item.expected.data);
+          const array = _parse.toArray(true);
+          if (array[0][0] instanceof Date)
+            item.expected.data[0][0] = new Date(item.expected.data[0][0]);
+          expect(array).to.eql(item.expected.data);
           if (item.expected.isTable)
             expect(_parse.size).to.eql(item.expected.size);
         },

@@ -79,7 +79,13 @@ export type DefineValueEmpty<E extends ValueEmpty | undefined> =
 /** Reprecents a cell value that is empty */
 export type ValueEmpty = "" | 0 | null;
 /** Represents the types that a cell from the CSV object may contain */
-export type ValueObject = string | number | boolean | object | ValueEmpty;
+export type ValueObject =
+  | string
+  | number
+  | boolean
+  | object
+  | Date
+  | ValueEmpty;
 /** Represents the CSV content */
 export type ValueData<O extends ValueObject> = O[][];
 /** The unique format from the spreadsheet */

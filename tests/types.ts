@@ -51,6 +51,7 @@ type Process = GeneralTest<
     word: string;
     isQuoted: boolean;
     isJSON: boolean;
+    isDate: boolean;
   },
   any
 >;

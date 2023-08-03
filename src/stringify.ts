@@ -25,6 +25,7 @@ export function stringify(object: ValueData<any> | Spreadsheet<any>) {
       if (!isValueObject(element)) throw NotAllowedValueError;
       if (typeof element === "string")
         element = `${format.quote}${element}${format.quote}`;
+      else if (element instanceof Date) element = element.toISOString();
       else element = JSON.stringify(element);
       string += element;
       if (x < column.length - 1) string += format.delimiter;

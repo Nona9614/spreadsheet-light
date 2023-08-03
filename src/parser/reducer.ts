@@ -23,6 +23,8 @@ export function reducer() {
     ignoreEmptyLines,
   } = format;
 
+  const DATE_REGEX = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/;
+
   /** This line will represent a found enclosed text */
   let line = "";
   /** Global index from the iteration process */
@@ -103,10 +105,16 @@ export function reducer() {
         strictMode &&
         ((trimmed[0] === "{" && trimmed[trimmed.length - 1] === "}") ||
           (trimmed[0] === "[" && trimmed[trimmed.length - 1] === "]"));
+      // Check if the string is a JS Date
+      const isDate = strictMode && !isObject && DATE_REGEX.test(trimmed);
+      DATE_REGEX.lastIndex = 0;
       // If is an object process the word
       if (isObject) {
         context.isQuoted = false;
         context.isJSON = true;
+      } else if (isDate) {
+        context.isQuoted = false;
+        context.isDate = true;
       } else {
         // If the line is not an object and the quotes are not even, continue
         // collecting characters

@@ -79,6 +79,7 @@ A _Value Object_ is any valid javascript primitive that can be parsed without is
 - Strings
 - Numbers
 - _null_
+- JavaScript ISO string dates (YYYY-MM-DDTHH:MN:SS.MSSZ)
 - JSON and Arrays containing the previous ones
 
 Classes, functions, symbols or _undefined_ are not supported as this library tries to help you to keep your CSV content consistent.
