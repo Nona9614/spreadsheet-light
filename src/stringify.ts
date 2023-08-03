@@ -11,7 +11,13 @@ import { ValueData } from "./types";
  */
 export function stringify(object: ValueData<any> | Spreadsheet<any>) {
   let string = "";
-  const data = object instanceof Spreadsheet ? object.toArray() : object;
+  let data: ValueData<any> =
+    object instanceof Spreadsheet ? object.toArray(true) : object;
+  if (object instanceof Spreadsheet) {
+    data = object.toArray(true);
+  } else {
+    data = object;
+  }
   for (let y = 0; y < data.length; y++) {
     const column = data[y];
     for (let x = 0; x < column.length; x++) {

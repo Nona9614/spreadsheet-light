@@ -23,6 +23,7 @@ import type {
   ValueData,
   SpreadhseetFormat,
   SpreadhseetInsertOptions,
+  ToArrayResult,
 } from "../types.js";
 import { isValueObject } from "../is-value-object.js";
 
@@ -312,16 +313,66 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
   }
 
   /**
-   * The real data from the CSV, stored as a table like object
-   * where any data can be accessed as 'x' and 'y'
-   * coordinates
+   * The data from the CSV object. Will return an array of objects using the by default headers,
+   * otherwise will use the alphabet as headers.
+   * A matrix as a matrix object can be returned where any data can
+   * be accessed as 'x' and 'y' coordinates, if is forced by the `matrix` flag
+   * @param matrix If set, although there are headers a matrix will be enforced
    *
    * @example
-   * const table = "'a','b','c'";
-   * const c = table[0][2];
+   *
+   * import { xsv } from "spreadsheet-light";
+   *
+   * xsv.format = { hasHeaders: true }
+   * const csv = xsv.parse('"h1","h2","h3"\r\n"a","b","c');
+   *
+   * // Like an array of objects
+   * const array = csv.toArray();
+   * let c = array[0].h3;
+   *
+   * // Like a matrix
+   * const matrix = csv.toArray(true);
+   * c = matrix[0][2];
    */
-  toArray() {
-    return structuredClone(this.#data);
+  toArray<T extends ValueObject, B extends boolean | undefined>(
+    matrix?: B,
+  ): ToArrayResult<T, V, B> {
+    const dimension = _getDimension(this.#data);
+    if (matrix) {
+      if (this.#hasHeaders) {
+        let data: ValueData<V> = [];
+        data.push(structuredClone(this.#headers as any[]));
+        for (let y = 0; y <= dimension.y; y++) {
+          const column: any[] = [];
+          for (let x = 0; x <= dimension.x; x++) {
+            column.push(structuredClone(this.#data[y][x]));
+          }
+          data.push(column);
+        }
+        return data as any;
+      } else {
+        return structuredClone(this.#data as any);
+      }
+    } else {
+      const array: T[] = [];
+      let headers = [];
+      if (this.#hasHeaders) headers = this.#headers;
+      else {
+        const right = dimension.x + 1;
+        for (let i = 1; i <= right; i++) {
+          headers.push(alphabet.fromNumber(i));
+        }
+      }
+      for (let y = 0; y <= dimension.y; y++) {
+        const column = this.#data[y];
+        const object: any = {};
+        for (let x = 0; x <= dimension.x; x++) {
+          object[headers[x]] = structuredClone(column[x]);
+        }
+        array.push(object);
+      }
+      return array as any;
+    }
   }
 
   /**

@@ -138,6 +138,15 @@ type ReadContent = GeneralTest<
   string
 >;
 
+type ToArray = GeneralTest<
+  {
+    data: ValueData<any>;
+    matrix: boolean;
+    content: SpreadsheetContent;
+  },
+  ValueData<any> | any[]
+>;
+
 // Source
 
 type IsValueObject = GeneralTest<
@@ -158,7 +167,13 @@ type Stringify = GeneralTest<
 
 export type TestAlphabet = "from-number" | "get-number";
 export type TestParser = "transforms" | "process" | "parse";
-export type TestSpreadsheet = "write" | "read" | "range" | "bulk" | "insert";
+export type TestSpreadsheet =
+  | "write"
+  | "read"
+  | "range"
+  | "bulk"
+  | "insert"
+  | "to-array";
 export type TestSource = "stringify" | "is-value-object";
 
 export type TestName = TestAlphabet | TestParser | TestSpreadsheet | TestSource;
@@ -173,7 +188,8 @@ export const isSpreadsheetTest = (value: string): value is TestSpreadsheet =>
   value === "read" ||
   value === "bulk" ||
   value === "range" ||
-  value == "insert";
+  value == "insert" ||
+  value === "to-array";
 export const isSourceTest = (value: string): value is TestSource =>
   value === "stringify" || value === "is-value-object";
 
@@ -197,6 +213,8 @@ export type Test<T extends TestName> = T extends "transforms"
   ? ReadContent
   : T extends "range"
   ? RangeContent
+  : T extends "to-array"
+  ? ToArray
   : T extends "stringify"
   ? Stringify
   : T extends "is-value-object"

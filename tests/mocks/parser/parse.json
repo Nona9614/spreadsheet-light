@@ -227,24 +227,29 @@
         },
         {
             "skip": false,
-            "string": "A,B,C\r\na,b,c",
+            "string": "h1,h2,h3\r\na,b,c",
             "format": {
                 "hasHeaders": true
             },
             "expected": {
-                "string": "\"A\",\"B\",\"C\"\r\n\"a\",\"b\",\"c\"",
+                "string": "\"h1\",\"h2\",\"h3\"\r\n\"a\",\"b\",\"c\"",
                 "isTable": true,
                 "hasHeaders": true,
                 "headers": [
-                    "A",
-                    "B",
-                    "C"
+                    "h1",
+                    "h2",
+                    "h3"
                 ],
                 "size": {
                     "columns": 3,
                     "rows": 1
                 },
                 "data": [
+                    [
+                        "h1",
+                        "h2",
+                        "h3"
+                    ],
                     [
                         "a",
                         "b",
@@ -256,20 +261,25 @@
         },
         {
             "skip": false,
-            "string": "A,B,C\r\na,b",
+            "string": "h1,h2,h3\r\na,b",
             "format": {
                 "hasHeaders": true
             },
             "expected": {
-                "string": "\"A\",\"B\",\"C\"\r\n\"a\",\"b\"",
+                "string": "\"h1\",\"h2\",\"h3\"\r\n\"a\",\"b\"",
                 "isTable": false,
                 "hasHeaders": true,
                 "headers": [
-                    "A",
-                    "B",
-                    "C"
+                    "h1",
+                    "h2",
+                    "h3"
                 ],
                 "data": [
+                    [
+                        "h1",
+                        "h2",
+                        "h3"
+                    ],
                     [
                         "a",
                         "b"

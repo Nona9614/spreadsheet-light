@@ -45,7 +45,7 @@ export default function createParserTest(key: TestParser) {
           expect(_parse.isTable).to.equals(item.expected.isTable);
           expect(_parse.hasHeaders).to.equals(item.expected.hasHeaders);
           expect(_parse.headers).to.eql(item.expected.headers);
-          expect(_parse.toArray()).to.eql(item.expected.data);
+          expect(_parse.toArray(true)).to.eql(item.expected.data);
           if (item.expected.isTable)
             expect(_parse.size).to.eql(item.expected.size);
         },

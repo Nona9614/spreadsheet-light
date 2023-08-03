@@ -89,7 +89,7 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
           const csv = buildCSV(item);
           const { expected, options, writtable } = item;
           csv.insert(writtable, options);
-          const data = csv.toArray();
+          const data = csv.toArray(true);
           expect(data).to.eql(expected);
         },
         function (is: InvalidCase, options?: SpreadhseetInsertOptions) {
@@ -199,6 +199,13 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
           csv.write(value, row, column);
         },
       );
+    case "to-array":
+      return _(key, function (item) {
+        const csv = buildCSV(item);
+        const { expected, matrix } = item;
+        const value = csv.toArray(matrix);
+        expect(value).to.eql(expected);
+      });
     default:
       throw new Error(`Check if a spreadsheet '${key}' test is missing`);
   }

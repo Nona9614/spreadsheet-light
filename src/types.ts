@@ -125,3 +125,12 @@ export type SpreadhseetInsertOptions = {
   /**  If passed the data will be inserted after the desired row */
   after: boolean;
 };
+
+/**
+ * Gets the type of array that will be returned
+ */
+export type ToArrayResult<
+  T extends ValueObject,
+  V extends ValueObject,
+  B extends boolean | undefined,
+> = B extends false ? T[] : ValueData<V>;
