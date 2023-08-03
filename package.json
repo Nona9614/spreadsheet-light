@@ -19,9 +19,14 @@
   "directories": {
     "test": "tests"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nona9614/spreadsheet-light"
+  },
   "scripts": {
     "bundle": "node rollup.config.mjs",
-    "tests": "mocha"
+    "tests": "mocha",
+    "deploy": "npm run tests && npm run bundle"
   },
   "keywords": [
     "csv",
