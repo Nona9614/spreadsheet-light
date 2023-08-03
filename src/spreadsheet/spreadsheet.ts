@@ -123,11 +123,9 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     isTable: boolean,
     headers: string[],
     hasHeaders: boolean,
+    output: OutputSerializer,
     { brk, delimiter, quote }: SpreadhseetFormat,
-    clone?: {
-      string: string;
-      serializer: InputSerializer;
-    },
+    clone?: string,
   ) {
     this.#data = data;
 
@@ -139,11 +137,10 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     this.#quote = quote;
     this.#delimiter = delimiter;
     this.#brk = brk;
+    this.#serializer = output;
     if (clone !== undefined) {
-      this.#string = clone.string;
-      this.#serializer = clone.serializer;
+      this.#string = clone;
     } else {
-      this.#serializer = serializer.output;
       this.#stringify();
     }
   }
@@ -397,15 +394,13 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
       this.#isTable,
       headers,
       this.#hasHeaders,
+      this.#serializer,
       {
         quote: this.#quote,
         delimiter: this.#delimiter,
         brk: this.#brk,
       },
-      {
-        string: this.#string,
-        serializer: this.#serializer,
-      },
+      this.#string,
     );
   }
 }

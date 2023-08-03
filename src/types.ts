@@ -155,3 +155,10 @@ export type InputSerializer<T = any> = (string: string) => T;
  * @param string The custom value to be converted to a string
  */
 export type OutputSerializer<T = any> = (value: T) => string;
+
+/**
+ * Marks an object class as serializable
+ */
+export interface SerializableObject {
+  toObject(): object;
+}

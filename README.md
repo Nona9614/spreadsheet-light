@@ -79,7 +79,6 @@ A _Value Object_ is any valid javascript primitive that can be parsed without is
 - Strings
 - Numbers
 - _null_
-- JavaScript ISO string dates (YYYY-MM-DDTHH:MN:SS.MSSZ)
 - JSON and Arrays containing the previous ones
 
 Classes, functions, symbols or _undefined_ are not supported as this library tries to help you to keep your CSV content consistent.
@@ -254,4 +253,73 @@ let string = xsv.stringify([
   ["a", "b"],
   ["c", "d"],
 ]);
+```
+
+## Object Serializer
+
+You can create custom types when serializing using the `_ObjectSerializer_` class. If the **text format** flags `strictMode` and `transforms` are set to true. The this class can be used. To be able to use it, the created class must contain a method `toObject` that returs a palin **JSON** object
+
+```js
+// We can add this method to an already created class like Date
+Date.prototype.toObject = function () {
+  const date = new Date(item.string);
+  const year = date.getFullYear();
+  let month: any = date.getMonth() + 1;
+  month = month < 10 ? `0${month}` : month;
+  let day: any = date.getDate();
+  day = day < 10 ? `0${day}` : day;
+  return {
+    day,
+    month,
+    year,
+  };
+};
+```
+
+### Input Serializing
+
+The function called `input` will be called each time non _quoted_ (escaped) values are passed to the CSV string. With this you can transform special strings to complex objects.
+
+```js
+import xsv, { ObjectSerializer } from "spreadsheet-light";
+
+// Date like DD/MM/YYYY
+const DATE_REGEX = /\d{2}\/\d{2}\/\d{4}/gu;
+
+// In this example you will:
+// - If found by a regex transform dates
+// - If it is just a string try to parse it
+xsv.serializer = new ObjectSerializer({
+  input: function (s) {
+    const isDate = DATE_REGEX.test(s);
+    DATE_REGEX.lastIndex = 0;
+
+    if (isDate) {
+      return new Date(s);
+    } else {
+      return JSON.parse(s);
+    }
+  },
+});
+```
+
+### Output Serializing
+
+The function called `output` will be called each time an object value is trying to be stringified.
+
+```js
+import xsv, { ObjectSerializer } from "spreadsheet-light";
+
+// In this example you will:
+// - If it is a instance of Date return it like DD/MM/YYYY
+// - If it is just a string pass it as it is
+// - Any other object parse it
+xsv.serializer = new ObjectSerializer({
+  output: function (v) {
+    if (v instanceof Date) {
+      const { date, year, day } = v.toObject();
+      return `${year}/${month}/${day}`;
+    } else if typeof v === "string"  ? v : return JSON.parse(v);
+  },
+});
 ```

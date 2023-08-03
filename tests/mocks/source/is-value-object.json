@@ -50,6 +50,12 @@
             ],
             "expected": true,
             "message": "Should allow arrays with primitives"
+        },
+        {
+            "skip": false,
+            "value": "complex",
+            "expected": true,
+            "message": "Should allow complex objects that contains a method toObject that returns a plain JSON"
         }
     ]
 }

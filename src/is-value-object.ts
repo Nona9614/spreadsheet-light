@@ -34,7 +34,14 @@ export function isValueObject(value: any): value is ValueObject {
           const isValid = isValueObject(entries[i][1]);
           if (!isValid) return false;
         }
-      } else return false;
+        return true;
+      } else {
+        if (value.toObject) {
+          const object = value.toObject();
+          const isObject = Object.getPrototypeOf(object) === JSON_PROTOTYPE;
+          return isObject ? isValueObject(object) : false;
+        } else return false;
+      }
     }
     return true;
   }

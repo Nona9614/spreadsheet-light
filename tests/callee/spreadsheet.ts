@@ -12,6 +12,7 @@ import {
   SpreadsheetContent,
   ValueData,
 } from "../../src/types";
+import { defaultOutputSerializer } from "../../src/object-serializer";
 
 const buildCSV = function (item: any) {
   const {
@@ -28,6 +29,7 @@ const buildCSV = function (item: any) {
     content.isTable,
     content.headers,
     content.hasHeaders,
+    defaultOutputSerializer,
     {
       quote: format.quote,
       delimiter: format.delimiter,

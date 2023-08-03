@@ -1,5 +1,10 @@
 import { InputSerializer, OutputSerializer } from "./types";
 
+/** Default output serializer */
+export const defaultOutputSerializer = function (s: string) {
+  return s;
+};
+
 /**
  * A class to create a object serializer for special cases when parsing values for the "Spreadsheet".
  * @remarks This will be ignored if the "strictMode" flag and the "transforms" flag is not set to `true`.
@@ -25,11 +30,7 @@ class ObjectSerializer {
       function (value) {
         return typeof value === "string" ? value : JSON.stringify(value);
       };
-    this.output =
-      output ??
-      function (s) {
-        return s;
-      };
+    this.output = output ?? defaultOutputSerializer;
   }
 }
 

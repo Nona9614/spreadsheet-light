@@ -9,7 +9,15 @@ export default function createSourceTest(key: TestSource) {
   switch (key) {
     case "is-value-object":
       return _(key, function (item) {
-        expect(isValueObject(item.value)).to.equals(true);
+        if (item.value === "complex") {
+          function Parent(this: any) {}
+          Parent.prototype.constructor = Parent;
+          Parent.prototype.toObject = () => ({});
+          const child = Object.create(Parent.prototype);
+          expect(isValueObject(child)).to.equals(true);
+        } else {
+          expect(isValueObject(item.value)).to.equals(true);
+        }
       });
     case "stringify":
       return _(
