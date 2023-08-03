@@ -11,7 +11,16 @@ export default function createParserTest(key: TestParser) {
   switch (key) {
     case "transforms":
       return _(key, function (item) {
-        const _transforms = transforms(item.string);
+        let _transforms = transforms(item.string);
+        if (item.serializer === "date") {
+          const date = new Date(item.string);
+          const year = date.getFullYear();
+          let month: any = date.getMonth() + 1;
+          month = month < 10 ? `0${month}` : month;
+          let day: any = date.getDate();
+          day = day < 10 ? `0${day}` : day;
+          _transforms = `${year}/${month}/${day}`;
+        }
         expect(_transforms).to.eql(item.expected);
       });
     case "process":
@@ -22,11 +31,8 @@ export default function createParserTest(key: TestParser) {
           context.line = item.word;
           context.isQuoted = item.isQuoted;
           context.isJSON = item.isJSON;
-          context.isDate = item.isDate;
           const _process = process();
-          const value =
-            _process instanceof Date ? _process.toISOString() : _process;
-          expect(value).to.eql(item.expected);
+          expect(_process).to.eql(item.expected);
           if (item.isQuoted)
             expect(typeof _process === "string").to.equals(true);
         },

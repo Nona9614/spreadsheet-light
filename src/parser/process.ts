@@ -1,8 +1,7 @@
-import { EmptyValueError, NotValidUseOfQuotes, ParseError } from "../errors.js";
+import { NotValidUseOfQuotes } from "../errors.js";
 import { format } from "../text-format.js";
 import { context } from "./context.js";
-import { Spreadsheet } from "../spreadsheet/spreadsheet.js";
-import { transforms, transformsNumber } from "./transforms.js";
+import { transforms } from "./transforms.js";
 
 /**
  * Process a word to remove extra quotes to set a clean value
@@ -19,8 +18,6 @@ export function process() {
 
   // If the processed value is a JSON object process it
   if (context.isJSON) return JSON.parse(context.line);
-  // If it is a date return a Date object
-  if (context.isDate) return new Date(context.line);
 
   // Resets the regex to be used
   context.resetQuoteRegex();
@@ -50,5 +47,6 @@ export function process() {
     word += context.line.substring(startIndex, context.line.length);
 
   // Finally returns the processed line as a parsed string and transform if necessary
-  return context.shouldTransform ? transforms(word) : word;
+  const value = context.shouldTransform ? transforms(word) : word;
+  return value;
 }

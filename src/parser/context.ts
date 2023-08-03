@@ -1,5 +1,5 @@
+import ObjectSerializer from "../object-serializer.js";
 import { format } from "../text-format.js";
-import { ValueEmpty } from "../types.js";
 
 /**
  * The processed value will be saved then "x" will update the value (plus one)
@@ -74,11 +74,6 @@ export class ParseContext {
   shouldTransform: boolean;
   /**
    * During the reducer process if the strictMode and transform options are set
-   * if a line has the JavaScript date ISO format it will catch it
-   */
-  isDate: boolean;
-  /**
-   * During the reducer process if the strictMode and transform options are set
    * if a line starts and ends with "{}" or "[]", will be marked as a JSON object
    */
   isJSON: boolean;
@@ -88,7 +83,9 @@ export class ParseContext {
    */
   quoteRegex: RegExp;
 
-  /** @param string The string to be parsed as a CSV object */
+  /**
+   * @param string The string to be parsed as a CSV object
+   */
   constructor(string: string) {
     this.string = string;
     /** Real string length in case that has no end character the string */
@@ -99,7 +96,6 @@ export class ParseContext {
     this.isQuoted = false;
     this.line = "";
     this.isJSON = false;
-    this.isDate = false;
     this.shouldTransform = false;
     this.quoteRegex = new RegExp(format.quote, "gum");
     this.pointer = new ContextPointer();
@@ -131,8 +127,9 @@ let _context: ParseContext = {} as any;
  * Creates and starts the parse context for all kind of
  * references needed during all the process
  * @param string The string to be parsed as a CSV object
+ * @param serializer Serializer for string special cases
  */
-export function createContext(string: string) {
+export function createContext(string: string, serializer?: ObjectSerializer) {
   _context = new ParseContext(string);
 }
 

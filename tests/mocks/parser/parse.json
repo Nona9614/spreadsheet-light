@@ -287,26 +287,6 @@
                 ]
             },
             "message": "Should transform the headers but mark the CSV string as not table"
-        },
-        {
-            "skip": false,
-            "string": "2023-08-03T10:12:04.018Z",
-            "expected": {
-                "string": "2023-08-03T10:12:04.018Z",
-                "isTable": true,
-                "hasHeaders": false,
-                "headers": [],
-                "size": {
-                    "rows": 1,
-                    "columns": 1
-                },
-                "data": [
-                    [
-                        "2023-08-03T10:12:04.018Z"
-                    ]
-                ]
-            },
-            "message": "Should transform JavaScript ISO dates"
         }
     ],
     "errors": [

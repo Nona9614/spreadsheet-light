@@ -1,5 +1,6 @@
 import { NotAllowedValueError } from "./errors";
 import { isValueObject } from "./is-value-object";
+import { serializer } from "./object-serializer";
 import { Spreadsheet } from "./spreadsheet/spreadsheet";
 import { format } from "./text-format";
 import { ValueData } from "./types";
@@ -25,8 +26,7 @@ export function stringify(object: ValueData<any> | Spreadsheet<any>) {
       if (!isValueObject(element)) throw NotAllowedValueError;
       if (typeof element === "string")
         element = `${format.quote}${element}${format.quote}`;
-      else if (element instanceof Date) element = element.toISOString();
-      else element = JSON.stringify(element);
+      else element = serializer.output(element);
       string += element;
       if (x < column.length - 1) string += format.delimiter;
     }

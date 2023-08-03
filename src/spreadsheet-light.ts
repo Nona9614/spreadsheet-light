@@ -3,6 +3,7 @@ import { parse } from "./parser/parse.js";
 import { TextFormat } from "./types.js";
 import { isValueObject } from "./is-value-object.js";
 import { stringify } from "./stringify.js";
+import ObjectSerializer, { setObjectSerializer } from "./object-serializer.js";
 
 // Populates the global text format with a default format
 setDefaultTextFormat();
@@ -20,6 +21,13 @@ const xsv = structuredClone({
    * Parses an object into a string with CSV formt currently set
    */
   stringify,
+  /**
+   * Sets the global serializer to be used when transforming data to create
+   * Spreadsheets or CSV strings to custom objects
+   */
+  set serializer(v: ObjectSerializer) {
+    setObjectSerializer(v);
+  },
   /**
    * Checks if an element is valid candidate to be a CSV value
    */

@@ -135,6 +135,13 @@
         },
         {
             "skip": false,
+            "string": "2018/12/05",
+            "serializer": "date",
+            "expected": "2018/12/05",
+            "message": "Should transform to customized case"
+        },
+        {
+            "skip": false,
             "string": "{valueOf:function(){return 12}}",
             "expected": "{valueOf:function(){return 12}}",
             "message": "Should avoid to run script from valueOf function"

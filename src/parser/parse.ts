@@ -9,6 +9,7 @@ import { context, createContext } from "./context.js";
 import { Spreadsheet } from "../spreadsheet/spreadsheet.js";
 import { reducer } from "./reducer.js";
 import { ValueObject } from "../types.js";
+import { serializer } from "../object-serializer.js";
 
 /** A stringified CSV object */
 let stringified: boolean = false;

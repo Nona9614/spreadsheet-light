@@ -22,6 +22,7 @@ export type TextFormat = {
    * - true, false, TRUE, FALSE
    * - null, NULL
    * - JSON Objects
+   * - Custom types generated from the object input serializer
    */
   transform?: boolean;
   /**
@@ -87,7 +88,7 @@ export type ValueObject =
   | Date
   | ValueEmpty;
 /** Represents the CSV content */
-export type ValueData<O extends ValueObject> = O[][];
+export type ValueData<O extends any> = O[][];
 /** The unique format from the spreadsheet */
 export type SpreadhseetFormat = {
   /** The word quotes */
@@ -140,3 +141,17 @@ export type ToArrayResult<
   V extends ValueObject,
   B extends boolean | undefined,
 > = B extends false ? T[] : ValueData<V>;
+
+/**
+ * This function serializes strings to a customize type.
+ * When a passed string is not quoted (escaped) will activate this function.
+ * @param string The value to be converted to a custom type
+ */
+export type InputSerializer<T = any> = (string: string) => T;
+
+/**
+ * This function serializes the custom values to strings
+ * When returning a string will return a raw value (not escaped)
+ * @param string The custom value to be converted to a string
+ */
+export type OutputSerializer<T = any> = (value: T) => string;

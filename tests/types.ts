@@ -41,6 +41,7 @@ type Transforms = GeneralTest<
   {
     _id: string;
     string: string;
+    serializer: string;
   },
   string | null | undefined | number
 >;

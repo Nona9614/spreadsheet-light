@@ -17,8 +17,11 @@ import type {
   SpreadhseetFormat,
   SpreadhseetInsertOptions,
   ToArrayResult,
+  OutputSerializer,
+  InputSerializer,
 } from "../types.js";
 import { isValueObject } from "../is-value-object.js";
+import ObjectSerializer, { serializer } from "../object-serializer.js";
 
 /** Checks if some string can be considered as a limit */
 function toCellPosition(dimension: Pointer, s: string | number) {
@@ -110,9 +113,10 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     return this.#stringify();
   }
 
+  #serializer: OutputSerializer;
+
   /**
    * @param clone The string where the CSV object comes from
-   *
    */
   constructor(
     data: ValueData<V>,
@@ -120,7 +124,10 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     headers: string[],
     hasHeaders: boolean,
     { brk, delimiter, quote }: SpreadhseetFormat,
-    clone?: string,
+    clone?: {
+      string: string;
+      serializer: InputSerializer;
+    },
   ) {
     this.#data = data;
 
@@ -133,8 +140,10 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     this.#delimiter = delimiter;
     this.#brk = brk;
     if (clone !== undefined) {
-      this.#string = clone;
+      this.#string = clone.string;
+      this.#serializer = clone.serializer;
     } else {
+      this.#serializer = serializer.output;
       this.#stringify();
     }
   }
@@ -152,10 +161,9 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
       const column = this.#data[y];
       for (let x = 0; x < column.length; x++) {
         let element: any = column[x];
-        if (element === "string")
+        if (typeof element === "string")
           element = `${this.#quote}${element}${this.#quote}`;
-        else if (element instanceof Date) element = element.toISOString();
-        else element = JSON.stringify(element);
+        else element = this.#serializer(element);
         string += element;
         if (x < column.length - 1) string += this.#delimiter;
       }
@@ -394,7 +402,10 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
         delimiter: this.#delimiter,
         brk: this.#brk,
       },
-      this.#string,
+      {
+        string: this.#string,
+        serializer: this.#serializer,
+      },
     );
   }
 }

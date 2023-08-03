@@ -4,9 +4,8 @@ import {
   ObjectNeverClosedError,
 } from "../errors.js";
 import { format } from "../text-format.js";
-import type { ValueData, ValueEmpty } from "../types.js";
-import { context, createContext } from "./context.js";
-import { Spreadsheet } from "../spreadsheet/spreadsheet.js";
+import type { ValueData } from "../types.js";
+import { context } from "./context.js";
 import { process } from "./process.js";
 
 /**
@@ -22,8 +21,6 @@ export function reducer() {
     transform,
     ignoreEmptyLines,
   } = format;
-
-  const DATE_REGEX = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/;
 
   /** This line will represent a found enclosed text */
   let line = "";
@@ -105,16 +102,10 @@ export function reducer() {
         strictMode &&
         ((trimmed[0] === "{" && trimmed[trimmed.length - 1] === "}") ||
           (trimmed[0] === "[" && trimmed[trimmed.length - 1] === "]"));
-      // Check if the string is a JS Date
-      const isDate = strictMode && !isObject && DATE_REGEX.test(trimmed);
-      DATE_REGEX.lastIndex = 0;
       // If is an object process the word
       if (isObject) {
         context.isQuoted = false;
         context.isJSON = true;
-      } else if (isDate) {
-        context.isQuoted = false;
-        context.isDate = true;
       } else {
         // If the line is not an object and the quotes are not even, continue
         // collecting characters

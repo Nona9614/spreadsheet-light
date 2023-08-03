@@ -5,6 +5,8 @@ import { Spreadsheet } from "../../src/spreadsheet/spreadsheet";
 import { format } from "../../src/text-format";
 import {
   CellSelector,
+  InputSerializer,
+  OutputSerializer,
   RangeSelector,
   SpreadhseetInsertOptions,
   SpreadsheetContent,
@@ -18,7 +20,9 @@ const buildCSV = function (item: any) {
   }: {
     content: SpreadsheetContent;
     data: ValueData<any>;
+    serializer: undefined | string;
   } = item;
+
   return new Spreadsheet(
     data,
     content.isTable,

@@ -44,14 +44,6 @@
         },
         {
             "skip": false,
-            "word": "2023-08-03T10:12:04.018Z",
-            "isQuoted": false,
-            "isDate": true,
-            "expected": "2023-08-03T10:12:04.018Z",
-            "message": "Should transform a text into a date"
-        },
-        {
-            "skip": false,
             "word": "[\"a\"]",
             "isQuoted": false,
             "isJSON": true,
