@@ -11,7 +11,7 @@ const JSON_PROTOTYPE = Object.getPrototypeOf({});
  */
 export function isValueObject(value: any): value is ValueObject {
   if (value === null) return true;
-  const type = typeof value;
+  let type = typeof value;
   if (
     type === "string" ||
     type === "number" ||

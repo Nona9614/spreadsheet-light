@@ -21,9 +21,12 @@ export function stringify(object: ValueData<any> | Spreadsheet<any>) {
   for (let y = 0; y < data.length; y++) {
     const column = data[y];
     for (let x = 0; x < column.length; x++) {
-      const element = column[x];
+      let element: any = column[x];
       if (!isValueObject(element)) throw NotAllowedValueError;
-      string += `${format.quote}${String(element)}${format.quote}`;
+      if (typeof element === "string")
+        element = `${format.quote}${element}${format.quote}`;
+      else element = JSON.stringify(element);
+      string += element;
       if (x < column.length - 1) string += format.delimiter;
     }
     if (y < data.length - 1) string += format.brk;

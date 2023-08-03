@@ -2,22 +2,15 @@ import { alphabet } from "./alphabet.js";
 import {
   IsNotTableFormatError,
   isNotTableError,
-  FoundUndefinedElementError,
   NotFoundColumnError,
-  InvalidRangeSelector,
   NotAllowedValueError,
   NotFoundRowError,
-  NotValidLineLimitError,
-  NotValidRangeLimitError,
 } from "../errors.js";
 import type {
   ValueObject,
   CellSelector,
-  ValueEmpty,
-  LineLimit,
   Size,
   RangeSelector,
-  RangeLimit,
   Pointer,
   SpreadsheetContent,
   ValueData,
@@ -158,8 +151,11 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     for (let y = 0; y < this.#data.length; y++) {
       const column = this.#data[y];
       for (let x = 0; x < column.length; x++) {
-        const element = column[x];
-        string += `${this.#quote}${String(element)}${this.#quote}`;
+        let element: any = column[x];
+        if (element === "string")
+          element = `${this.#quote}${element}${this.#quote}`;
+        else element = JSON.stringify(element);
+        string += element;
         if (x < column.length - 1) string += this.#delimiter;
       }
       if (y < this.#data.length - 1) string += this.#brk;

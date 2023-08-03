@@ -85,17 +85,6 @@ primitives allowed for the CSV format:
 `);
 
 /**
- * Thrown when an action is trying to access a element in that is undefined
- */
-export const FoundUndefinedElementError = (x: number, y: number) => {
-  const column = y + 1;
-  const row = x + 1;
-  return new Error(
-    `At column: ${column}, row: ${row} the element is undefined or does not exits`,
-  );
-};
-
-/**
  * Thrown when an action is trying to access a column in that is undefined
  */
 export const NotFoundColumnError = (y: number) =>
