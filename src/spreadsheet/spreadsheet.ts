@@ -313,6 +313,7 @@ export class Spreadsheet<V extends any> implements SpreadsheetContent {
    * A matrix as a matrix object can be returned where any data can
    * be accessed as 'x' and 'y' coordinates, if is forced by the `matrix` flag
    * @param matrix If set, although there are headers a matrix will be enforced
+   * @param ignoreHeaders If set will ignore headers on parsing
    *
    * @example
    *
@@ -331,10 +332,11 @@ export class Spreadsheet<V extends any> implements SpreadsheetContent {
    */
   toArray<T extends ValueObject, B extends boolean | undefined>(
     matrix?: B,
+    ignoreHeaders?: boolean,
   ): ToArrayResult<T, V, B> {
     const dimension = _getDimension(this.#data);
     if (matrix) {
-      if (this.#hasHeaders) {
+      if (this.#hasHeaders && !ignoreHeaders) {
         let data: ValueData<V> = [];
         data.push(clone(this.#headers as any[]));
         for (let y = 0; y <= dimension.y; y++) {
@@ -351,7 +353,7 @@ export class Spreadsheet<V extends any> implements SpreadsheetContent {
     } else {
       const array: T[] = [];
       let headers = [];
-      if (this.#hasHeaders) headers = this.#headers;
+      if (this.#hasHeaders && !ignoreHeaders) headers = this.#headers;
       else {
         const right = dimension.x + 1;
         for (let i = 1; i <= right; i++) {

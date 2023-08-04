@@ -60,6 +60,7 @@ type Process = GeneralTest<
 type Parse = GeneralTest<
   {
     string: string;
+    ignoreHeaders: boolean;
   },
   SpreadsheetContent & { data: ValueData<any> }
 >;

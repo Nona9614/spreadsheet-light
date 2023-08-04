@@ -7,6 +7,7 @@
             "format": {
                 "hasHeaders": true
             },
+            "ignoreHeaders": true,
             "expected": {
                 "string": "\"h1\",\"h2\",\"h3\",\"h4\"\r\n\"a1\",\"b1\",\"c1\",\"d1\"\r\n\"a2\",\"b2\",\"c2\",\"d2\"\r\n\"a3\",\"b3\",\"c3\",\"d3\"\r\n\"a4\",\"b4\",\"c4\",\"d4\"",
                 "isTable": true,
@@ -22,12 +23,6 @@
                     "rows": 4
                 },
                 "data": [
-                    [
-                        "h1",
-                        "h2",
-                        "h3",
-                        "h4"
-                    ],
                     [
                         "a1",
                         "b1",
