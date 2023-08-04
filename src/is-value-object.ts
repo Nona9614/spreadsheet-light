@@ -1,3 +1,4 @@
+import symbols from "./symbols";
 import { ValueObject } from "./types";
 
 const JSON_PROTOTYPE = Object.getPrototypeOf({});
@@ -35,13 +36,10 @@ export function isValueObject(value: any): value is ValueObject {
           if (!isValid) return false;
         }
         return true;
-      } else {
-        if (value.toObject) {
-          const object = value.toObject();
-          const isObject = Object.getPrototypeOf(object) === JSON_PROTOTYPE;
-          return isObject ? isValueObject(object) : false;
-        } else return false;
-      }
+      } else
+        return (
+          value[symbols.clone] ?? typeof value[symbols.clone] === "function"
+        );
     }
     return true;
   }

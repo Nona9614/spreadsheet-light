@@ -1,0 +1,107 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "value": "string",
+            "expected": "string",
+            "message": "Should clone string values"
+        },
+        {
+            "skip": false,
+            "value": 0,
+            "expected": 0,
+            "message": "Should clone numbers values"
+        },
+        {
+            "skip": false,
+            "value": false,
+            "expected": false,
+            "message": "Should clone \"false\" values"
+        },
+        {
+            "skip": false,
+            "value": true,
+            "expected": true,
+            "message": "Should clone \"true\" values"
+        },
+        {
+            "skip": false,
+            "value": null,
+            "expected": null,
+            "message": "Should clone \"null\" values"
+        },
+        {
+            "skip": false,
+            "value": {
+                "string": "string",
+                "number": 0,
+                "boolean": true
+            },
+            "expected": {
+                "string": "string",
+                "number": 0,
+                "boolean": true
+            },
+            "message": "Should clone objects with primitives"
+        },
+        {
+            "skip": false,
+            "value": [
+                "string",
+                0,
+                false
+            ],
+            "expected": [
+                "string",
+                0,
+                false
+            ],
+            "message": "Should clone arrays with primitives"
+        },
+        {
+            "skip": false,
+            "value": "complex",
+            "expected": {},
+            "message": "Should clone complex objects that contains a method clone that returns an object"
+        }
+    ],
+    "errors": [
+        {
+            "skip": false,
+            "message": "Should throw error on undefined value",
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "params": [
+                "undefined"
+            ]
+        },
+        {
+            "skip": false,
+            "message": "Should throw an error when a non serializable object is passsed",
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "params": [
+                "class"
+            ]
+        },
+        {
+            "skip": false,
+            "message": "Should throw error on function value",
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "params": [
+                "function"
+            ]
+        },
+        {
+            "skip": false,
+            "message": "Should throw error on symbol value",
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "params": [
+                "symbol"
+            ]
+        }
+    ]
+}

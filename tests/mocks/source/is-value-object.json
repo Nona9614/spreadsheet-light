@@ -53,9 +53,27 @@
         },
         {
             "skip": false,
-            "value": "complex",
-            "expected": true,
-            "message": "Should allow complex objects that contains a method toObject that returns a plain JSON"
+            "value": "function",
+            "expected": false,
+            "message": "Should not allow functions"
+        },
+        {
+            "skip": false,
+            "value": "undefined",
+            "expected": false,
+            "message": "Should not allow undefined"
+        },
+        {
+            "skip": false,
+            "value": "symbol",
+            "expected": false,
+            "message": "Should not allow symbol"
+        },
+        {
+            "skip": false,
+            "value": "class",
+            "expected": false,
+            "message": "Should not allow non serializable objects"
         }
     ]
 }

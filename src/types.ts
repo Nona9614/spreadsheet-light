@@ -1,3 +1,5 @@
+import symbols from "./symbols";
+
 export type TextFormat = {
   /** The quote separator */
   quote?: '"' | string;
@@ -75,8 +77,6 @@ export type Size = {
   columns: number;
 };
 
-export type DefineValueEmpty<E extends ValueEmpty | undefined> =
-  E extends undefined ? "" : E;
 /** Reprecents a cell value that is empty */
 export type ValueEmpty = "" | 0 | null;
 /** Represents the types that a cell from the CSV object may contain */
@@ -85,7 +85,7 @@ export type ValueObject =
   | number
   | boolean
   | object
-  | Date
+  | SerializableObject
   | ValueEmpty;
 /** Represents the CSV content */
 export type ValueData<O extends any> = O[][];
@@ -137,8 +137,8 @@ export type SpreadhseetInsertOptions = {
  * Gets the type of array that will be returned
  */
 export type ToArrayResult<
-  T extends ValueObject,
-  V extends ValueObject,
+  T extends any,
+  V extends any,
   B extends boolean | undefined,
 > = B extends false ? T[] : ValueData<V>;
 
@@ -149,16 +149,14 @@ export type ToArrayResult<
  */
 export type InputSerializer<T = any> = (string: string) => T;
 
-/**
- * This function serializes the custom values to strings
- * When returning a string will return a raw value (not escaped)
- * @param string The custom value to be converted to a string
- */
-export type OutputSerializer<T = any> = (value: T) => string;
+interface SymbolConstructor {
+  readonly clone: unique symbol;
+}
 
 /**
  * Marks an object class as serializable
  */
 export interface SerializableObject {
-  toObject(): object;
+  toString(): string;
+  [symbols.clone]: () => SerializableObject;
 }

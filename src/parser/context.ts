@@ -1,4 +1,3 @@
-import ObjectSerializer from "../object-serializer.js";
 import { format } from "../text-format.js";
 
 /**
@@ -127,9 +126,8 @@ let _context: ParseContext = {} as any;
  * Creates and starts the parse context for all kind of
  * references needed during all the process
  * @param string The string to be parsed as a CSV object
- * @param serializer Serializer for string special cases
  */
-export function createContext(string: string, serializer?: ObjectSerializer) {
+export function createContext(string: string) {
   _context = new ParseContext(string);
 }
 

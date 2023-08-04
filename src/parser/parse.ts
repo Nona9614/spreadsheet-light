@@ -8,8 +8,6 @@ import { format } from "../text-format.js";
 import { context, createContext } from "./context.js";
 import { Spreadsheet } from "../spreadsheet/spreadsheet.js";
 import { reducer } from "./reducer.js";
-import { ValueObject } from "../types.js";
-import { defaultOutputSerializer, serializer } from "../object-serializer.js";
 
 /** A stringified CSV object */
 let stringified: boolean = false;
@@ -28,7 +26,7 @@ function cleanMemoization() {
  * This function parses a string into a CSV object
  * @param {string} string The string to be processed
  */
-export function parse<V extends ValueObject>(string: string) {
+export function parse<V extends any>(string: string) {
   // If the memoization option is on, check if the value was parsed already
   if (format.memoize) {
     // Rterun the stored data if if memoization is found
@@ -38,19 +36,13 @@ export function parse<V extends ValueObject>(string: string) {
   // Creates a new parse context
   createContext(string);
 
-  // Output serializer
-  const output =
-    format.strictMode && format.transform
-      ? serializer.output
-      : defaultOutputSerializer;
-
   // If strict mode is on and there is no content throw an error
   if (isEmptyString(string)) {
     if (format.strictMode) {
       cleanMemoization();
       throw EmptyStringError;
     } else {
-      return new Spreadsheet<any>([[format.empty]], true, [], false, output, {
+      return new Spreadsheet<any>([[format.empty]], true, [], false, {
         quote: format.quote,
         delimiter: format.delimiter,
         brk: format.brk,
@@ -69,18 +61,11 @@ export function parse<V extends ValueObject>(string: string) {
   memoized = string;
 
   // Creates a default CSV
-  const csv = new Spreadsheet<V>(
-    data,
-    isTable,
-    headers,
-    format.hasHeaders,
-    output,
-    {
-      quote: format.quote,
-      delimiter: format.delimiter,
-      brk: format.brk,
-    },
-  );
+  const csv = new Spreadsheet<V>(data, isTable, headers, format.hasHeaders, {
+    quote: format.quote,
+    delimiter: format.delimiter,
+    brk: format.brk,
+  });
   _csv = csv;
 
   // Reset the previous context if used

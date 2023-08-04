@@ -17,11 +17,9 @@ import type {
   SpreadhseetFormat,
   SpreadhseetInsertOptions,
   ToArrayResult,
-  OutputSerializer,
-  InputSerializer,
 } from "../types.js";
 import { isValueObject } from "../is-value-object.js";
-import ObjectSerializer, { serializer } from "../object-serializer.js";
+import { clone } from "../clone.js";
 
 /** Checks if some string can be considered as a limit */
 function toCellPosition(dimension: Pointer, s: string | number) {
@@ -78,7 +76,7 @@ const _getDimension = (data: any[][]): Pointer => {
 };
 
 /** The Spreadsheet parsed object */
-export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
+export class Spreadsheet<V extends any> implements SpreadsheetContent {
   /** Tracks a data change */
   #changed: boolean = false;
 
@@ -113,8 +111,6 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     return this.#stringify();
   }
 
-  #serializer: OutputSerializer;
-
   /**
    * @param clone The string where the CSV object comes from
    */
@@ -123,7 +119,6 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     isTable: boolean,
     headers: string[],
     hasHeaders: boolean,
-    output: OutputSerializer,
     { brk, delimiter, quote }: SpreadhseetFormat,
     clone?: string,
   ) {
@@ -137,7 +132,6 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     this.#quote = quote;
     this.#delimiter = delimiter;
     this.#brk = brk;
-    this.#serializer = output;
     if (clone !== undefined) {
       this.#string = clone;
     } else {
@@ -160,7 +154,6 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
         let element: any = column[x];
         if (typeof element === "string")
           element = `${this.#quote}${element}${this.#quote}`;
-        else element = this.#serializer(element);
         string += element;
         if (x < column.length - 1) string += this.#delimiter;
       }
@@ -343,17 +336,17 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     if (matrix) {
       if (this.#hasHeaders) {
         let data: ValueData<V> = [];
-        data.push(structuredClone(this.#headers as any[]));
+        data.push(clone(this.#headers as any[]));
         for (let y = 0; y <= dimension.y; y++) {
           const column: any[] = [];
           for (let x = 0; x <= dimension.x; x++) {
-            column.push(structuredClone(this.#data[y][x]));
+            column.push(clone(this.#data[y][x]));
           }
           data.push(column);
         }
         return data as any;
       } else {
-        return structuredClone(this.#data as any);
+        return clone(this.#data as any);
       }
     } else {
       const array: T[] = [];
@@ -369,7 +362,7 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
         const column = this.#data[y];
         const object: any = {};
         for (let x = 0; x <= dimension.x; x++) {
-          object[headers[x]] = structuredClone(column[x]);
+          object[headers[x]] = clone(column[x]);
         }
         array.push(object);
       }
@@ -387,14 +380,13 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
 
   /** Creates a deep clone from this object */
   clone() {
-    const data = structuredClone(this.#data);
-    const headers = this.hasHeaders ? structuredClone(this.#headers) : [];
+    const data = clone(this.#data);
+    const headers = this.hasHeaders ? clone(this.#headers) : [];
     return new Spreadsheet<V>(
       data,
       this.#isTable,
       headers,
       this.#hasHeaders,
-      this.#serializer,
       {
         quote: this.#quote,
         delimiter: this.#delimiter,

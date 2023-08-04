@@ -15,6 +15,6 @@ export function transforms(value: string) {
     if (value === "false" || value === "FALSE") return false;
     else if (value === "true" || value === "TRUE") return true;
     else if (value === "null" || value === "NULL") return null;
-    else return serializer.input(value);
+    else return serializer(value);
   } else return Number(value);
 }

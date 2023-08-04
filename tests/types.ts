@@ -158,6 +158,13 @@ type IsValueObject = GeneralTest<
   boolean
 >;
 
+type Clone = GeneralTest<
+  {
+    value: any;
+  },
+  any
+>;
+
 type Stringify = GeneralTest<
   {
     object: ValueData<any>;
@@ -176,7 +183,7 @@ export type TestSpreadsheet =
   | "bulk"
   | "insert"
   | "to-array";
-export type TestSource = "stringify" | "is-value-object";
+export type TestSource = "clone" | "stringify" | "is-value-object";
 
 export type TestName = TestAlphabet | TestParser | TestSpreadsheet | TestSource;
 
@@ -193,7 +200,7 @@ export const isSpreadsheetTest = (value: string): value is TestSpreadsheet =>
   value == "insert" ||
   value === "to-array";
 export const isSourceTest = (value: string): value is TestSource =>
-  value === "stringify" || value === "is-value-object";
+  value === "stringify" || value === "is-value-object" || value === "clone";
 
 export type Test<T extends TestName> = T extends "transforms"
   ? Transforms
@@ -221,6 +228,8 @@ export type Test<T extends TestName> = T extends "transforms"
   ? Stringify
   : T extends "is-value-object"
   ? IsValueObject
+  : T extends "clone"
+  ? Clone
   : never;
 
 type UnArray<T> = T extends Array<infer U> ? U : T;

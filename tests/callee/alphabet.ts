@@ -3,8 +3,6 @@ import _ from "../create-callee";
 import type { TestAlphabet } from "../types";
 
 import { alphabet } from "../../src/spreadsheet/alphabet";
-import { process } from "../../src/parser/process";
-import { context, createContext } from "../../src/parser/context";
 
 export default function createAlphabetTest(key: TestAlphabet) {
   switch (key) {
