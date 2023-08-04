@@ -86,7 +86,8 @@ export class ParseContext {
    * @param string The string to be parsed as a CSV object
    */
   constructor(string: string) {
-    this.string = string;
+    /** Strict mode will remove any whitespaces before and after the string */
+    this.string = format.strictMode ? string.trim() : string;
     /** Real string length in case that has no end character the string */
     this.slength = format.hasEndCharacter ? string.length - 1 : string.length;
     this.index = 0;

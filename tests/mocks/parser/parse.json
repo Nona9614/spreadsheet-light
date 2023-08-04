@@ -3,6 +3,61 @@
     "items": [
         {
             "skip": false,
+            "string": "\"h1\",\"h2\",\"h3\",\"h4\"\r\n\"a1\",\"b1\",\"c1\",\"d1\"\r\n\"a2\",\"b2\",\"c2\",\"d2\"\r\n\"a3\",\"b3\",\"c3\",\"d3\"\r\n\"a4\",\"b4\",\"c4\",\"d4\"\r\n",
+            "format": {
+                "hasHeaders": true
+            },
+            "expected": {
+                "string": "\"h1\",\"h2\",\"h3\",\"h4\"\r\n\"a1\",\"b1\",\"c1\",\"d1\"\r\n\"a2\",\"b2\",\"c2\",\"d2\"\r\n\"a3\",\"b3\",\"c3\",\"d3\"\r\n\"a4\",\"b4\",\"c4\",\"d4\"",
+                "isTable": true,
+                "hasHeaders": true,
+                "headers": [
+                    "h1",
+                    "h2",
+                    "h3",
+                    "h4"
+                ],
+                "size": {
+                    "columns": 4,
+                    "rows": 4
+                },
+                "data": [
+                    [
+                        "h1",
+                        "h2",
+                        "h3",
+                        "h4"
+                    ],
+                    [
+                        "a1",
+                        "b1",
+                        "c1",
+                        "d1"
+                    ],
+                    [
+                        "a2",
+                        "b2",
+                        "c2",
+                        "d2"
+                    ],
+                    [
+                        "a3",
+                        "b3",
+                        "c3",
+                        "d3"
+                    ],
+                    [
+                        "a4",
+                        "b4",
+                        "c4",
+                        "d4"
+                    ]
+                ]
+            },
+            "message": "Should transform a big string to a matrix"
+        },
+        {
+            "skip": false,
             "string": "a,b,c",
             "expected": {
                 "string": "\"a\",\"b\",\"c\"",
