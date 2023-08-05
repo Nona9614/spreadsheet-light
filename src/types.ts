@@ -134,15 +134,6 @@ export type SpreadhseetInsertOptions = {
 };
 
 /**
- * Gets the type of array that will be returned
- */
-export type ToArrayResult<
-  T extends any,
-  V extends any,
-  B extends boolean | undefined,
-> = B extends false ? T[] : ValueData<V>;
-
-/**
  * This function serializes strings to a customize type.
  * When a passed string is not quoted (escaped) will activate this function.
  * @param string The value to be converted to a custom type

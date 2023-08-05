@@ -144,10 +144,17 @@ type ReadContent = GeneralTest<
 type ToArray = GeneralTest<
   {
     data: ValueData<any>;
-    matrix: boolean;
     content: SpreadsheetContent;
   },
-  ValueData<any> | any[]
+  any[]
+>;
+
+type ToMatrix = GeneralTest<
+  {
+    data: ValueData<any>;
+    content: SpreadsheetContent;
+  },
+  ValueData<any>
 >;
 
 // Source
@@ -183,7 +190,8 @@ export type TestSpreadsheet =
   | "range"
   | "bulk"
   | "insert"
-  | "to-array";
+  | "to-array"
+  | "to-matrix";
 export type TestSource = "clone" | "stringify" | "is-value-object";
 
 export type TestName = TestAlphabet | TestParser | TestSpreadsheet | TestSource;
@@ -199,7 +207,8 @@ export const isSpreadsheetTest = (value: string): value is TestSpreadsheet =>
   value === "bulk" ||
   value === "range" ||
   value == "insert" ||
-  value === "to-array";
+  value === "to-array" ||
+  value === "to-matrix";
 export const isSourceTest = (value: string): value is TestSource =>
   value === "stringify" || value === "is-value-object" || value === "clone";
 
@@ -223,6 +232,8 @@ export type Test<T extends TestName> = T extends "transforms"
   ? ReadContent
   : T extends "range"
   ? RangeContent
+  : T extends "to-matrix"
+  ? ToMatrix
   : T extends "to-array"
   ? ToArray
   : T extends "stringify"

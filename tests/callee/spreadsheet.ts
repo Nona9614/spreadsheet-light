@@ -91,7 +91,7 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
           const csv = buildCSV(item);
           const { expected, options, writtable } = item;
           csv.insert(writtable, options);
-          const data = csv.toArray(true);
+          const data = csv.toMatrix();
           expect(data).to.eql(expected);
         },
         function (is: InvalidCase, options?: SpreadhseetInsertOptions) {
@@ -204,8 +204,15 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
     case "to-array":
       return _(key, function (item) {
         const csv = buildCSV(item);
-        const { expected, matrix } = item;
-        const value = csv.toArray(matrix);
+        const { expected } = item;
+        const value = csv.toArray();
+        expect(value).to.eql(expected);
+      });
+    case "to-matrix":
+      return _(key, function (item) {
+        const csv = buildCSV(item);
+        const { expected } = item;
+        const value = csv.toMatrix();
         expect(value).to.eql(expected);
       });
     default:

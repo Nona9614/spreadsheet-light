@@ -231,9 +231,12 @@ You can _serialize_ your content again if you want to use it for other purposes;
 // you can use to create a save CSV file
 spreadsheet.toString();
 
+// Or you can get the content as an array of headers and objects
+let array = spreadsheet.toArray();
+
 // Or you can get a plain matrix of columns (y), rows (x) to play with
 // To access information you should place the y first like in matrix[y][x];
-let matrix = spreadsheet.toArray();
+let matrix = spreadsheet.toMatrix();
 
 // Or you can create a clone from the original object if you don't want to
 // interfere with the data from the original one
@@ -268,12 +271,12 @@ import { symbols } from "spreadsheet-light";
 class Day {
   #date: Date;
 
-  constructor({ day, month, string }) {
+  constructor({ day, month, year }) {
     this.#date = new Date(`${month}/${day}/${year}`);
   }
 
   toObject() {
-    const date = new Date(item.string);
+    const date = this.#date;
     const year = date.getFullYear();
     let month: any = date.getMonth() + 1;
     month = month < 10 ? `0${month}` : month;

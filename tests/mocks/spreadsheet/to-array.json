@@ -13,43 +13,6 @@
                     "d"
                 ]
             ],
-            "matrix": true,
-            "content": {
-                "isTable": true,
-                "hasHeaders": true,
-                "headers": [
-                    "h1",
-                    "h2"
-                ]
-            },
-            "expected": [
-                [
-                    "h1",
-                    "h2"
-                ],
-                [
-                    "a",
-                    "b"
-                ],
-                [
-                    "c",
-                    "d"
-                ]
-            ],
-            "message": "Should return the content as a row column matrix"
-        },
-        {
-            "skip": false,
-            "data": [
-                [
-                    "a",
-                    "b"
-                ],
-                [
-                    "c",
-                    "d"
-                ]
-            ],
             "matrix": false,
             "content": {
                 "isTable": true,
