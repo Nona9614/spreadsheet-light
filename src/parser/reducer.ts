@@ -74,6 +74,7 @@ export function reducer() {
       context.pointer.right();
       // If the next is the end of line, attach a final empty value
       if (isNextEndOfLine) {
+        index = context.slength;
         data[context.pointer.y].push(format.empty);
         context.pointer.right();
       }

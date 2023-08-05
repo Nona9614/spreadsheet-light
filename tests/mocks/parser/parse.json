@@ -3,13 +3,13 @@
     "items": [
         {
             "skip": false,
-            "string": "h1,h2,h3\r\na1,b1,c1\r\na2,,",
+            "string": "h1,h2,h3\r\na1,b1,c1\r\na2,b2,c2\r\na3,,\r\n",
             "ignoreHeaders": true,
             "format": {
                 "hasHeaders": true
             },
             "expected": {
-                "string": "\"h1\",\"h2\",\"h3\"\r\n\"a1\",\"b1\",\"c1\"\r\n\"a2\",\"\",\"\"",
+                "string": "\"h1\",\"h2\",\"h3\"\r\n\"a1\",\"b1\",\"c1\"\r\n\"a2\",\"b2\",\"c2\"\r\n\"a3\",\"\",\"\"",
                 "isTable": true,
                 "hasHeaders": true,
                 "headers": [
@@ -18,7 +18,7 @@
                     "h3"
                 ],
                 "size": {
-                    "rows": 2,
+                    "rows": 3,
                     "columns": 3
                 },
                 "data": [
@@ -29,6 +29,11 @@
                     ],
                     [
                         "a2",
+                        "b2",
+                        "c2"
+                    ],
+                    [
+                        "a3",
                         "",
                         ""
                     ]
