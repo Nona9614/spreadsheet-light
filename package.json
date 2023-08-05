@@ -1,6 +1,6 @@
 {
   "name": "spreadsheet-light",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "",
   "type": "module",
   "main": "cjs/index.cjs",

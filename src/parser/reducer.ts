@@ -42,6 +42,12 @@ export function reducer() {
     // Stores the global index from the whole string in the parsing process
     context.index = index;
 
+    /** Flag to check if the next character is the end of line */
+    const isNextEndOfLine: boolean = !context.string.substring(
+      index + 1,
+      index + 2,
+    );
+
     /** The current char */
     const char: string = context.string[index];
     // Add to the line the current character
@@ -66,6 +72,11 @@ export function reducer() {
       data[context.pointer.y].push(format.empty);
       // Moves to the next column
       context.pointer.right();
+      // If the next is the end of line, attach a final empty value
+      if (isNextEndOfLine) {
+        data[context.pointer.y].push(format.empty);
+        context.pointer.right();
+      }
       line = "";
       continue;
     }
@@ -83,11 +94,6 @@ export function reducer() {
         index + delimiter.length + brk.length + 1,
       ) ===
       delimiter + brk;
-    /** Flag to check if the next character is the end of line */
-    const isNextEndOfLine: boolean = !context.string.substring(
-      index + 1,
-      index + 2,
-    );
 
     // Every time a quote is hit, will change the state from the isEven flag
     if (char === quote) isEven = !isEven;
