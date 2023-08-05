@@ -52,17 +52,20 @@ export function reducer() {
     // If that the case: empties the line content and continues
     if (line === brk && !isHeader) {
       // Creates and moves to the new row beggining (only if is not set to be ignored)
-      if (!ignoreEmptyLines) {
+      // And ignore lines with only breakers
+      if (!(ignoreEmptyLines && context.pointer.at(0))) {
         data[context.pointer.y].push(format.empty);
         data.push([]);
+        // Moves to the next column
+        context.pointer.right();
         context.pointer.skip();
       }
       line = "";
       continue;
     } else if (line === delimiter && !isHeader) {
+      data[context.pointer.y].push(format.empty);
       // Moves to the next column
       context.pointer.right();
-      data[context.pointer.y].push(format.empty);
       line = "";
       continue;
     }

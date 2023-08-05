@@ -21,6 +21,13 @@ class ContextPointer {
   y: number = 0;
 
   /**
+   * Checks if the `x` value is at the value passed
+   */
+  at(index: number) {
+    return this.x === index;
+  }
+
+  /**
    * Moves to the right the pointer "x++"
    */
   right() {

@@ -3,6 +3,41 @@
     "items": [
         {
             "skip": false,
+            "string": "h1,h2,h3\r\na1,,\r\na2,b2,c2",
+            "ignoreHeaders": true,
+            "format": {
+                "hasHeaders": true
+            },
+            "expected": {
+                "string": "\"h1\",\"h2\",\"h3\"\r\n\"a1\",\"\",\"\"\r\n\"a2\",\"b2\",\"c2\"",
+                "isTable": true,
+                "hasHeaders": true,
+                "headers": [
+                    "h1",
+                    "h2",
+                    "h3"
+                ],
+                "size": {
+                    "rows": 2,
+                    "columns": 3
+                },
+                "data": [
+                    [
+                        "a1",
+                        "",
+                        ""
+                    ],
+                    [
+                        "a2",
+                        "b2",
+                        "c2"
+                    ]
+                ]
+            },
+            "message": "Should transform big matrix with empty values"
+        },
+        {
+            "skip": false,
             "string": "\"h1\",\"h2\",\"h3\",\"h4\"\r\n\"a1\",\"b1\",\"c1\",\"d1\"\r\n\"a2\",\"b2\",\"c2\",\"d2\"\r\n\"a3\",\"b3\",\"c3\",\"d3\"\r\n\"a4\",\"b4\",\"c4\",\"d4\"\r\n",
             "format": {
                 "hasHeaders": true
