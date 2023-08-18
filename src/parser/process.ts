@@ -63,10 +63,10 @@ export function process(context: ParseContext) {
   if (startIndex <= context.line.length)
     word += context.line.substring(startIndex, context.line.length);
 
-  // Finally returns the processed line as a parsed string and transform if necessary
-  const value = context.format.transform ? transforms(word) : word;
+  // Store the processed line
+  context.line = word;
   // Clears context for values needed for next time `process` is called
   context.clear();
-  // Returns the final value
-  return value;
+  // Finally returns the processed line as a parsed string and transform if necessary
+  return context.format.transform ? transforms(context) : word;
 }

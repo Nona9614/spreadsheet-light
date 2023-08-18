@@ -3,7 +3,7 @@ import { TextFormat } from "../format.js";
 import { ParseContext } from "./context.js";
 import { Spreadsheet } from "../spreadsheet/spreadsheet.js";
 import { reducer } from "./reducer.js";
-import { InputSerializer, ValueObject } from "../types.js";
+import { InputSerializer, ParseOptions, ValueObject } from "../types.js";
 
 /** A stringified CSV object */
 let stringified: boolean = false;
@@ -17,12 +17,6 @@ function cleanMemoization() {
   memoized = null;
   stringified = true;
 }
-
-type ParseOptions = {
-  memoize?: boolean;
-  format?: TextFormat;
-  serializer?: InputSerializer;
-};
 
 /**
  * This function parses a string into a CSV object

@@ -6,13 +6,14 @@ import { transforms } from "../../src/parser/transforms";
 import { parse } from "../../src/parser/parse";
 import { process } from "../../src/parser/process";
 import { ParseContext } from "../../src/parser/context";
-import { TextFormat } from "../../src/format";
 
 export default function createParserTest(key: TestParser) {
   switch (key) {
     case "transforms":
       return _(key, function (item) {
-        let _transforms = transforms(item.string);
+        const context = new ParseContext(item.string);
+        context.line = item.string;
+        let _transforms = transforms(context);
         if (item.serializer === "date") {
           const date = new Date(item.string);
           const year = date.getFullYear();

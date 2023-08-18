@@ -39,13 +39,14 @@ const { xsv } = require("spreadsheet-light/umd");
 
 ## Format
 
-You can pass as to the text format the options to create the best spreadsheet that fits your needs.
+You can pass as the `TextFormat` class the options to create the best spreadsheet that fits your needs.
 
 ```typescript
-import { xsv } from "spreadsheet-light";
+import { TextFormat } from "spreadsheet-light";
 
-// This example has an 27th base number set [a - z]
-xsv.format = {
+// This example is the default values for the
+// text format
+const values = {
   // The string to scape special values
   quote: '"',
   // The string to separate columns
@@ -68,6 +69,8 @@ xsv.format = {
   // What to do write when finding no content in a CSV cell
   empty: "",
 };
+
+const format = new TextFormat(values);
 ```
 
 > **_Note:_** All of the following examples are shown using the above text format in the example.
@@ -100,26 +103,34 @@ import { xsv } from "spreadsheet-light";
 
 // Imagine this how your CSV file would look like
 const csv = `
-"a","b"
-"c","d"
+a,b
+c,d
 `;
+
+// You can create your custom behaviour
+const options = {
+  format: {
+    quote: "'",
+  },
+  serializer: String(value),
+};
 
 // This library allows you to create a Spreadsheet object
 // so you can immediately start to work with your data!
-const spreadsheet = xsv.parse(csv);
+const spreadsheet = xsv.parse(csv, options);
 
 // The spreadsheet contains information about the parsing result, like:
 
 // Checks if the parsed content is a table like object
-spreadsheet.isTable;
+spreadsheet.isTable == true;
 // The string that represents the CSV, using the last
 // text format when this element was created to create a clean
 // representation that can be stored in a file to be used in programs like excel
-spreadsheet.string;
+spreadsheet.string == "a,b\r\nc,d";
 // Wether the spreadsheet has headers
-spreadsheet.hasHeaders;
+spreadsheet.hasHeaders == false;
 // And what the headers are
-spreadsheet.headers;
+spreadsheet.headers == false;
 ```
 
 The parsing will check if the passed content can be considered as a **Table** like content. If so, you can use the methods below.
@@ -130,9 +141,9 @@ You can insert new rows with the method _insert_.
 
 ```js
 // Now the content will be:
-// "a","b"
-// "c","d"
-// "e","f"
+// a,b
+// c,d
+// e,f
 spreadsheet.insert([["e", "f"]]);
 ```
 
@@ -142,15 +153,15 @@ You can modify the rows that already exists, either just a cell with the _write_
 
 ```js
 // Here just a cell will be overriden:
-// "a","b"
-// "c","d"
-// "e","X"
+// a,b
+// c,d
+// e,X
 spreadsheet.write("X", 2, 3);
 
 // But here a whole set is changed:
 // 0,1
 // 2,3
-// "e","X"
+// e,X
 spreadsheet.bulk(
   [
     [0, 1],
@@ -170,18 +181,18 @@ The same way you can modify you can access the rows content, either just a cell 
 
 ```js
 // From here just "d" will be returned:
-// "a","b"
-// "c","d"
+// a,b
+// c,d
 spreadsheet.read("@right", 3);
 
 // But here a whole set is being read:
-// "a","b","c"
-// "d","e","f"
-// "g","h","i"
+// a,b,c
+// d,e,f
+// g,h,i
 //
 // The extracted content will look like this
-// "e","f"
-// "h","i"
+// e,f
+// h,i
 spreadsheet.range(
   {
     row: 2,
@@ -250,8 +261,8 @@ Stringify is a _serialization algorithm_ meant to have as input either a **matri
 ```js
 // Like so
 // This is the matrix
-// "a","b"
-// "c","d"
+// a,b
+// c,d
 let string = xsv.stringify([
   ["a", "b"],
   ["c", "d"],

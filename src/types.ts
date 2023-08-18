@@ -1,3 +1,4 @@
+import { TextFormat } from "./format";
 import symbols from "./symbols";
 
 export interface SpreadhseetFormat {
@@ -144,3 +145,16 @@ export interface SerializableObject {
   toString(): string;
   [symbols.clone]: () => SerializableObject;
 }
+
+/**
+ * These are the options that can be passed to the serializer to
+ * have a custom behaviour
+ */
+export type ParseOptions = {
+  /** If set, memoization logic will be used on parsing */
+  memoize?: boolean;
+  /** The custom format to use when parsing the CSV content  */
+  format?: TextFormat;
+  /** The custom serializer for parse special strings */
+  serializer?: InputSerializer;
+};

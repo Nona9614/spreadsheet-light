@@ -1,8 +1,6 @@
 import { parse } from "./parser/parse.js";
-import { InputSerializer } from "./types.js";
 import { isValueObject } from "./is-value-object.js";
 import { stringify } from "./stringify.js";
-import { setInputSerializer } from "./object-serializer.js";
 import symbols from "./symbols.js";
 
 /**
@@ -18,13 +16,6 @@ const xsv = {
    * Parses an object into a string with CSV formt currently set
    */
   stringify,
-  /**
-   * Sets the global serializer to be used when transforming data to create
-   * Spreadsheets or CSV strings to custom objects
-   */
-  set serializer(v: InputSerializer) {
-    setInputSerializer(v);
-  },
   /**
    * Symbol used to assign the clone function in a serializable object.
    *
