@@ -1,3 +1,4 @@
+import { TextFormat } from "../format.js";
 import xsv from "../spreadsheet-light.js";
 import symbols from "../symbols.js";
 
@@ -5,7 +6,7 @@ import symbols from "../symbols.js";
 export * from "../types.js";
 
 // Named exports
-export { xsv, symbols };
+export { xsv, symbols, TextFormat };
 
 // Exports staquia as default
 export default xsv;
