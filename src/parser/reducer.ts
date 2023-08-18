@@ -3,31 +3,24 @@ import {
   NotValidHeaderError,
   ObjectNeverClosedError,
 } from "../errors.js";
-import { format } from "../text-format.js";
 import type { ValueData } from "../types.js";
-import { context } from "./context.js";
+import { ParseContext } from "./context.js";
 import { process } from "./process.js";
 
 /**
  * Reduces the string from the CSV object to JavaScript values
  */
-export function reducer() {
+export function reducer(context: ParseContext) {
   const {
     quote,
     delimiter,
     brk,
-    strictMode,
+    empty,
     hasHeaders,
     transform,
     ignoreEmptyLines,
-  } = format;
+  } = context.format;
 
-  /** This line will represent a found enclosed text */
-  let line = "";
-  /** Global index from the iteration process */
-  let index = 0;
-  /** Flag to use to determine if some content is surrounded by quotes */
-  let isEven = true;
   /** Flag to use to determine if what is processed is a header or a simple row */
   let isHeader = hasHeaders;
   /** The parsed data */
@@ -35,163 +28,103 @@ export function reducer() {
   /** The headers of the data */
   let headers: string[] = [];
 
-  // Iterates throu each character of the string
-  for (index = 0; index < context.slength; index++) {
-    // Store as the possible error index the current one
-    context.errorIndex = index;
-    // Stores the global index from the whole string in the parsing process
-    context.index = index;
-
-    /** Flag to check if the next character is the end of line */
-    const isNextEndOfLine: boolean = !context.string.substring(
-      index + 1,
-      index + 2,
-    );
-
-    /** The current char */
-    const char: string = context.string[index];
-    // Add to the line the current character
-    line += char;
+  // Get ready the context before iterating
+  context.start();
+  context.next();
+  // Iterate until the "isCollecting" flag is turned off
+  do {
     // For cases where there is a single char and this is a delimiter or a breaker
     // it can be assumed that there is "Nothing" before it
     // so there is an empty value to store
     // If that the case: empties the line content and continues
-    if (line === brk && !isHeader) {
+    if (context.line === brk && !isHeader) {
       // Creates and moves to the new row beggining (only if is not set to be ignored)
       // And ignore lines with only breakers
       if (!(ignoreEmptyLines && context.pointer.at(0))) {
-        data[context.pointer.y].push(format.empty);
+        data[context.pointer.y].push(empty);
         data.push([]);
         // Moves to the next column
         context.pointer.right();
         context.pointer.skip();
       }
-      line = "";
+      context.restart();
       continue;
-    } else if (line === delimiter && !isHeader) {
-      data[context.pointer.y].push(format.empty);
+    } else if (context.line === delimiter && !isHeader) {
+      data[context.pointer.y].push(empty);
       // Moves to the next column
       context.pointer.right();
       // If the next is the end of line, attach a final empty value
-      if (isNextEndOfLine) {
-        index = context.slength;
-        data[context.pointer.y].push(format.empty);
+      if (context.isNextEndOfLine) {
+        data[context.pointer.y].push(empty);
         context.pointer.right();
       }
-      line = "";
+      context.restart();
       continue;
     }
-    /** Flag to check if the next character is the delimiter symbol */
-    const isNextDelimiter: boolean =
-      context.string.substring(index + 1, index + delimiter.length + 1) ===
-      delimiter;
-    /** Flag to check if the next character is the line breaker symbol */
-    const isNextBreaker: boolean =
-      context.string.substring(index + 1, index + brk.length + 1) === brk;
-    /** Flag to check if the next characters are the line breaker and delimiter symbol */
-    const isNextDelimiterAndBreaker: boolean =
-      context.string.substring(
-        index + 1,
-        index + delimiter.length + brk.length + 1,
-      ) ===
-      delimiter + brk;
-
-    // Every time a quote is hit, will change the state from the isEven flag
-    if (char === quote) isEven = !isEven;
-
+    // Else if the first characters of the line that is being parsed represents a quote,
+    // a escaped value is expected
+    else if (context.line === quote && !isHeader) {
+      // If the last characters are not a quote continue iterating until the closing quotes are found
+      // And the quotes found so far has been even
+      while (context.isCollecting && !context.isQuoted) context.next();
+      // If the "isQuoted" flag was never set to true and stopped to collect content
+      // a CSV cell was never closed
+      if (!context.isQuoted) throw ObjectNeverClosedError(context);
+    }
     // When some kind of end is found start to check if it is an object
-    if (isNextDelimiter || isNextBreaker || isNextEndOfLine) {
-      // Set the start index for the error function if needed
-      context.startIndex = index - line.length;
-      // Stores a trimmed version from the line
-      const trimmed = line.trim();
-      // Stores the line to be used
-      context.line = strictMode ? trimmed : line;
-      /** Flag to check if the line may be a JSON Object */
-      const isObject =
-        strictMode &&
-        ((trimmed[0] === "{" && trimmed[trimmed.length - 1] === "}") ||
-          (trimmed[0] === "[" && trimmed[trimmed.length - 1] === "]"));
-      // If is an object process the word
-      if (isObject) {
-        context.isQuoted = false;
-        context.isJSON = true;
-      } else {
-        // If the line is not an object and the quotes are not even, continue
-        // collecting characters
-        if (!isEven) continue;
-        /** Flag to check if the line starts with the quote symbol */
-        const startsWithQuote: boolean =
-          context.line.substring(0, quote.length) === quote;
-        // If the passed value is quoted will be removed
-        if (startsWithQuote) {
-          // Marks the content as quoted
-          context.isQuoted = true;
-          // Removes the surrounding quptes
-          context.line = context.line.substring(
-            context.line.length - quote.length,
-            quote.length,
-          );
-        }
-      }
-      // Marks if a line should be transformed, only if it is in
-      // strict mode and is not quoted
-      context.shouldTransform = strictMode && transform && !context.isQuoted;
+    if (context.isNextLimit) {
       // Stores the processed value to assigned place
-      const word = process();
-      // As a line was finally saved, reset the values and restart the
-      // process to the next found delimiter if any
-      line = "";
+      const word = process(context);
       // If was a header it means that the pointer will stay as zero position
       // and will start to be moved until the next session
       if (isHeader) {
         // A header must be a string and not a JavaScript value
         if (
           typeof word !== "string" ||
-          word === format.empty ||
+          word === empty ||
           word === delimiter ||
           word === quote ||
           word === brk ||
-          isNextDelimiterAndBreaker
+          context.isNextDelimiterAndBreaker
         )
           throw NotValidHeaderError;
         headers.push(word);
         context.pointer.right();
         // If a breaker or the end of the line was hit, it means that
         // all of the headers were parsed
-        if (isNextBreaker || isNextEndOfLine) {
+        if (context.isNextBreaker || context.isNextEndOfLine) {
           isHeader = false;
-          if (isNextBreaker) context.pointer.skip();
+          if (context.isNextBreaker) context.pointer.skip();
           context.pointer.reset();
           // Moves the global index after the or break breakline to skip it
-          index += brk.length;
+          context.index += brk.length;
         } else {
           isHeader = true;
           // Moves the global index after the or delimiter breakline to skip it
-          index += delimiter.length;
+          context.index += delimiter.length;
         }
       } else {
         // For delimiter plus line breaks push "word + empty",
         // then move to the beggining of the next row
-        if (isNextDelimiterAndBreaker) {
+        if (context.isNextDelimiterAndBreaker) {
           // Moves the global index after the delimiter and the breakline to skip them
-          index += delimiter.length + brk.length;
+          context.index += delimiter.length + brk.length;
           // Points to the next column in the current row and store the processed value
           context.pointer.right();
           data[context.pointer.y].push(word);
           // Points to the next column again in the current row and adds an empty
           // value as a "Nothing" is between the breakline and the delimiter
           context.pointer.right();
-          data[context.pointer.y].push(format.empty);
+          data[context.pointer.y].push(empty);
           // Create a new "row" as there is a breaker and move the pointer
           // to the start of this
           data.push([]);
           context.pointer.skip();
         }
         // For line breaks move to the beggining of the next row
-        else if (isNextBreaker) {
+        else if (context.isNextBreaker) {
           // Moves the global index after the breakline to skip it
-          index += brk.length;
+          context.index += brk.length;
           // Stores the value in there then creates a new "row" for the selected array
           // then points to the start of the new row
           data[context.pointer.y].push(word);
@@ -201,9 +134,9 @@ export function reducer() {
           data.push([]);
         }
         // If is the end of the line just adds the last value and stop the iteration
-        else if (isNextEndOfLine) {
+        else if (context.isNextEndOfLine) {
           // Makes to go to the end in the iteration
-          index = context.slength;
+          context.index = context.slength;
           // Adds the last value
           data[context.pointer.y].push(word);
           // Points to the next column in the current row
@@ -212,18 +145,19 @@ export function reducer() {
         // When just a delimiter is found, just go to the next column
         else {
           // Moves the global index after the delimiter to skip it
-          index += delimiter.length;
+          context.index += delimiter.length;
           // Store the value in the assigned position,
           data[context.pointer.y].push(word);
           // Points to the next column in the current row
           context.pointer.right();
         }
       }
+      // Restart for next iteration
+      context.restart();
     }
-  }
-
-  // If there is remaining content and was never closed throw an error
-  if (!isEven && line) throw ObjectNeverClosedError();
+    // Iterate the string
+    context.next();
+  } while (context.isCollecting);
 
   if (hasHeaders && data[0][0] === undefined) throw HeadersWithoutDataError;
   else {

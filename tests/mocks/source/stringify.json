@@ -20,7 +20,7 @@
                     "i"
                 ]
             ],
-            "expected": "\"a\",\"b\",\"c\"\r\n\"d\",\"e\",\"f\"\r\n\"g\",\"h\",\"i\"",
+            "expected": "a,b,c\r\nd,e,f\r\ng,h,i",
             "message": "Should transform the array to a string"
         }
     ],

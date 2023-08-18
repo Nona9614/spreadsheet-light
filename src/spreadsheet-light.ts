@@ -1,14 +1,9 @@
-import { setTextFormat, format, setDefaultTextFormat } from "./text-format.js";
 import { parse } from "./parser/parse.js";
-import { InputSerializer, SerializableObject, TextFormat } from "./types.js";
+import { InputSerializer } from "./types.js";
 import { isValueObject } from "./is-value-object.js";
 import { stringify } from "./stringify.js";
 import { setInputSerializer } from "./object-serializer.js";
-import { clone } from "./clone.js";
 import symbols from "./symbols.js";
-
-// Populates the global text format with a default format
-setDefaultTextFormat();
 
 /**
  * @module
@@ -52,14 +47,6 @@ const xsv = {
    * Checks if an element is valid candidate to be a CSV value
    */
   isValueObject,
-  /** Gets a copy from the current text format */
-  get format(): TextFormat {
-    return clone(format);
-  },
-  /** Sets the text format to be used while parsing */
-  set format(v: TextFormat) {
-    setTextFormat(v);
-  },
 };
 
 export default xsv;

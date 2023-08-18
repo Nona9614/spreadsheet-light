@@ -14,11 +14,12 @@ import type {
   Pointer,
   SpreadsheetContent,
   ValueData,
-  SpreadhseetFormat,
   SpreadhseetInsertOptions,
 } from "../types.js";
 import { isValueObject } from "../is-value-object.js";
 import { clone } from "../clone.js";
+import { TextFormat } from "../format.js";
+import symbols from "../symbols.js";
 
 /** Checks if some string can be considered as a limit */
 function toCellPosition(dimension: Pointer, s: string | number) {
@@ -75,7 +76,7 @@ const _getDimension = (data: any[][]): Pointer => {
 };
 
 /** The Spreadsheet parsed object */
-export class Spreadsheet<V extends any> implements SpreadsheetContent {
+export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
   /** Tracks a data change */
   #changed: boolean = false;
 
@@ -102,10 +103,8 @@ export class Spreadsheet<V extends any> implements SpreadsheetContent {
     };
   }
 
-  #quote: string = "";
-  #delimiter: string = "";
-  #brk: string = "";
   #string: string = "";
+  #format: TextFormat;
   get string(): string {
     return this.#stringify();
   }
@@ -118,7 +117,7 @@ export class Spreadsheet<V extends any> implements SpreadsheetContent {
     isTable: boolean,
     headers: string[],
     hasHeaders: boolean,
-    { brk, delimiter, quote }: SpreadhseetFormat,
+    format: TextFormat,
     clone?: string,
   ) {
     this.#data = data;
@@ -127,10 +126,8 @@ export class Spreadsheet<V extends any> implements SpreadsheetContent {
     this.#headers = headers;
     this.#hasHeaders = hasHeaders;
     this.#data = data;
+    this.#format = format;
 
-    this.#quote = quote;
-    this.#delimiter = delimiter;
-    this.#brk = brk;
     if (clone !== undefined) {
       this.#string = clone;
     } else {
@@ -140,23 +137,21 @@ export class Spreadsheet<V extends any> implements SpreadsheetContent {
 
   #stringify() {
     let string = "";
+    const { delimiter, brk } = this.#format;
     if (this.#hasHeaders) {
       for (let i = 0; i < this.#headers.length; i++) {
-        string += `${this.#quote}${String(this.#headers[i])}${this.#quote}`;
-        if (i < this.#headers.length - 1) string += this.#delimiter;
+        string += this.#format.toSafeString(this.#headers[i]);
+        if (i < this.#headers.length - 1) string += delimiter;
       }
-      string += this.#brk;
+      string += brk;
     }
     for (let y = 0; y < this.#data.length; y++) {
       const column = this.#data[y];
       for (let x = 0; x < column.length; x++) {
-        let element: any = column[x];
-        if (typeof element === "string")
-          element = `${this.#quote}${element}${this.#quote}`;
-        string += element;
-        if (x < column.length - 1) string += this.#delimiter;
+        string += this.#format.toSafeString(column[x]);
+        if (x < column.length - 1) string += delimiter;
       }
-      if (y < this.#data.length - 1) string += this.#brk;
+      if (y < this.#data.length - 1) string += brk;
     }
     this.#string = string;
     return string;
@@ -398,11 +393,7 @@ export class Spreadsheet<V extends any> implements SpreadsheetContent {
       this.#isTable,
       headers,
       this.#hasHeaders,
-      {
-        quote: this.#quote,
-        delimiter: this.#delimiter,
-        brk: this.#brk,
-      },
+      this.#format,
       this.#string,
     );
   }

@@ -39,7 +39,7 @@
                     "z"
                 ]
             ],
-            "expected": "\"a\",\"b\",\"c\"\r\n\"d\",\"w\",\"x\"\r\n\"g\",\"y\",\"z\"",
+            "expected": "a,b,c\r\nd,w,x\r\ng,y,z",
             "message": "Should change the value at the selected number position"
         },
         {
@@ -64,7 +64,7 @@
                 "headers": []
             },
             "writtable": "X",
-            "expected": "\"a\",\"b\"\r\n\"c\",\"X\"",
+            "expected": "a,b\r\nc,X",
             "message": "Should change the value at the selected cell limit"
         },
         {
@@ -112,7 +112,7 @@
                     3
                 ]
             ],
-            "expected": "\"a\",\"b\",\"c\"\r\n\"d\",\"w\",\"x\"\r\n\"g\",\"y\",\"z\"",
+            "expected": "a,b,c\r\nd,w,x\r\ng,y,z",
             "message": "Should ignore out of boundaries values"
         },
         {
@@ -138,7 +138,7 @@
                     "X"
                 ]
             ],
-            "expected": "\"X\",\"b\"\r\n\"c\",\"d\"",
+            "expected": "X,b\r\nc,d",
             "message": "Should write values to left top limit"
         },
         {
@@ -164,7 +164,7 @@
                     "X"
                 ]
             ],
-            "expected": "\"X\",\"b\"\r\n\"c\",\"d\"",
+            "expected": "X,b\r\nc,d",
             "message": "Should write values to left top limit"
         },
         {
@@ -190,7 +190,7 @@
                     "X"
                 ]
             ],
-            "expected": "\"a\",\"b\"\r\n\"X\",\"d\"",
+            "expected": "a,b\r\nX,d",
             "message": "Should write values to left bottom limit"
         },
         {
@@ -216,7 +216,7 @@
                     "X"
                 ]
             ],
-            "expected": "\"a\",\"b\"\r\n\"c\",\"X\"",
+            "expected": "a,b\r\nc,X",
             "message": "Should write values to right bottom limit"
         },
         {
@@ -242,7 +242,7 @@
                     "X"
                 ]
             ],
-            "expected": "\"a\",\"X\"\r\n\"c\",\"d\"",
+            "expected": "a,X\r\nc,d",
             "message": "Should write values to right top limit"
         }
     ],

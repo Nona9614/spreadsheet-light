@@ -5,7 +5,8 @@ import type { TestParser } from "../types";
 import { transforms } from "../../src/parser/transforms";
 import { parse } from "../../src/parser/parse";
 import { process } from "../../src/parser/process";
-import { context, createContext } from "../../src/parser/context";
+import { ParseContext } from "../../src/parser/context";
+import { TextFormat } from "../../src/format";
 
 export default function createParserTest(key: TestParser) {
   switch (key) {
@@ -27,11 +28,10 @@ export default function createParserTest(key: TestParser) {
       return _(
         key,
         function (item) {
-          createContext(item.word);
+          const context = new ParseContext(item.word, item.format);
           context.line = item.word;
           context.isQuoted = item.isQuoted;
-          context.isJSON = item.isJSON;
-          const _process = process();
+          const _process = process(context);
           expect(_process).to.eql(item.expected);
           if (item.isQuoted)
             expect(typeof _process === "string").to.equals(true);
@@ -40,27 +40,28 @@ export default function createParserTest(key: TestParser) {
           word: string,
           _context: { isJSON: boolean; isQuoted: boolean },
         ) {
-          createContext(word);
+          const context = new ParseContext(word);
           context.line = word;
           context.isQuoted = _context.isQuoted;
-          context.isJSON = _context.isJSON;
-          process();
+          process(context);
         },
       );
     case "parse":
       return _(
         key,
         function (item) {
-          const _parse = parse(item.string);
-          expect(_parse.string).to.equals(item.expected.string);
-          expect(_parse.isTable).to.equals(item.expected.isTable);
-          expect(_parse.hasHeaders).to.equals(item.expected.hasHeaders);
-          expect(_parse.headers).to.eql(item.expected.headers);
-          expect(_parse.toMatrix(item.ignoreHeaders)).to.eql(
-            item.expected.data,
-          );
-          if (item.expected.isTable)
-            expect(_parse.size).to.eql(item.expected.size);
+          const _parse = parse(item.string, {
+            format: item.format,
+          });
+          const values: any = {
+            string: _parse.string,
+            hasHeaders: _parse.hasHeaders,
+            headers: _parse.headers,
+            data: _parse.toMatrix(item.ignoreHeaders),
+            isTable: _parse.isTable,
+          };
+          if (_parse.isTable) values.size = _parse.size;
+          expect(values).to.eql(item.expected);
         },
         parse,
       );

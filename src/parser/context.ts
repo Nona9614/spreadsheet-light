@@ -1,4 +1,5 @@
-import { format } from "../text-format.js";
+import { TextFormat } from "../format";
+import { InputSerializer } from "../types";
 
 /**
  * The processed value will be saved then "x" will update the value (plus one)
@@ -10,11 +11,11 @@ class ContextPointer {
   /** X is stable state if it's value is the same at every skip */
   isStableX: boolean = true;
   /** The previous larges "x" reached before every skip */
-  #lastLargestX: number = 0;
+  lastLargestX: number = 0;
   /**
    * Detects that at least once there was a skip or reset
    */
-  #changed = false;
+  changed = false;
   /** X coordintate */
   x: number = 0;
   /** Y coordintate */
@@ -40,12 +41,12 @@ class ContextPointer {
   skip() {
     // Saves the last largest x before reset and checks if the x is stable
     // at every new skip
-    if (this.#changed && this.isStableX)
-      this.isStableX = this.#lastLargestX === this.x;
-    this.#lastLargestX = this.x;
+    if (this.changed && this.isStableX)
+      this.isStableX = this.lastLargestX === this.x;
+    this.lastLargestX = this.x;
     this.x = 0;
     this.y++;
-    this.#changed = true;
+    this.changed = true;
   }
 
   /**
@@ -54,22 +55,20 @@ class ContextPointer {
   reset() {
     this.y = 0;
     this.x = 0;
-    this.#changed = true;
+    this.changed = true;
   }
 }
 
 /** Parsing context information used to trigger certain events */
 export class ParseContext {
+  /** Text format passed to the parser */
+  format: TextFormat;
   /** The string to be working on */
   string: string;
   /** Global index, indicating where in the string is the parsing process */
   index: number;
   /** Gets the real string length in case the text did not have an end character string */
   slength: number;
-  /** A line to be processed as a row */
-  line: string;
-  /** Determines if the value was in quote mode (If the text existed between quote symbols) */
-  isQuoted: boolean;
   /** Start index reference for the error function */
   startIndex: number;
   /** Index reference for the error function */
@@ -88,29 +87,43 @@ export class ParseContext {
    * on process
    */
   quoteRegex: RegExp;
+  /** The serializer for special strings */
+  serializer: InputSerializer;
 
   /**
    * @param string The string to be parsed as a CSV object
    */
-  constructor(string: string) {
-    /** Strict mode will remove any whitespaces before and after the string */
-    this.string = format.strictMode ? string.trim() : string;
+  constructor(
+    string: string,
+    format?: TextFormat,
+    serializer?: InputSerializer,
+  ) {
+    // Set initial context values
+    this.format = new TextFormat(format);
+    /** Always removes any whitespaces before and after the string */
+    this.string = string.trim();
     /** Real string length in case that has no end character the string */
-    this.slength = format.hasEndCharacter ? string.length - 1 : string.length;
+    this.slength = this.format.hasEndCharacter
+      ? this.string.length - 1
+      : this.string.length;
     this.index = 0;
     this.startIndex = 0;
     this.errorIndex = 0;
     this.isQuoted = false;
-    this.line = "";
     this.isJSON = false;
     this.shouldTransform = false;
-    this.quoteRegex = new RegExp(format.quote, "gum");
+    this.quoteRegex = new RegExp(this.format.quote, "gum");
     this.pointer = new ContextPointer();
+    this.serializer =
+      serializer ??
+      ((value) => (typeof value === "string" ? value : JSON.stringify(value)));
   }
 
   /** Resets the regex to be used for the process function */
-  resetQuoteRegex() {
+  clear() {
     this.quoteRegex.lastIndex = 0;
+    this.isQuoted = false;
+    this.isJSON = false;
   }
 
   /** Resets the values from the context */
@@ -120,32 +133,123 @@ export class ParseContext {
     this.startIndex = 0;
     this.errorIndex = 0;
     this.isQuoted = false;
-    this.line = "";
     this.isJSON = false;
     this.shouldTransform = false;
     this.quoteRegex.lastIndex = 0;
     this.pointer = new ContextPointer();
   }
-}
 
-let _context: ParseContext = {} as any;
+  /** The current collected char */
+  char: string = "";
+  /** This line will represent a found enclosed text */
+  line: string = "";
+  /** Flag to check if the iteration is still collecting values */
+  isCollecting: boolean = false;
+  /** Flag to use to determine if some content is surrounded by quotes */
+  isEven: boolean = false;
+  /** Flag to check if the next character is the end of line */
+  isNextEndOfLine: boolean = false;
+  /** Flag to check if the next character is the delimiter symbol */
+  isNextDelimiter: boolean = false;
+  /** Flag to check if the next character is the line breaker symbol */
+  isNextBreaker: boolean = false;
+  /** Flag to check if the next characters are the line breaker and delimiter symbol */
+  isNextDelimiterAndBreaker: boolean = false;
+  /** Flag to check if any of the next values are a limit */
+  get isNextLimit() {
+    return (
+      this.isNextBreaker ||
+      this.isNextDelimiter ||
+      this.isNextDelimiterAndBreaker ||
+      this.isNextEndOfLine
+    );
+  }
+
+  /** Determines if the value was in quote mode (If the text existed between quote symbols) */
+  isQuoted: boolean;
+
+  /**
+   * Restarts the collected content so far
+   */
+  restart() {
+    this.char = "";
+    this.line = "";
+    this.isEven = true;
+    this.isNextEndOfLine = false;
+    this.isNextDelimiter = false;
+    this.isNextBreaker = false;
+    this.isNextDelimiterAndBreaker = false;
+    this.isQuoted = false;
+  }
+
+  /**
+   * Starts any variable needed before iteration
+   */
+  start() {
+    this.index = -1;
+    this.isCollecting = true;
+    this.isEven = true;
+  }
+
+  /**
+   * Goes to the next character in the iteration
+   * and makes all the evaluation that helps to the parser
+   */
+  next() {
+    // Sets the new index for the new iteration
+    const index = this.index + 1;
+    // Stores the global index from the whole string in the parsing process
+    this.index = index;
+    // Store as the possible error index the current one
+    this.errorIndex = index;
+    // Set the start index for the error function if needed
+    this.startIndex = this.line.length - index;
+    // Store if the last character was reached and if is still collecting characters
+    this.isCollecting = index < this.slength;
+    // Store if follows an end of line
+    this.isNextEndOfLine = !this.string.substring(
+      this.index + 1,
+      this.index + 2,
+    );
+    // Store if follows a delimiter
+    this.isNextDelimiter =
+      this.string.substring(
+        this.index + 1,
+        this.index + this.format.delimiter.length + 1,
+      ) === this.format.delimiter;
+    // Store if follows a breaker
+    this.isNextBreaker =
+      this.string.substring(
+        this.index + 1,
+        this.index + this.format.brk.length + 1,
+      ) === this.format.brk;
+    // Store if follows a delimiter and a breaker
+    this.isNextDelimiterAndBreaker =
+      this.string.substring(
+        this.index + 1,
+        this.index + this.format.delimiter.length + this.format.brk.length + 1,
+      ) ===
+      this.format.delimiter + this.format.brk;
+    // Logic that only happens if it is yet collecting characters
+    if (this.isCollecting) {
+      // Stores the current char
+      const char: string = this.string[index];
+      this.char = char;
+      // Stores the new char to the line
+      this.line += char;
+      // Switches the is even flag if a quote is found
+      // Marks the char as a quote
+      if (this.format.isQuote(char)) {
+        this.isEven = !this.isEven;
+        this.isQuoted = this.isNextLimit && this.isEven;
+      }
+    }
+  }
+}
 
 /**
  * Creates and starts the parse context for all kind of
  * references needed during all the process
  * @param string The string to be parsed as a CSV object
  */
-export function createContext(string: string) {
-  _context = new ParseContext(string);
-}
-
-/** Global parse context */
-export const context = new Proxy(_context, {
-  get(target, prop, receiver) {
-    return (_context as any)[prop];
-  },
-  set(target, prop, value, receiver) {
-    (_context as any)[prop] = value;
-    return true;
-  },
-});
+export function createContext(string: string, format: TextFormat) {}

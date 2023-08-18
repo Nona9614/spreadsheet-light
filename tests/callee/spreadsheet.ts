@@ -2,7 +2,7 @@ import { expect } from "chai";
 import _ from "../create-callee";
 import { TestSpreadsheet } from "../types";
 import { Spreadsheet } from "../../src/spreadsheet/spreadsheet";
-import { format } from "../../src/text-format";
+
 import {
   CellSelector,
   RangeSelector,
@@ -10,6 +10,7 @@ import {
   SpreadsheetContent,
   ValueData,
 } from "../../src/types";
+import { TextFormat } from "../../src/format";
 
 const buildCSV = function (item: any) {
   const {
@@ -26,11 +27,7 @@ const buildCSV = function (item: any) {
     content.isTable,
     content.headers,
     content.hasHeaders,
-    {
-      quote: format.quote,
-      delimiter: format.delimiter,
-      brk: format.brk,
-    },
+    new TextFormat(item.format),
   );
 };
 

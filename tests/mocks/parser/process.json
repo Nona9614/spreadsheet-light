@@ -14,9 +14,16 @@
         {
             "skip": false,
             "word": "\"\"",
-            "isQuoted": true,
+            "isQuoted": false,
             "expected": "\"",
             "message": "Should reduce it as a single quote"
+        },
+        {
+            "skip": false,
+            "word": "\"a\"",
+            "isQuoted": true,
+            "expected": "a",
+            "message": "Should remove surrounding quotes"
         },
         {
             "skip": false,
@@ -28,7 +35,7 @@
         {
             "skip": false,
             "word": "a\"\"bb\"\"c\"\"",
-            "isQuoted": true,
+            "isQuoted": false,
             "expected": "a\"bb\"c\"",
             "message": "Should resolve any combination of special and normal characters"
         },
@@ -55,8 +62,7 @@
         {
             "skip": false,
             "word": "ab\"\"\"\"\"\"cd\"\"\"\"\"\"ef",
-            "isQuoted": true,
-            "isJSON": false,
+            "isQuoted": false,
             "format": {
                 "quote": "\"\"\""
             },
@@ -66,7 +72,7 @@
         {
             "skip": false,
             "word": "ab''cd''ef",
-            "isQuoted": true,
+            "isQuoted": false,
             "isJSON": false,
             "format": {
                 "quote": "'"
@@ -84,21 +90,7 @@
             "params": [
                 "\"a\"",
                 {
-                    "isQuoted": true,
-                    "isJSON": false
-                }
-            ]
-        },
-        {
-            "skip": false,
-            "name": "NotValidUseOfQuotes",
-            "throws": {},
-            "message": "Should fail as the JSON object is not quoted",
-            "params": [
-                "{\"a\":1}",
-                {
-                    "isQuoted": false,
-                    "isJSON": false
+                    "isQuoted": false
                 }
             ]
         }

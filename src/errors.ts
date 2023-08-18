@@ -1,21 +1,21 @@
 import { replacer, Matcher } from "dynason";
-import { WINDOWS_BREAK_LINE, format } from "./text-format.js";
-import { context } from "./parser/context.js";
+import { WINDOWS_BREAK_LINE } from "./format.js";
 import { Spreadsheet } from "./spreadsheet/spreadsheet.js";
+import { ParseContext } from "./parser/context.js";
 
 // Errors to throw on validation failed
 export const FirstCharacterInvalidError = new Error(
   "Text began with an invalid character",
 );
 export const EmptyStringError = new Error("Trying to parse empty string");
-export const EmptyValueError = function () {
+export const EmptyValueError = function (context: ParseContext) {
   return new Error(
     `Empty value is being passed, check after position ${
       context.errorIndex + 1
     }`,
   );
 };
-export const ObjectNeverClosedError = () =>
+export const ObjectNeverClosedError = (context: ParseContext) =>
   new Error(
     `The object was never closed, it was opened since position ${
       context.slength - context.line.length
@@ -33,10 +33,11 @@ export const HeadersWithoutDataError = new Error(
 );
 
 export const NotValidUseOfQuotes = new Error(`
-To avoid compatiblity issues, quotes as a character can only be used within a quoted line and must be input twice to escape it (This only apply if is not a JSON Object or Array).
+To avoid compatiblity issues, quotes as a character can only be used when input twice to escape it (This only apply if is not a JSON Object or Array).
  - "a""b""c" ✓ (Valid)
  - "a"b"c"   ⛌ (Invalid)
- - a""b""c   ⛌ (Invalid)
+ - a""b""c   ✓ (Valid)
+ - a"b"c   ⛌ (Invalid)
 `);
 
 export const NotValidBase26String = new Error(
@@ -44,22 +45,6 @@ export const NotValidBase26String = new Error(
 );
 
 export const NotValidMovement = new Error("The movement string is not valid");
-
-// Validations for the parsing or the serialization from an object
-
-/**
- * Checks if the string is not empty
- * @param string The value to be checked
- * @example const string = "";
- */
-export const isEmptyString = (string: string) => string.length < 1;
-/**
- * Checks if the string is a quote
- * @param string The value to be checked
- * @example const string = '"';
- */
-export const isFirstCharacterQuote = (string: string) =>
-  string === format.quote;
 
 const NOT_TABLE_ERROR_TEMPLATE_STRING = `
 The CSV object must be validated as a table to take the following action:
@@ -131,9 +116,9 @@ _____________________________________
 /**
  * Creates a parse error object
  */
-export const ParseError = (instance: Spreadsheet<any>) => {
+export const ParseError = (context: ParseContext) => {
   const { errorIndex, slength, startIndex } = context;
-  const { brk } = format;
+  const { brk } = context.format;
 
   const TRIPLE_DOTS = "...";
   const TRIPLE_SPACES = "   ";

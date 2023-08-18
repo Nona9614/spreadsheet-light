@@ -1,13 +1,12 @@
-import { type } from "os";
 import {
   CellSelector,
   Pointer,
   RangeSelector,
   SpreadhseetInsertOptions,
   SpreadsheetContent,
-  TextFormat,
   ValueData,
 } from "../src/types";
+import { TextFormat } from "../src/format";
 
 export type TestCaseUnit<I, X> = {
   _id: string;

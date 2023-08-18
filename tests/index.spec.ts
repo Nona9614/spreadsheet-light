@@ -23,7 +23,6 @@ import createSpreadsheetTest from "./callee/spreadsheet";
 
 // System
 import url from "url";
-import { setDefaultTextFormat, setTextFormat } from "../src/text-format";
 import createAlphabetTest from "./callee/alphabet";
 import { expect } from "chai";
 import { replacer } from "dynason";
@@ -136,7 +135,6 @@ async function collect() {
 try {
   await collect();
   // Set default text format once
-  setDefaultTextFormat();
   for (const { description, callback, tests, _id, skip } of test_stack) {
     describe(description, function () {
       this.beforeAll(function () {
@@ -145,8 +143,6 @@ try {
       for (const test of tests) {
         it(test.message, function (done) {
           if (test.skip) this.skip();
-          if (test.format) setTextFormat(test.format);
-          else setDefaultTextFormat();
           let open: any = null;
           open = callback.call(this, test, done);
           if (!open) done();
@@ -163,8 +159,6 @@ try {
       for (const error of errors) {
         it(`${error.name} - ${error.message}`, function (done) {
           if (error.skip) this.skip();
-          if (error.format) setTextFormat(error.format);
-          else setDefaultTextFormat();
           expect(function () {
             thrower.apply({}, error.params);
           }).to.throws(error.throws);

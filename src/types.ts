@@ -1,22 +1,24 @@
 import symbols from "./symbols";
 
-export type TextFormat = {
+export interface SpreadhseetFormat {
   /** The quote separator */
-  quote?: '"' | string;
+  quote: '"' | string;
   /** The delimiter between objects */
-  delimiter?: "," | "|" | string;
+  delimiter: "," | "|" | string;
   /** The breaker between rows */
-  brk?: "\r\n" | "\r" | string;
+  brk: "\r\n" | "\r" | string;
+  /** If set to true, all parsed `cells` will have their content trimmed */
+  trim: boolean;
   /** If set, all memoization logic will be used otherwise will be ignored */
-  memoize?: boolean;
+  memoize: boolean;
   /** Use in case your string has a final break (i.e. The on added at the end of a document) */
-  hasHeaders?: boolean;
+  hasHeaders: boolean;
   /** If set an open quoted value that was never closed will be rejected */
-  strictMode?: boolean;
+  strictMode: boolean;
   /** Empty lines (No content between two breakers) will be ignored */
-  ignoreEmptyLines?: boolean;
+  ignoreEmptyLines: boolean;
   /** Use in case your string contains the end character */
-  hasEndCharacter?: boolean;
+  hasEndCharacter: boolean;
   /**
    * Only if the strict mode is activated, parses the following texts
    * as JavaScript values if they are not quoted:
@@ -26,13 +28,13 @@ export type TextFormat = {
    * - JSON Objects
    * - Custom types generated from the object input serializer
    */
-  transform?: boolean;
+  transform: boolean;
   /**
    * The empty value to place when a empty cell is found during parsing
    * @default empty = ""
    */
-  empty?: ValueEmpty;
-};
+  empty: ValueEmpty;
+}
 
 export type Props = {
   startIndex: number;
@@ -88,16 +90,7 @@ export type ValueObject =
   | SerializableObject
   | ValueEmpty;
 /** Represents the CSV content */
-export type ValueData<O extends any> = O[][];
-/** The unique format from the spreadsheet */
-export type SpreadhseetFormat = {
-  /** The word quotes */
-  quote: string;
-  /** The line delimiter */
-  delimiter: string;
-  /** The line breaker */
-  brk: string;
-};
+export type ValueData<O extends ValueObject> = O[][];
 /** Represents the Spreadsheet Data */
 export interface SpreadsheetContent {
   /** The string that was converted to a CSV object */
