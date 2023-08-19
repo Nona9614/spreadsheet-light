@@ -1,4 +1,4 @@
-# Staquia
+# Spreadsheet Light
 
 This is a configurable **Spreadsheet** based algorithm, used to parse or create strings in CSV format. To have easy access to it.
 
@@ -69,8 +69,11 @@ const values = {
   // What to do write when finding no content in a CSV cell
   empty: "",
 };
-
 const format = new TextFormat(values);
+
+// This object includes a function you can use to create safe strings
+// that can be parsed easily on any CSV libary
+const string = format.toSafeString('\r\n",'); // '"\r\n\"\","'
 ```
 
 > **_Note:_** All of the following examples are shown using the above text format in the example.
