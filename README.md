@@ -39,13 +39,12 @@ const { xsv } = require("spreadsheet-light/umd");
 
 ## Format
 
-You can pass a `SpreadsheetFormat` object to the options to create the best spreadsheet that fits your needs.
+You can pass a `SpreadsheetFormat` object to many of the functions for this libarry to create the best spreadsheet that fits your needs.
 
 ```typescript
 import { TextFormat } from "spreadsheet-light";
 
-// This example is the default values for the
-// text format
+// This example is the default values for the text format
 const values = {
   // The string to scape special values
   quote: '"',
@@ -57,9 +56,16 @@ const values = {
   empty: "",
 };
 
-// This object includes a function you can use to create safe strings
+// This class contains help functions to create your own CSV
+const format = new TextFormat(values);
+
+// In this function you can use it to create safe strings
 // that can be parsed easily on any CSV libary
 const string = format.toSafeString('\r\n",'); // '"\r\n\"\","'
+
+// In this function you can evaluate if some string is a Quote string
+// based on the format
+format.isQuote("_"); // This is false
 ```
 
 > **_Note:_** All of the following examples are shown using the above text format in the example.
