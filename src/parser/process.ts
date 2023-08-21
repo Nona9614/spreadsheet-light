@@ -24,7 +24,7 @@ export function process(context: ParseContext) {
   const trimmed = context.line.trim();
 
   // Saves the trimmed content if needed
-  if (context.format.trim) context.line = trimmed;
+  if (context.trim) context.line = trimmed;
 
   // Falsy values may be considered as numbers, so trimmed values with no content
   // are either spaces or nothing, thus the best is just return the line as it is
@@ -68,5 +68,5 @@ export function process(context: ParseContext) {
   // Clears context for values needed for next time `process` is called
   context.clear();
   // Finally returns the processed line as a parsed string and transform if necessary
-  return context.format.transform ? transforms(context) : word;
+  return context.transform ? transforms(context) : word;
 }

@@ -1,0 +1,113 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "array": [
+                {
+                    "h1": "string"
+                },
+                {
+                    "h2": 0
+                },
+                {
+                    "h3": null
+                }
+            ],
+            "expected": {
+                "string": "h1,h2,h3\r\nstring,,\r\n,0,\r\n,,null",
+                "isTable": true,
+                "hasHeaders": true,
+                "headers": [
+                    "h1",
+                    "h2",
+                    "h3"
+                ],
+                "size": {
+                    "rows": 3,
+                    "columns": 3
+                },
+                "data": [
+                    [
+                        "string",
+                        "",
+                        ""
+                    ],
+                    [
+                        "",
+                        0,
+                        ""
+                    ],
+                    [
+                        "",
+                        "",
+                        null
+                    ]
+                ]
+            },
+            "message": "Should transform an array with no specific headers"
+        },
+        {
+            "skip": false,
+            "headers": [
+                "h1",
+                "h2",
+                "h3"
+            ],
+            "array": [
+                {
+                    "h1": "string"
+                },
+                {
+                    "h2": 0
+                },
+                {
+                    "h3": null
+                }
+            ],
+            "expected": {
+                "string": "h1,h2,h3\r\nstring,,\r\n,0,\r\n,,null",
+                "isTable": true,
+                "hasHeaders": true,
+                "headers": [
+                    "h1",
+                    "h2",
+                    "h3"
+                ],
+                "size": {
+                    "rows": 3,
+                    "columns": 3
+                },
+                "data": [
+                    [
+                        "string",
+                        "",
+                        ""
+                    ],
+                    [
+                        "",
+                        0,
+                        ""
+                    ],
+                    [
+                        "",
+                        "",
+                        null
+                    ]
+                ]
+            },
+            "message": "Should transform an array with specific headers"
+        }
+    ],
+    "errors": [
+        {
+            "skip": false,
+            "message": "Should throw error on undefined value",
+            "name": "NotAllowedValueError",
+            "throws": {},
+            "params": [
+                "undefined"
+            ]
+        }
+    ]
+}

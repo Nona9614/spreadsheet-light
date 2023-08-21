@@ -11,15 +11,8 @@ import { process } from "./process.js";
  * Reduces the string from the CSV object to JavaScript values
  */
 export function reducer(context: ParseContext) {
-  const {
-    quote,
-    delimiter,
-    brk,
-    empty,
-    hasHeaders,
-    transform,
-    ignoreEmptyLines,
-  } = context.format;
+  const { quote, delimiter, brk, empty } = context.format;
+  const { hasHeaders, ignoreEmptyLines } = context;
 
   /** Flag to use to determine if what is processed is a header or a simple row */
   let isHeader = hasHeaders;

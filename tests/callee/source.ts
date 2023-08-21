@@ -1,10 +1,21 @@
+// Test
 import { expect } from "chai";
-import { TestSource } from "../types";
-import { isValueObject } from "../../src/is-value-object";
 import _ from "../create-callee";
+
+// Types
+import { TestSource } from "../types";
+import {
+  MapOptions,
+  SerializableObject,
+  ValueData,
+  ValueObjects,
+} from "../../src/types";
+
+// Functions
+import { isValueObject } from "../../src/is-value-object";
 import { stringify } from "../../src/stringify";
-import { SerializableObject, ValueData } from "../../src/types";
 import { clone } from "../../src/clone";
+import map from "../../src/map.js";
 import symbols from "../../src/symbols";
 
 export default function createSourceTest(key: TestSource) {
@@ -114,6 +125,38 @@ export default function createSourceTest(key: TestSource) {
           }
 
           stringify(_values);
+        },
+      );
+    case "map":
+      return _(
+        key,
+        function (item) {
+          const options: MapOptions = {
+            headers: item.headers,
+          };
+          const mapped = map(item.array, options);
+          const values: any = {
+            string: mapped.string,
+            hasHeaders: mapped.hasHeaders,
+            headers: mapped.headers,
+            data: mapped.toMatrix(true),
+            isTable: mapped.isTable,
+            size: mapped.size,
+          };
+          expect(values).to.eql(item.expected);
+        },
+        function (is: string, options) {
+          const _values: any[] = [];
+
+          switch (is) {
+            case "undefined":
+              _values.push({
+                undefined: undefined,
+              });
+              break;
+          }
+
+          map(_values, options);
         },
       );
   }

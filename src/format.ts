@@ -5,7 +5,7 @@ export const WINDOWS_BREAK_LINE: string = "\r\n";
 export const COMMA_DELIMITER: string = ",";
 export const QUOTE_DELIMITER: string = '"';
 
-export class TextFormat implements SpreadhseetFormat {
+export class TextFormat implements Required<SpreadhseetFormat> {
   /** Double quote for other uses*/
   #dbquote = QUOTE_DELIMITER + QUOTE_DELIMITER;
   /** Internal quote */
@@ -19,16 +19,10 @@ export class TextFormat implements SpreadhseetFormat {
   }
   delimiter = COMMA_DELIMITER;
   brk = WINDOWS_BREAK_LINE;
-  trim = false;
-  ignoreEmptyLines = true;
-  hasEndCharacter = false;
-  strictMode = true;
-  hasHeaders = false;
   memoize = true;
-  transform = true;
   empty = ZERO_STRING;
 
-  constructor(format?: Partial<TextFormat>) {
+  constructor(format?: SpreadhseetFormat) {
     if (format) Object.assign(this, format);
   }
 

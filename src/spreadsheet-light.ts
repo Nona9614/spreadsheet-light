@@ -1,6 +1,7 @@
 import { parse } from "./parser/parse.js";
 import { isValueObject } from "./is-value-object.js";
 import { stringify } from "./stringify.js";
+import map from "./map.js";
 import symbols from "./symbols.js";
 
 /**
@@ -16,6 +17,10 @@ const xsv = {
    * Parses an object into a string with CSV formt currently set
    */
   stringify,
+  /**
+   * Maps an array of objects into a Spreadsheet
+   */
+  map,
   /**
    * Symbol used to assign the clone function in a serializable object.
    *

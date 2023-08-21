@@ -29,7 +29,9 @@ export default function createParserTest(key: TestParser) {
       return _(
         key,
         function (item) {
-          const context = new ParseContext(item.word, item.format);
+          const context = new ParseContext(item.word, {
+            format: item.format,
+          });
           context.line = item.word;
           context.isQuoted = item.isQuoted;
           const _process = process(context);
@@ -51,9 +53,7 @@ export default function createParserTest(key: TestParser) {
       return _(
         key,
         function (item) {
-          const _parse = parse(item.string, {
-            format: item.format,
-          });
+          const _parse = parse(item.string, item.options);
           const values: any = {
             string: _parse.string,
             hasHeaders: _parse.hasHeaders,

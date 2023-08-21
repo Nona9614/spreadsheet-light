@@ -1,5 +1,5 @@
 import { TextFormat } from "../format";
-import { InputSerializer } from "../types";
+import { SpreadhseetFormat, InputSerializer, ParseOptions } from "../types";
 
 /**
  * The processed value will be saved then "x" will update the value (plus one)
@@ -60,7 +60,15 @@ class ContextPointer {
 }
 
 /** Parsing context information used to trigger certain events */
-export class ParseContext {
+export class ParseContext implements Required<Omit<ParseOptions, "memoize">> {
+  trim = false;
+  ignoreEmptyLines = true;
+  hasEndCharacter = false;
+  strictMode = true;
+  hasHeaders = false;
+  transform = true;
+  serializer = (value: string) =>
+    typeof value === "string" ? value : JSON.stringify(value);
   /** Text format passed to the parser */
   format: TextFormat;
   /** The string to be working on */
@@ -87,23 +95,19 @@ export class ParseContext {
    * on process
    */
   quoteRegex: RegExp;
-  /** The serializer for special strings */
-  serializer: InputSerializer;
 
   /**
    * @param string The string to be parsed as a CSV object
    */
-  constructor(
-    string: string,
-    format?: TextFormat,
-    serializer?: InputSerializer,
-  ) {
+  constructor(string: string, options?: ParseOptions) {
+    // Insert all of the options passed to the context
+    if (options) Object.assign(this, options);
     // Set initial context values
-    this.format = new TextFormat(format);
+    this.format = new TextFormat(options?.format);
     /** Always removes any whitespaces before and after the string */
     this.string = string.trim();
     /** Real string length in case that has no end character the string */
-    this.slength = this.format.hasEndCharacter
+    this.slength = this.hasEndCharacter
       ? this.string.length - 1
       : this.string.length;
     this.index = 0;
@@ -114,9 +118,6 @@ export class ParseContext {
     this.shouldTransform = false;
     this.quoteRegex = new RegExp(this.format.quote, "gum");
     this.pointer = new ContextPointer();
-    this.serializer =
-      serializer ??
-      ((value) => (typeof value === "string" ? value : JSON.stringify(value)));
   }
 
   /** Resets the regex to be used for the process function */

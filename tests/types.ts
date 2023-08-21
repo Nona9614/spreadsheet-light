@@ -1,10 +1,12 @@
 import {
   CellSelector,
+  ParseOptions,
   Pointer,
   RangeSelector,
   SpreadhseetInsertOptions,
   SpreadsheetContent,
   ValueData,
+  ValueObjects,
 } from "../src/types";
 import { TextFormat } from "../src/format";
 
@@ -60,6 +62,7 @@ type Parse = GeneralTest<
   {
     string: string;
     ignoreHeaders: boolean;
+    options: ParseOptions;
   },
   SpreadsheetContent & { data: ValueData<any> }
 >;
@@ -179,6 +182,14 @@ type Stringify = GeneralTest<
   string
 >;
 
+type Mapping = GeneralTest<
+  {
+    array: ValueObjects;
+    headers?: string[];
+  },
+  string
+>;
+
 /// TEST CASES
 
 export type TestAlphabet = "from-number" | "get-number";
@@ -191,7 +202,7 @@ export type TestSpreadsheet =
   | "insert"
   | "to-array"
   | "to-matrix";
-export type TestSource = "clone" | "stringify" | "is-value-object";
+export type TestSource = "clone" | "stringify" | "is-value-object" | "map";
 
 export type TestName = TestAlphabet | TestParser | TestSpreadsheet | TestSource;
 
@@ -209,7 +220,10 @@ export const isSpreadsheetTest = (value: string): value is TestSpreadsheet =>
   value === "to-array" ||
   value === "to-matrix";
 export const isSourceTest = (value: string): value is TestSource =>
-  value === "stringify" || value === "is-value-object" || value === "clone";
+  value === "stringify" ||
+  value === "is-value-object" ||
+  value === "clone" ||
+  value === "map";
 
 export type Test<T extends TestName> = T extends "transforms"
   ? Transforms
@@ -241,6 +255,8 @@ export type Test<T extends TestName> = T extends "transforms"
   ? IsValueObject
   : T extends "clone"
   ? Clone
+  : T extends "map"
+  ? Mapping
   : never;
 
 type UnArray<T> = T extends Array<infer U> ? U : T;

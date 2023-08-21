@@ -39,7 +39,7 @@ const { xsv } = require("spreadsheet-light/umd");
 
 ## Format
 
-You can pass as the `TextFormat` class the options to create the best spreadsheet that fits your needs.
+You can pass a `SpreadsheetFormat` object to the options to create the best spreadsheet that fits your needs.
 
 ```typescript
 import { TextFormat } from "spreadsheet-light";
@@ -53,23 +53,9 @@ const values = {
   delimiter: ",",
   // The string to separate columns
   brk: "\r\n",
-  // What to do when finding empty lines
-  ignoreEmptyLines: true,
-  // If the string comes from contains a not well formatted file,
-  // here can be set to true if there is not ending character there
-  hasEndCharacter: false,
-  // This flag allows you find possible issues in your CSV content
-  strictMode: true,
-  // If your content contains headers set this to true
-  hasHeaders: false,
-  // Avoids repeating the algorithm when parsing the same string
-  memoize: true,
-  // Allow transformation from text to JSON or Arrays objects
-  transform: true,
   // What to do write when finding no content in a CSV cell
   empty: "",
 };
-const format = new TextFormat(values);
 
 // This object includes a function you can use to create safe strings
 // that can be parsed easily on any CSV libary
@@ -112,10 +98,25 @@ c,d
 
 // You can create your custom behaviour
 const options = {
+  // The custom format
   format: {
     quote: "'",
   },
-  serializer: String(value),
+  // What to do when finding empty lines
+  ignoreEmptyLines: true,
+  // If the string comes from contains a not well formatted file,
+  // here can be set to true if there is not ending character there
+  hasEndCharacter: false,
+  // This flag allows you find possible issues in your CSV content
+  strictMode: true,
+  // If your content contains headers set this to true
+  hasHeaders: false,
+  // Avoids repeating the algorithm when parsing the same string
+  memoize: true,
+  // Allow transformation from text to JSON or Arrays objects
+  transform: true,
+  // The function to serialize special strings when transforming values
+  serializer: String,
 };
 
 // This library allows you to create a Spreadsheet object
@@ -344,3 +345,62 @@ xsv.serializer = function (s) {
   }
 };
 ```
+
+## Mapping
+
+The `map` function, helps you to transform simple array of **JSON** objects
+to a **Spreadsheet** object. This helps in cases you have a **JSON** list but you want a more visual text representation of this one.
+
+```js
+import xsv from "spreadsheet-light";
+
+// This could be a sample list that may be recovered from some request
+const list = [
+  {
+    food: "Cake",
+    flavor: "sweet",
+  },
+  {
+    food: "T-Bone",
+    flavor: "meaty",
+    healthy: true,
+  },
+  {
+    food: "Orange",
+    flavor: "citrix",
+    healthy: true,
+  },
+];
+
+/**
+ * This object will hold a CSV the belowone:
+ *
+ *  food  | flavor |  healthy   |
+ * ----------------------------
+ * Cake   | sweet  |            |
+ * T-Bone | meaty  |   true     |
+ * Orange | citrix |   true     |
+ */
+let spreadsheet = xsv.map(list);
+
+// You can pass the headers and help the function to not
+// 'guess' the headers, to speed up the mapping to almost
+// 1.8 times faster
+const headers = ["food", "flavor", "healthy"];
+
+// There are options that can be passed to the function
+// depending on your needs
+const options = {
+  format: {
+    quote: "'",
+  },
+  headers,
+};
+
+// Now we can generate the spreadsheet again with
+// the customization of the format and a predefined
+// headers
+spreadsheet = xsv.map(list, options);
+```
+
+> **_Note_:** If a value for a field is not found when mapping, the empty value from the format will be used.

@@ -30,7 +30,7 @@
             "skip": false,
             "string": "h1,h2,h3\r\na1,b1,c1\r\na2,b2,c2\r\na3,,\r\n",
             "ignoreHeaders": true,
-            "format": {
+            "options": {
                 "hasHeaders": true
             },
             "expected": {
@@ -70,7 +70,7 @@
             "skip": false,
             "string": "h1,h2,h3\r\na1,,\r\na2,b2,c2",
             "ignoreHeaders": true,
-            "format": {
+            "options": {
                 "hasHeaders": true
             },
             "expected": {
@@ -104,7 +104,7 @@
         {
             "skip": false,
             "string": "\"h1\",\"h2\",\"h3\",\"h4\"\r\n\"a1\",\"b1\",\"c1\",\"d1\"\r\n\"a2\",\"b2\",\"c2\",\"d2\"\r\n\"a3\",\"b3\",\"c3\",\"d3\"\r\n\"a4\",\"b4\",\"c4\",\"d4\"\r\n",
-            "format": {
+            "options": {
                 "hasHeaders": true
             },
             "ignoreHeaders": true,
@@ -330,7 +330,7 @@
         {
             "skip": false,
             "string": "",
-            "format": {
+            "options": {
                 "strictMode": false
             },
             "expected": {
@@ -378,7 +378,7 @@
         {
             "skip": false,
             "string": "h1,h2,h3\r\na,b,c",
-            "format": {
+            "options": {
                 "hasHeaders": true
             },
             "expected": {
@@ -412,7 +412,7 @@
         {
             "skip": false,
             "string": "h1,h2,h3\r\na,b",
-            "format": {
+            "options": {
                 "hasHeaders": true
             },
             "expected": {
@@ -475,9 +475,7 @@
             "params": [
                 "A,C,\r\n,d,e",
                 {
-                    "format": {
-                        "hasHeaders": true
-                    }
+                    "hasHeaders": true
                 }
             ]
         },
@@ -489,9 +487,7 @@
             "params": [
                 "A,C,0\r\n,d,e",
                 {
-                    "format": {
-                        "hasHeaders": true
-                    }
+                    "hasHeaders": true
                 }
             ]
         },
@@ -503,9 +499,7 @@
             "params": [
                 "A,C,null\r\n,d,e",
                 {
-                    "format": {
-                        "hasHeaders": true
-                    }
+                    "hasHeaders": true
                 }
             ]
         },
@@ -517,9 +511,7 @@
             "params": [
                 "A,B,,\r\n,d,e",
                 {
-                    "format": {
-                        "hasHeaders": true
-                    }
+                    "hasHeaders": true
                 }
             ]
         },
@@ -531,9 +523,7 @@
             "params": [
                 "A,B,C",
                 {
-                    "format": {
-                        "hasHeaders": true
-                    }
+                    "hasHeaders": true
                 }
             ]
         }

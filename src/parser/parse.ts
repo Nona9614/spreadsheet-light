@@ -34,15 +34,11 @@ export function parse<V extends ValueObject>(
   }
 
   // Creates a new parse context
-  const context = new ParseContext(
-    string,
-    options?.format,
-    options?.serializer,
-  );
+  const context = new ParseContext(string, options);
 
   // If strict mode is on and there is no content throw an error
   if (context.string === "") {
-    if (context.format.strictMode) {
+    if (context.strictMode) {
       cleanMemoization();
       throw EmptyStringError;
     } else {
@@ -71,7 +67,7 @@ export function parse<V extends ValueObject>(
     data,
     isTable,
     headers,
-    context.format.hasHeaders,
+    context.hasHeaders,
     context.format,
   );
   _csv = csv;
