@@ -1,8 +1,8 @@
 import {
   CellSelector,
   ParseOptions,
-  Pointer,
   RangeSelector,
+  RowSelector,
   SpreadhseetInsertOptions,
   SpreadsheetContent,
   ValueData,
@@ -143,6 +143,27 @@ type ReadContent = GeneralTest<
   string
 >;
 
+type RemoveContent = GeneralTest<
+  {
+    data: ValueData<any>;
+    content: SpreadsheetContent;
+    selector: RowSelector;
+  },
+  string
+>;
+
+type DropContent = GeneralTest<
+  {
+    data: ValueData<any>;
+    content: SpreadsheetContent;
+    rows: {
+      from: RowSelector;
+      to: RowSelector;
+    };
+  },
+  string
+>;
+
 type ToArray = GeneralTest<
   {
     data: ValueData<any>;
@@ -200,6 +221,8 @@ export type TestSpreadsheet =
   | "range"
   | "bulk"
   | "insert"
+  | "remove"
+  | "drop"
   | "to-array"
   | "to-matrix";
 export type TestSource = "clone" | "stringify" | "is-value-object" | "map";
@@ -217,6 +240,8 @@ export const isSpreadsheetTest = (value: string): value is TestSpreadsheet =>
   value === "bulk" ||
   value === "range" ||
   value == "insert" ||
+  value === "remove" ||
+  value === "drop" ||
   value === "to-array" ||
   value === "to-matrix";
 export const isSourceTest = (value: string): value is TestSource =>
@@ -241,6 +266,10 @@ export type Test<T extends TestName> = T extends "transforms"
   ? BulkContent
   : T extends "insert"
   ? InsertContent
+  : T extends "remove"
+  ? RemoveContent
+  : T extends "drop"
+  ? DropContent
   : T extends "read"
   ? ReadContent
   : T extends "range"

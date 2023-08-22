@@ -1,0 +1,129 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "selector": 3,
+            "data": [
+                [
+                    "r1"
+                ],
+                [
+                    "r2"
+                ],
+                [
+                    "r3"
+                ],
+                [
+                    "r4"
+                ],
+                [
+                    "r5"
+                ],
+                [
+                    "r6"
+                ]
+            ],
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "expected": "r1\r\nr2\r\nr4\r\nr5\r\nr6",
+            "message": "Should delete the selected row"
+        },
+        {
+            "skip": false,
+            "selector": "@bottom",
+            "data": [
+                [
+                    "r1"
+                ],
+                [
+                    "r2"
+                ],
+                [
+                    "r3"
+                ],
+                [
+                    "r4"
+                ],
+                [
+                    "r5"
+                ],
+                [
+                    "r6"
+                ]
+            ],
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "expected": "r1\r\nr2\r\nr3\r\nr4\r\nr5",
+            "message": "Should delete the selected row using the shorthand"
+        },
+        {
+            "skip": false,
+            "selector": 7,
+            "data": [
+                [
+                    "r1"
+                ],
+                [
+                    "r2"
+                ],
+                [
+                    "r3"
+                ],
+                [
+                    "r4"
+                ],
+                [
+                    "r5"
+                ],
+                [
+                    "r6"
+                ]
+            ],
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "expected": "r1\r\nr2\r\nr3\r\nr4\r\nr5",
+            "message": "Should cap the row value if exceeds the number of rows"
+        },
+        {
+            "skip": false,
+            "selector": -25,
+            "data": [
+                [
+                    "r1"
+                ],
+                [
+                    "r2"
+                ],
+                [
+                    "r3"
+                ],
+                [
+                    "r4"
+                ],
+                [
+                    "r5"
+                ],
+                [
+                    "r6"
+                ]
+            ],
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "expected": "r2\r\nr3\r\nr4\r\nr5\r\nr6",
+            "message": "Should cap the row value if is below 0"
+        }
+    ]
+}

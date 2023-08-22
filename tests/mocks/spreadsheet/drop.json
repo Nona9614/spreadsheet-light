@@ -1,0 +1,204 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "rows": {
+                "from": 2,
+                "to": 4
+            },
+            "data": [
+                [
+                    "r1"
+                ],
+                [
+                    "r2"
+                ],
+                [
+                    "r3"
+                ],
+                [
+                    "r4"
+                ],
+                [
+                    "r5"
+                ],
+                [
+                    "r6"
+                ]
+            ],
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "expected": "r1\r\nr5\r\nr6",
+            "message": "Should delete the selected rows"
+        },
+        {
+            "skip": false,
+            "rows": {
+                "from": 3,
+                "to": "@bottom"
+            },
+            "data": [
+                [
+                    "r1"
+                ],
+                [
+                    "r2"
+                ],
+                [
+                    "r3"
+                ],
+                [
+                    "r4"
+                ],
+                [
+                    "r5"
+                ],
+                [
+                    "r6"
+                ]
+            ],
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "expected": "r1\r\nr2",
+            "message": "Should delete the selected rows using the shorthand"
+        },
+        {
+            "skip": false,
+            "rows": {
+                "from": "@bottom",
+                "to": 3
+            },
+            "data": [
+                [
+                    "r1"
+                ],
+                [
+                    "r2"
+                ],
+                [
+                    "r3"
+                ],
+                [
+                    "r4"
+                ],
+                [
+                    "r5"
+                ],
+                [
+                    "r6"
+                ]
+            ],
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "expected": "r1\r\nr2",
+            "message": "Should swap values when detected"
+        },
+        {
+            "skip": false,
+            "rows": {
+                "to": 4
+            },
+            "data": [
+                [
+                    "r1"
+                ],
+                [
+                    "r2"
+                ],
+                [
+                    "r3"
+                ],
+                [
+                    "r4"
+                ],
+                [
+                    "r5"
+                ],
+                [
+                    "r6"
+                ]
+            ],
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "expected": "r5\r\nr6",
+            "message": "Should resolve missing selector from as index 0"
+        },
+        {
+            "skip": false,
+            "rows": {
+                "from": 3
+            },
+            "data": [
+                [
+                    "r1"
+                ],
+                [
+                    "r2"
+                ],
+                [
+                    "r3"
+                ],
+                [
+                    "r4"
+                ],
+                [
+                    "r5"
+                ],
+                [
+                    "r6"
+                ]
+            ],
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "expected": "r1\r\nr2",
+            "message": "Should resolve missing selector to as index 0"
+        },
+        {
+            "skip": false,
+            "rows": null,
+            "data": [
+                [
+                    "r1"
+                ],
+                [
+                    "r2"
+                ],
+                [
+                    "r3"
+                ],
+                [
+                    "r4"
+                ],
+                [
+                    "r5"
+                ],
+                [
+                    "r6"
+                ]
+            ],
+            "content": {
+                "isTable": true,
+                "hasHeaders": false,
+                "headers": []
+            },
+            "expected": "",
+            "message": "Should drop the whole data"
+        }
+    ]
+}

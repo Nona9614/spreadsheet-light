@@ -212,6 +212,20 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
         const value = csv.toMatrix();
         expect(value).to.eql(expected);
       });
+    case "remove":
+      return _(key, function (item) {
+        const csv = buildCSV(item);
+        const { expected, selector } = item;
+        csv.remove(selector);
+        expect(csv.toString()).to.eql(expected);
+      });
+    case "drop":
+      return _(key, function (item) {
+        const csv = buildCSV(item);
+        const { expected, rows } = item;
+        csv.drop(rows);
+        expect(csv.toString()).to.eql(expected);
+      });
     default:
       throw new Error(`Check if a spreadsheet '${key}' test is missing`);
   }

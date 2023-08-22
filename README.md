@@ -212,6 +212,54 @@ spreadsheet.range(
 );
 ```
 
+### Remove and Drop
+
+You can delete some part of the data if needed, either just a row with the _read_ method or a the whole data or a section of it with the _drop_ method. Both of these returns the deleted section, for the _remove_ function a single array and for the _drop_ method a matrix object.
+
+```js
+// From here ["d","e","f"] will be removed and returned:
+// a,b,c
+// d,e,f
+// g,h,i
+spreadsheet.remove(2);
+
+// Here a whole set will be removed:
+// a,b,c
+// d,e,f
+// g,h,i
+//
+// The extracted content will look like  [["d","e","f"],["g","h","i"]]
+// and the final value like [["a","b","c"]]
+spreadsheet.drop({
+  from: 2, // If ommited will default to `0`
+  to: "@bottom", // If ommited will default to `@bottom`
+});
+
+// The whole data set can be dropped if no arguments are passed
+spreadsheet.drop(); // The data now is [[""]]
+
+// To address the case where you want to delete a number of items after
+// a certain row, you can use some math like this:
+
+// Your start row
+const row = 2;
+// This will start after the desired row
+const from = row + 1;
+
+// Your number of items to remove
+const items = 5;
+// This will stop after deleting the desired items
+const to = from + items;
+
+// This will deelete the number of items after the desired row
+spreadsheet.drop({ from, to });
+```
+
+> **_Note:_** Consider the below when using the function.
+>
+> - Any selector below 0 will be capped to `0` and any value beyond the bottom will be capped to `@bottom`.
+> - When using the `drop` function the selectors will be swapped if the `from` value is bigger than the `to` value.
+
 ### Shorthands
 
 As mentioned before to access or modify the data there are two objects _CellSelector_ and _RangeSelector_. These can be numbers, objects or shorthands.

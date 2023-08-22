@@ -39,12 +39,15 @@ export type Pointer = {
   y: number;
 };
 
-export type LineLimit = "@bottom" | "@right";
+export type BottomLimit = "@bottom";
+export type LineLimit = BottomLimit | "@right";
 export type RangeLimit =
   | "@left-top"
   | "@left-bottom"
   | "@right-bottom"
   | "@right-top";
+
+export type RowSelector = number | BottomLimit;
 export type CellSelector = number | string | LineLimit;
 export type RangeSelector =
   | RangeLimit

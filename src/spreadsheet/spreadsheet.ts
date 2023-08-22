@@ -15,11 +15,11 @@ import type {
   SpreadsheetContent,
   ValueData,
   SpreadhseetInsertOptions,
+  RowSelector,
 } from "../types.js";
 import { isValueObject } from "../is-value-object.js";
 import { clone } from "../clone.js";
 import { TextFormat } from "../format.js";
-import symbols from "../symbols.js";
 
 /** Checks if some string can be considered as a limit */
 function toCellPosition(dimension: Pointer, s: string | number) {
@@ -34,6 +34,16 @@ function toCellPosition(dimension: Pointer, s: string | number) {
       } else {
         return s - 1;
       }
+  }
+}
+
+/** Checks if some string can be considered as a limit */
+function toRowIndex(dimension: Pointer, s: RowSelector) {
+  if (s === "@bottom") {
+    return dimension.y;
+  } else {
+    const n = s - 1;
+    return n <= dimension.y ? (n >= 0 ? n : 0) : dimension.y;
   }
 }
 
@@ -291,6 +301,52 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     }
 
     return range as ValueData<T>;
+  }
+
+  /**
+   * Removes a specified row in the data
+   * @param row The row to delete
+   * @returns The removed data
+   */
+  remove(row: RowSelector) {
+    // Mark that the data was changed
+    this.#changed = true;
+    // Get the `y` index to delete
+    const index = toRowIndex(_getDimension(this.#data), row);
+    // Delete the selected data
+    return this.#data.splice(index, 1)[0];
+  }
+
+  /**
+   * Drops the whole table or a specified section of rows in the data
+   * @param rows The row range to delete
+   * @param rows.from From where to start deleting (default is `0`)
+   * @param rows.to From where to stop deleting (default is `@bottom`)
+   * @returns The removed data
+   */
+  drop(rows?: { from?: RowSelector; to?: RowSelector }) {
+    // Object dimenstions
+    const dimension = _getDimension(this.#data);
+    // Mark that the data was changed
+    this.#changed = true;
+    // Get the `y` index to delete
+    let index = rows?.from ? toRowIndex(dimension, rows.from) : 0;
+    // Get the number of items to delete
+    let count = rows?.to ? toRowIndex(dimension, rows.to) : dimension.y;
+    // Swap internally if the first value overpass the final value
+    if (index > count) {
+      const _ = count;
+      count = index;
+      index = _;
+    }
+    // Sum offset
+    count -= index - 1;
+    // Delete the selected data
+    const spliced = this.#data.splice(index, count);
+    // If the whole data was deleted insert an empty value at least
+    if (!rows) this.#data = [[this.#format.empty as any]];
+    // Return the spliced data
+    return spliced;
   }
 
   /**
