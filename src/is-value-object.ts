@@ -1,7 +1,6 @@
 import symbols from "./symbols";
 import { ValueObject } from "./types";
-
-const JSON_PROTOTYPE = Object.getPrototypeOf({});
+import hasJsonProtoype from "./utils/has-json-proto";
 
 /**
  * Checks if the passed value is a valid ValueObject that only contains:
@@ -29,7 +28,7 @@ export function isValueObject(value: any): value is ValueObject {
         if (!isValid) return false;
       }
     } else {
-      if (Object.getPrototypeOf(value) === JSON_PROTOTYPE) {
+      if (hasJsonProtoype(value)) {
         let entries = Object.entries(value);
         for (let i = 0; i < entries.length; i++) {
           const isValid = isValueObject(entries[i][1]);

@@ -1,7 +1,6 @@
 import { NotAllowedValueError } from "./errors";
 import symbols from "./symbols";
-
-const JSON_PROTOTYPE = Object.getPrototypeOf({});
+import hasJsonProtoype from "./utils/has-json-proto";
 
 /**
  * Creates a new object with deep cloning only allowing serializable objects
@@ -26,7 +25,7 @@ export function clone(value: any): any {
       }
       return array;
     } else {
-      if (Object.getPrototypeOf(value) === JSON_PROTOTYPE) {
+      if (hasJsonProtoype(value)) {
         let entries = Object.entries(value);
         const object: Record<string, any> = {};
         for (let i = 0; i < entries.length; i++) {

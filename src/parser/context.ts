@@ -67,8 +67,7 @@ export class ParseContext implements Required<Omit<ParseOptions, "memoize">> {
   strictMode = true;
   hasHeaders = false;
   transform = true;
-  serializer = (value: string) =>
-    typeof value === "string" ? value : JSON.stringify(value);
+  serializer = (value: string) => value;
   /** Text format passed to the parser */
   format: TextFormat;
   /** The string to be working on */

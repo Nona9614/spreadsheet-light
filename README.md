@@ -133,10 +133,6 @@ const spreadsheet = xsv.parse(csv, options);
 
 // Checks if the parsed content is a table like object
 spreadsheet.isTable == true;
-// The string that represents the CSV, using the last
-// text format when this element was created to create a clean
-// representation that can be stored in a file to be used in programs like excel
-spreadsheet.toString() == "a,b\r\nc,d";
 // Wether the spreadsheet has headers
 spreadsheet.hasHeaders == false;
 // And what the headers are
@@ -321,8 +317,11 @@ The shorhands are:
 You can _serialize_ your content again if you want to use it for other purposes;
 
 ```js
-// You can get back a cleaned version of the original string that
-// you can use to create a save CSV file
+/**
+ * You can get back a cleaned version of the original string so
+ * you can use to create a save CSV file to be used in programs like excel.
+ * Uses the last text format when this element was created.
+ */
 spreadsheet.toString();
 
 // Or you can get the content as an array of headers and objects

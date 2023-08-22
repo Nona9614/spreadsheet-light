@@ -1,4 +1,5 @@
 import { SpreadhseetFormat, ValueEmpty, ValueObject } from "./types";
+import hasJsonProtoype from "./utils/has-json-proto";
 
 export const ZERO_STRING: ValueEmpty = "";
 export const WINDOWS_BREAK_LINE: string = "\r\n";
@@ -42,7 +43,10 @@ export class TextFormat implements Required<SpreadhseetFormat> {
    * using this format
    */
   toSafeString(object: ValueObject) {
-    const string = String(object).replace(this.#quote, this.#dbquote);
+    const string =
+      object !== null && hasJsonProtoype(object)
+        ? JSON.stringify(object)
+        : String(object).replace(this.#quote, this.#dbquote);
     if (
       (object && string.includes(this.delimiter)) ||
       string.includes(this.brk)
