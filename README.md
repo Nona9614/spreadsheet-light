@@ -136,12 +136,37 @@ spreadsheet.isTable == true;
 // The string that represents the CSV, using the last
 // text format when this element was created to create a clean
 // representation that can be stored in a file to be used in programs like excel
-spreadsheet.string == "a,b\r\nc,d";
+spreadsheet.toString() == "a,b\r\nc,d";
 // Wether the spreadsheet has headers
 spreadsheet.hasHeaders == false;
 // And what the headers are
 spreadsheet.headers == false;
 ```
+
+### Spreadsheet Comparison
+
+A spreadsheet can be compared with other to check if they are the same using the JavaScript comparator symbol `==`.
+
+```js
+// The CSV content
+const csv = `
+a,b
+c,d
+`;
+
+// Create two spreadsheets with the same csv content
+const sp1 = xsv.parse(csv);
+const sp2 = xsv.parse(csv);
+// Create another with a different content
+const sp3 = xsv.parse("d,e");
+
+// This first comparison will be `true`
+sp1 == sp2;
+// This second comparison will be `false`
+sp1 == sp3;
+```
+
+## Spreadsheet Data Functions
 
 The parsing will check if the passed content can be considered as a **Table** like content. If so, you can use the methods below.
 
