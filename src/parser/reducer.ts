@@ -57,8 +57,6 @@ export function reducer(context: ParseContext) {
     }
     // When some kind of end is found start to check if it is an object
     if (context.isNextLimit) {
-      // Sets the current available header if present
-      context.relativeHeader = headers[context.pointer.x];
       // Stores the processed value to assigned place
       const word = process(context);
       // If was a header it means that the pointer will stay as zero position
@@ -90,6 +88,8 @@ export function reducer(context: ParseContext) {
           context.index += delimiter.length;
         }
       } else {
+        // Sets the current available header if present
+        context.relativeHeader = headers[context.pointer.x];
         // For delimiter plus line breaks push "word + empty",
         // then move to the beggining of the next row
         if (context.isNextDelimiterAndBreaker) {
@@ -120,6 +120,12 @@ export function reducer(context: ParseContext) {
           // Adds the last value
           // Points to the next column in the current row
           context.store(word, data);
+        } else if (context.isNextOpenEndOfLine) {
+          // Makes to go to the end in the iteration
+          context.index = context.slength;
+          // Adds the last value with an extra final "empty" value
+          context.store(word, data);
+          context.store(empty, data);
         }
         // When just a delimiter is found, just go to the next column
         else {

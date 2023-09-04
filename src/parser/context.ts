@@ -97,7 +97,6 @@ export class ParseContext implements Required<Omit<ParseOptions, "memoize">> {
    * on process
    */
   quoteRegex: RegExp;
-
   /**
    * @param string The string to be parsed as a CSV object
    */
@@ -150,7 +149,7 @@ export class ParseContext implements Required<Omit<ParseOptions, "memoize">> {
 
   /**
    * Inserts a value to the data then moves to the cursor to the right
-   * and then inserts a new row and moves the cursor
+   * and then inserts a new row and moves the cursor to that place
    */
   insert(word: any, data: ValueData<any>) {
     this.store(word, data);
@@ -166,6 +165,8 @@ export class ParseContext implements Required<Omit<ParseOptions, "memoize">> {
   isCollecting: boolean = false;
   /** Flag to use to determine if some content is surrounded by quotes */
   isEven: boolean = false;
+  /** Flag to check if next value is a delimiter or breaker and end of line */
+  isNextOpenEndOfLine: boolean = false;
   /** Flag to check if the next character is the end of line */
   isNextEndOfLine: boolean = false;
   /** Flag to check if the next character is the delimiter symbol */
@@ -191,12 +192,14 @@ export class ParseContext implements Required<Omit<ParseOptions, "memoize">> {
    * Restarts the collected content so far
    */
   restart() {
+    // Before storing new values store the previous state
     this.char = "";
     this.line = "";
     this.isEven = true;
     this.isNextEndOfLine = false;
     this.isNextDelimiter = false;
     this.isNextBreaker = false;
+    this.isNextOpenEndOfLine = false;
     this.isNextDelimiterAndBreaker = false;
     this.isQuoted = false;
   }
@@ -224,12 +227,12 @@ export class ParseContext implements Required<Omit<ParseOptions, "memoize">> {
     // Set the start index for the error function if needed
     this.startIndex = this.line.length - index;
     // Store if the last character was reached and if is still collecting characters
+    // plus should consider if the end of line was reached but the previous value was a limit
+    // and the open quote flag is not on
     this.isCollecting = index < this.slength;
     // Store if follows an end of line
-    this.isNextEndOfLine = !this.string.substring(
-      this.index + 1,
-      this.index + 2,
-    );
+    this.isNextEndOfLine =
+      this.string.substring(this.index + 1, this.index + 2).length === 0;
     // Store if follows a delimiter
     this.isNextDelimiter =
       this.string.substring(
@@ -242,6 +245,14 @@ export class ParseContext implements Required<Omit<ParseOptions, "memoize">> {
         this.index + 1,
         this.index + this.format.brk.length + 1,
       ) === this.format.brk;
+    // Checks if the next is some kind of limit folloed by end of line
+    this.isNextOpenEndOfLine =
+      (this.isNextDelimiter &&
+        this.string.substring(this.index + this.format.delimiter.length + 1)
+          .length === 0) ||
+      (this.isNextBreaker &&
+        this.string.substring(this.index + this.format.brk.length + 1)
+          .length === 0);
     // Store if follows a delimiter and a breaker
     this.isNextDelimiterAndBreaker =
       this.string.substring(
