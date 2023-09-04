@@ -406,20 +406,22 @@ const DATE_REGEX = /$(\d{2})[\/-](\d{2})[\/-](\d{4})^/gu;
 // In this example:
 // - If found by a regex transforms the value
 // - If it is just another string just returns it
-xsv.serializer = function (s) {
-  DATE_REGEX.lastIndex = 0;
-  const matches = DATE_REGEX.exec(s);
-
-  if (matches.length) {
-    // Here you can return the matched string as your customized object
-    return new Day({
-      day: matches[1],
-      month: matches[2],
-      year: matches[3],
-    });
+xsv.serializer = function (string, header) {
+  // Chec if the header is Date
+  if (header === "Date") {
+    if (matches.length) {
+      DATE_REGEX.lastIndex = 0;
+      const matches = DATE_REGEX.exec(string);
+      // Here you can return the matched string as your customized object
+      return new Day({
+        day: matches[1],
+        month: matches[2],
+        year: matches[3],
+      });
+    } else return string;
   } else {
     // For any other case just return the `string`
-    return s;
+    return string;
   }
 };
 ```

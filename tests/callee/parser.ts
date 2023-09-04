@@ -13,16 +13,21 @@ export default function createParserTest(key: TestParser) {
       return _(key, function (item) {
         const context = new ParseContext(item.string);
         context.line = item.string;
-        let _transforms = transforms(context);
         if (item.serializer === "date") {
-          const date = new Date(item.string);
-          const year = date.getFullYear();
-          let month: any = date.getMonth() + 1;
-          month = month < 10 ? `0${month}` : month;
-          let day: any = date.getDate();
-          day = day < 10 ? `0${day}` : day;
-          _transforms = `${year}/${month}/${day}`;
+          context.relativeHeader = "Date";
+          context.serializer = function (string, header) {
+            if (header === "Date") {
+              const date = new Date(string);
+              const year = date.getFullYear();
+              let month: any = date.getMonth() + 1;
+              month = month < 10 ? `0${month}` : month;
+              let day: any = date.getDate();
+              day = day < 10 ? `0${day}` : day;
+              return `${year}/${month}/${day}`;
+            } else return string;
+          };
         }
+        let _transforms = transforms(context);
         expect(_transforms).to.eql(item.expected);
       });
     case "process":

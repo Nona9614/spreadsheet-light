@@ -1,3 +1,4 @@
+import { ValueData } from "spreadsheet-light";
 import { TextFormat } from "../format";
 import { SpreadhseetFormat, InputSerializer, ParseOptions } from "../types";
 
@@ -67,7 +68,9 @@ export class ParseContext implements Required<Omit<ParseOptions, "memoize">> {
   strictMode = true;
   hasHeaders = false;
   transform = true;
-  serializer = (value: string) => value;
+  serializer = (value: string, header?: string) => value;
+  /** The possible header relative to the current line to be stored */
+  relativeHeader?: string;
   /** Text format passed to the parser */
   format: TextFormat;
   /** The string to be working on */
@@ -137,6 +140,22 @@ export class ParseContext implements Required<Omit<ParseOptions, "memoize">> {
     this.shouldTransform = false;
     this.quoteRegex.lastIndex = 0;
     this.pointer = new ContextPointer();
+  }
+
+  /** Stores a value in the data array then moces the cursor to the right */
+  store(word: any, data: ValueData<any>) {
+    this.pointer.right();
+    data[this.pointer.y].push(word);
+  }
+
+  /**
+   * Inserts a value to the data then moves to the cursor to the right
+   * and then inserts a new row and moves the cursor
+   */
+  insert(word: any, data: ValueData<any>) {
+    this.store(word, data);
+    data.push([]);
+    this.pointer.skip();
   }
 
   /** The current collected char */

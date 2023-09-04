@@ -34,23 +34,14 @@ export function reducer(context: ParseContext) {
       // Creates and moves to the new row beggining (only if is not set to be ignored)
       // And ignore lines with only breakers
       if (!(ignoreEmptyLines && context.pointer.at(0))) {
-        data[context.pointer.y].push(empty);
-        data.push([]);
-        // Moves to the next column
-        context.pointer.right();
-        context.pointer.skip();
+        context.insert(empty, data);
       }
       context.restart();
       continue;
     } else if (context.line === delimiter && !isHeader) {
-      data[context.pointer.y].push(empty);
-      // Moves to the next column
-      context.pointer.right();
+      context.store(empty, data);
       // If the next is the end of line, attach a final empty value
-      if (context.isNextEndOfLine) {
-        data[context.pointer.y].push(empty);
-        context.pointer.right();
-      }
+      if (context.isNextEndOfLine) context.store(empty, data);
       context.restart();
       continue;
     }
@@ -66,6 +57,8 @@ export function reducer(context: ParseContext) {
     }
     // When some kind of end is found start to check if it is an object
     if (context.isNextLimit) {
+      // Sets the current available header if present
+      context.relativeHeader = headers[context.pointer.x];
       // Stores the processed value to assigned place
       const word = process(context);
       // If was a header it means that the pointer will stay as zero position
@@ -103,16 +96,12 @@ export function reducer(context: ParseContext) {
           // Moves the global index after the delimiter and the breakline to skip them
           context.index += delimiter.length + brk.length;
           // Points to the next column in the current row and store the processed value
-          context.pointer.right();
-          data[context.pointer.y].push(word);
+          context.store(word, data);
           // Points to the next column again in the current row and adds an empty
           // value as a "Nothing" is between the breakline and the delimiter
-          context.pointer.right();
-          data[context.pointer.y].push(empty);
           // Create a new "row" as there is a breaker and move the pointer
           // to the start of this
-          data.push([]);
-          context.pointer.skip();
+          context.insert(empty, data);
         }
         // For line breaks move to the beggining of the next row
         else if (context.isNextBreaker) {
@@ -120,29 +109,25 @@ export function reducer(context: ParseContext) {
           context.index += brk.length;
           // Stores the value in there then creates a new "row" for the selected array
           // then points to the start of the new row
-          data[context.pointer.y].push(word);
           // Points to the next column in the current row then to the next row
-          context.pointer.right();
-          context.pointer.skip();
-          data.push([]);
+          // Expands the number of rows
+          context.insert(word, data);
         }
         // If is the end of the line just adds the last value and stop the iteration
         else if (context.isNextEndOfLine) {
           // Makes to go to the end in the iteration
           context.index = context.slength;
           // Adds the last value
-          data[context.pointer.y].push(word);
           // Points to the next column in the current row
-          context.pointer.right();
+          context.store(word, data);
         }
         // When just a delimiter is found, just go to the next column
         else {
           // Moves the global index after the delimiter to skip it
           context.index += delimiter.length;
           // Store the value in the assigned position,
-          data[context.pointer.y].push(word);
           // Points to the next column in the current row
-          context.pointer.right();
+          context.store(word, data);
         }
       }
       // Restart for next iteration

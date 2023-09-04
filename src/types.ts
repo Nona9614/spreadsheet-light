@@ -114,8 +114,9 @@ export type SpreadhseetInsertOptions = {
  * This function serializes strings to a customize type.
  * When a passed string is not quoted (escaped) will activate this function.
  * @param string The value to be converted to a custom type
+ * @param header If present, will be the relative header to this value
  */
-export type InputSerializer<T = any> = (string: string) => T;
+export type InputSerializer<T = any> = (string: string, header?: string) => T;
 
 /**
  * Marks an object class as serializable

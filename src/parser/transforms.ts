@@ -15,6 +15,6 @@ export function transforms(context: ParseContext) {
     if (context.line === "false" || context.line === "FALSE") return false;
     else if (context.line === "true" || context.line === "TRUE") return true;
     else if (context.line === "null" || context.line === "NULL") return null;
-    else return context.serializer(context.line);
+    else return context.serializer(context.line, context.relativeHeader);
   } else return Number(context.line);
 }
