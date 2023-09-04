@@ -180,6 +180,15 @@ type ToMatrix = GeneralTest<
   ValueData<any>
 >;
 
+type Sort = GeneralTest<
+  {
+    data: ValueData<any>;
+    content: SpreadsheetContent;
+    sortHeader: string | number;
+  },
+  ValueData<any>
+>;
+
 // Source
 
 type IsValueObject = GeneralTest<
@@ -216,6 +225,7 @@ type Mapping = GeneralTest<
 export type TestAlphabet = "from-number" | "get-number";
 export type TestParser = "transforms" | "process" | "parse";
 export type TestSpreadsheet =
+  | "sort"
   | "write"
   | "read"
   | "range"
@@ -224,7 +234,9 @@ export type TestSpreadsheet =
   | "remove"
   | "drop"
   | "to-array"
-  | "to-matrix";
+  | "to-matrix"
+  | "sort";
+
 export type TestSource = "clone" | "stringify" | "is-value-object" | "map";
 
 export type TestName = TestAlphabet | TestParser | TestSpreadsheet | TestSource;
@@ -243,7 +255,8 @@ export const isSpreadsheetTest = (value: string): value is TestSpreadsheet =>
   value === "remove" ||
   value === "drop" ||
   value === "to-array" ||
-  value === "to-matrix";
+  value === "to-matrix" ||
+  value === "sort";
 export const isSourceTest = (value: string): value is TestSource =>
   value === "stringify" ||
   value === "is-value-object" ||
@@ -278,6 +291,8 @@ export type Test<T extends TestName> = T extends "transforms"
   ? ToMatrix
   : T extends "to-array"
   ? ToArray
+  : T extends "sort"
+  ? Sort
   : T extends "stringify"
   ? Stringify
   : T extends "is-value-object"

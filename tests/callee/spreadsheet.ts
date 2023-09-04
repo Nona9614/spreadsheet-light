@@ -35,6 +35,12 @@ type InvalidCase = "undefined" | "symbol" | "function" | "class";
 
 export default function createSpreadsheetTest(key: TestSpreadsheet) {
   switch (key) {
+    case "sort":
+      return _(key, function (item) {
+        const csv = buildCSV(item);
+        csv.sort(item.sortHeader, (a, b) => a.localeCompare(b));
+        expect(csv.toMatrix()).to.eql(item.expected);
+      });
     case "bulk":
       return _(
         key,

@@ -350,6 +350,27 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
   }
 
   /**
+   * Sorts the data by headers
+   * @param header The header content to use as reference to sort the values
+   * @param compareFn The function to use as sorting algorithm to sort values (is the same as the default in javascript)
+   * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+   * @throws When the data is not in table format
+   */
+  sort(header: string | number, compareFn: (a: V, b: V) => number) {
+    // Throw an error if the sort function is not valid
+    if (!this.isTable)
+      throw isNotTableError("Sorting values with no tables values");
+    // Mark content as changed when sort is applied
+    this.#changed = true;
+    // Check what type of header was passed and used it as reference for the column
+    let x: number = -1;
+    if (typeof header === "string") x = this.headers.indexOf(header);
+    else if (typeof header === "number") x = header;
+    // Sort using the compare function
+    this.#data.sort((a, b) => compareFn(a[x], b[x]));
+  }
+
+  /**
    * When the default function "valueOf" is called will return the data
    */
   valueOf() {

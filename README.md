@@ -312,6 +312,33 @@ The shorhands are:
 - The `@right-top` shorthand that is for `y = 0` and the maximum `x` value from the table
 - The `@right-bottom` shorthand that is for the maximum `y` and `x` value from the table
 
+### Sorting
+
+Some times you will need to sort the data in one way or another. When that happens you can use the `sort` function
+to sort the data onces is parsed. The wai it will work is the same as described in the default [JavaScript sort function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) the only difference is that the data will be sorted using as reference one header.
+
+```js
+// At the end the data will be sorted like this
+//
+// name   | country
+// -----------------
+// Andres | Mexico
+// Maria  | Brasil
+// Won    | China
+
+import { xsv } from "spreadsheet-light";
+
+const sp = xsv.parse(`
+name,country
+Maria,Brasil
+Andres,Mexico
+Won,China
+`);
+
+// You can sort this data by `name` as follows
+sp.sort("name", (a, b) => a.localeCompare(b));
+```
+
 ### Serialization
 
 You can _serialize_ your content again if you want to use it for other purposes;

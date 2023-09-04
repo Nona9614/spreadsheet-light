@@ -1,0 +1,111 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "message": "Should sort values by name using string as header",
+            "sortHeader": "Name",
+            "content": {
+                "isTable": true,
+                "hasHeaders": true,
+                "headers": [
+                    "Name",
+                    "Country"
+                ]
+            },
+            "data": [
+                [
+                    "Andres",
+                    "Mexico"
+                ],
+                [
+                    "Varinder",
+                    "India"
+                ],
+                [
+                    "David",
+                    "Canada"
+                ],
+                [
+                    "Rosa",
+                    "Spanish"
+                ]
+            ],
+            "expected": [
+                [
+                    "Name",
+                    "Country"
+                ],
+                [
+                    "Andres",
+                    "Mexico"
+                ],
+                [
+                    "David",
+                    "Canada"
+                ],
+                [
+                    "Rosa",
+                    "Spanish"
+                ],
+                [
+                    "Varinder",
+                    "India"
+                ]
+            ]
+        },
+        {
+            "skip": false,
+            "message": "Should sort values by name using number as header",
+            "sortHeader": 0,
+            "content": {
+                "isTable": true,
+                "hasHeaders": true,
+                "headers": [
+                    "Name",
+                    "Country"
+                ]
+            },
+            "data": [
+                [
+                    "Andres",
+                    "Mexico"
+                ],
+                [
+                    "Varinder",
+                    "India"
+                ],
+                [
+                    "David",
+                    "Canada"
+                ],
+                [
+                    "Rosa",
+                    "Spanish"
+                ]
+            ],
+            "expected": [
+                [
+                    "Name",
+                    "Country"
+                ],
+                [
+                    "Andres",
+                    "Mexico"
+                ],
+                [
+                    "David",
+                    "Canada"
+                ],
+                [
+                    "Rosa",
+                    "Spanish"
+                ],
+                [
+                    "Varinder",
+                    "India"
+                ]
+            ]
+        }
+    ]
+}
