@@ -2,5 +2,11 @@ import { TextFormat } from "../format.js";
 import xsv from "../spreadsheet-light.js";
 import symbols from "../symbols.js";
 
-// Especial export for UMD libraries and CDN
+// Export types
+export * from "../types.js";
+
+// Named exports
 export { xsv, symbols, TextFormat };
+
+// Exports spreadsheet-light as default
+export default xsv;

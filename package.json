@@ -1,6 +1,6 @@
 {
   "name": "spreadsheet-light",
-  "version": "0.1.8",
+  "version": "0.1.10",
   "description": "",
   "type": "module",
   "main": "cjs/index.cjs",
@@ -12,9 +12,19 @@
       "require": "./cjs/index.cjs",
       "types": "./index.d.ts"
     },
-    "./esm": "./esm/index.mjs",
-    "./cjs": "./cjs/index.cjs",
-    "./umd": "./umd/index.js"
+    "./esm": {
+      "import": "./esm/index.mjs",
+      "types": "./index.d.ts"
+    },
+    "./cjs": {
+      "require": "./cjs/index.cjs",
+      "types": "./index.d.ts"
+    },
+    "./umd": {
+      "import": "./umd/index.js",
+      "require": "./umd/index.js",
+      "types": "./index.d.ts"
+    }
   },
   "directories": {
     "test": "tests"

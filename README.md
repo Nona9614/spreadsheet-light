@@ -433,12 +433,16 @@ const DATE_REGEX = /$(\d{2})[\/-](\d{2})[\/-](\d{4})^/gu;
 // In this example:
 // - If found by a regex transforms the value
 // - If it is just another string just returns it
-xsv.serializer = function (string, header) {
+const serializer = function (string, header) {
+  // Start the matches as null
+  let matches = null;
   // Chec if the header is Date
   if (header === "Date") {
-    if (matches.length) {
+    // Execute your cutom regex to fin what you are looking for
+    matches = DATE_REGEX.exec(string);
+    // And if found create your custom object
+    if (matches) {
       DATE_REGEX.lastIndex = 0;
-      const matches = DATE_REGEX.exec(string);
       // Here you can return the matched string as your customized object
       return new Day({
         day: matches[1],
@@ -451,6 +455,10 @@ xsv.serializer = function (string, header) {
     return string;
   }
 };
+
+// Remember to pass your custom serializer in the parse options
+const options = { serializer };
+const sp = xsv.parse("Date,B,C\r\n10/10/2050,2,3", options);
 ```
 
 ## Mapping

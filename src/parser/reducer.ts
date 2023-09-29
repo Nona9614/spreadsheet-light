@@ -57,11 +57,11 @@ export function reducer(context: ParseContext) {
     }
     // When some kind of end is found start to check if it is an object
     if (context.isNextLimit) {
-      // Stores the processed value to assigned place
-      const word = process(context);
       // If was a header it means that the pointer will stay as zero position
       // and will start to be moved until the next session
       if (isHeader) {
+        // Stores the processed value to assigned place
+        const word = process(context);
         // A header must be a string and not a JavaScript value
         if (
           typeof word !== "string" ||
@@ -90,6 +90,8 @@ export function reducer(context: ParseContext) {
       } else {
         // Sets the current available header if present
         context.relativeHeader = headers[context.pointer.x];
+        // Stores the processed value to assigned place
+        const word = process(context);
         // For delimiter plus line breaks push "word + empty",
         // then move to the beggining of the next row
         if (context.isNextDelimiterAndBreaker) {

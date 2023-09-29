@@ -5,8 +5,5 @@ import symbols from "../symbols.js";
 // Export types
 export * from "../types.js";
 
-// Named exports
+// Named exports only as this represents an object for the `cjs`
 export { xsv, symbols, TextFormat };
-
-// Exports staquia as default
-export default xsv;
