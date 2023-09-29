@@ -148,9 +148,12 @@ const UMD_INPUT_OPTIONS = {
  * The name should be in the same folder as the other formats but with the name `umd`
  * and must have sourcemaps when generated as they are needed when used in
  * the HTML `script` tag.
+ * Uses `xsv` as the name when imported from the `window` object in the browser and is
+ * the name that will be used when exposed in the UMD file. This name foes not contain
+ * special characters like `-` so can be used globally in the browser.
  */
 const UMD_OUTPUT_OPTIONS = {
-  name: "spreadsheet-light",
+  name: "xsv",
   file: lib("umd", "index.js"),
   format: "umd",
   sourcemap: true,
@@ -193,13 +196,14 @@ async function build() {
 }
 
 /**
- * Replaces the `'<version>'` tag with the current package version
- * @param {string[]} filenames
+ * Uses the matcher to replace the placeholder values to each file passed
+ * @param {{ version: string, "umd-name": string }} matcher The matcher to use on all files
+ * @param {string[]} filenames The files to replace values
  */
-async function versionage(filenames) {
+async function replace(matcher, ...filenames) {
   for (const filename of filenames) {
     let template = await read(filename);
-    template = replacer(template, { version: pkg.version });
+    template = replacer(template, matcher);
     await write(filename, template);
   }
 }
@@ -207,4 +211,7 @@ async function versionage(filenames) {
 // Builds the formats to the distribution folder and copies the no code content
 await build();
 // Update version to documentations
-await versionage([lib("README.md")]);
+await replace(
+  { version: pkg.version, "umd-name": UMD_OUTPUT_OPTIONS.name },
+  lib("README.md"),
+);

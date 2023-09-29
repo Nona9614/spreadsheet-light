@@ -1,6 +1,6 @@
 {
   "name": "spreadsheet-light",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "",
   "type": "module",
   "main": "cjs/index.cjs",
@@ -47,7 +47,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dynason": "^0.2.6"
+    "dynason": "^0.3.1"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.1.0",

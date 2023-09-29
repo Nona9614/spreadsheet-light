@@ -8,13 +8,16 @@ You can install it like below.
   npm install spreadsheet-light --save-dev
 ```
 
-Or use it from the `unpkg` cdn as a simple script tag via the browser.
+Or use it from the `unpkg` cdn as a simple script tag via the browser to have it as a global object named `{umd-name}`.
 
 ```html
-  <script src="https://unpkg.com/spreadsheet-light@'<version/>'/umd/index.js"><script/>
+<script src="https://unpkg.com/spreadsheet-light@{version}/umd/index.js"></script>
+<script type="module">
+  console.log({umd-name}); // Now can be used globally in the HTML app
+</script>
 ```
 
-This exposes a global `xsv` object that works exactly the same way as the `ECMA` import version.
+> **Note:** As `umd` must contain only one default exported object, all named imports (like `symbol`) are contained within the global object `{umd-name}`.
 
 All of the examples in this document uses `ECMA` syntax to import or export code from the library, but this supports `CommonJS` syntax as well.
 

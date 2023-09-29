@@ -2,10 +2,15 @@
 
 Select a Spreadsheet Light version below to view the changelog history:
 
-- [Spreadsheet Light 0.1.10](#V0.1.10) **Current**
+- [Spreadsheet Light 0.1.10](#V0.1.11) **Current**
+- [Spreadsheet Light 0.1.10](#V0.1.10)
 - [Spreadsheet Light 0.1.9](#V0.1.9)
 - [Spreadsheet Light 0.1.7](#V0.1.7)
 - [Spreadsheet Light 0.1.6](#V0.1.6)
+
+## V0.1.11
+
+- Renaming `umd` to `xsv` removing special characters like `-` to be able to use the library with no need to use the global `this` as prefix.
 
 ## V0.1.10
 

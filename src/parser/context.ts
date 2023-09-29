@@ -1,6 +1,5 @@
-import { ValueData } from "spreadsheet-light";
 import { TextFormat } from "../format";
-import { SpreadhseetFormat, InputSerializer, ParseOptions } from "../types";
+import { ParseOptions, ValueData } from "../types";
 
 /**
  * The processed value will be saved then "x" will update the value (plus one)
