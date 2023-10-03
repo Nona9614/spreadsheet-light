@@ -1,4 +1,3 @@
-import { TextFormat } from "./format";
 import symbols from "./symbols";
 
 export interface SpreadhseetFormat {
@@ -168,3 +167,74 @@ export type MapOptions = {
   /** The custom format to use when mapping the data */
   format?: SpreadhseetFormat;
 };
+
+/** The types of subscriptions to listen for these actions in the object */
+export type SpreadsheetSubscriberType =
+  | "write"
+  | "bulk"
+  | "insert"
+  | "remove"
+  | "drop"
+  | "sort";
+
+/** The action to be taken when a value is written in the `spreadsheet` object */
+export type WriteRunner<V extends ValueObject> = (
+  /** The value that was changed */
+  value: V,
+  /** The row where this change happened */
+  row: number,
+  /** The column where this change happened */
+  column: number,
+) => void;
+/** The action to be taken when multiple values are written inside the `spreadsheet` object */
+export type BulkRunner<T extends ValueObject> = (
+  /** The values that where inserted */
+  values: ValueData<T>,
+  /** The row where the insertion started */
+  row: number,
+  /** The column where the insertion started */
+  column: number,
+) => void;
+/** The action to be taken when a new row is inserted in the `spreadsheet` object */
+export type InsertRunner<V extends ValueObject> = (
+  /** The row values inserted */
+  values: ValueData<V>,
+  /** The row start position where the new values are */
+  row: number,
+) => void;
+/** The action to be taken when a single row is removed from the `spreadsheet` object */
+export type RemoveRunner<T extends ValueObject> = (
+  /** The values that where removed from the object */
+  values: T[],
+  /** The row where use to be the content */
+  row: number,
+) => void;
+/** The action to be taken when a multple rows are removed from the `spreadsheet` object */
+export type DropRunner<T extends ValueObject> = (
+  /** The values that where removed from the object */
+  values: ValueData<T>,
+  /** The row where the content started to be cut */
+  row: number,
+  /** The number of removed rows from the object */
+  count: number,
+) => void;
+/** The action to be taken when the data is sorted */
+export type SortRunner = (
+  /** The header where the sorting was applied */
+  header: number | string,
+) => void;
+
+export type SpreadsheetRunner<T extends SpreadsheetSubscriberType> =
+  T extends "write"
+    ? WriteRunner<any>
+    : T extends "bulk"
+    ? BulkRunner<any>
+    : T extends "insert"
+    ? InsertRunner<any>
+    : T extends "remove"
+    ? RemoveRunner<any>
+    : T extends "drop"
+    ? DropRunner<any>
+    : T extends "sort"
+    ? SortRunner
+    : never;

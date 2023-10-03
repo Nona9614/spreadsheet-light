@@ -16,6 +16,8 @@ import type {
   ValueData,
   SpreadhseetInsertOptions,
   RowSelector,
+  SpreadsheetSubscriberType,
+  SpreadsheetRunner,
 } from "../types.js";
 import { isValueObject } from "../is-value-object.js";
 import { clone } from "../clone.js";
@@ -201,12 +203,20 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     const dimension = _getDimension(this.#data);
 
     // Validate the first array exists
-    const y = toCellPosition(dimension, column);
-    if (dimension.y < y) throw NotFoundColumnError(y);
-    const x = toCellPosition(dimension, row);
-    if (dimension.x < x) throw NotFoundRowError(x);
+    const y = toCellPosition(dimension, row);
+    if (dimension.y < y) throw NotFoundRowError(y);
+    const x = toCellPosition(dimension, column);
+    if (dimension.x < x) throw NotFoundColumnError(x);
 
     this.#data[y][x] = value;
+    // If there are subscriptions runs them
+    if (this.#subscriptions.write) {
+      // Returns the removed offset
+      const _row = y + 1;
+      const _column = x + 1;
+      // Iterate for each subscription and activate the runner
+      this.#subscriptions.write.forEach((rn) => rn(value, _row, _column));
+    }
   }
 
   /**
@@ -237,6 +247,14 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
         if (!isValueObject(value)) throw NotAllowedValueError;
         this.#data[y][x] = value;
       }
+    }
+    // If there are subscriptions runs them
+    if (this.#subscriptions.bulk) {
+      // Returns the removed offset
+      const _row = s.y + 1;
+      const _column = s.x + 1;
+      // Iterate for each subscription and activate the runner
+      this.#subscriptions.bulk.forEach((rn) => rn(values, _row, _column));
     }
   }
 
@@ -274,6 +292,11 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
       }
       const start = after ? y + 1 : y;
       this.#data.splice(start, 0, newColumn);
+    }
+    // If there are subscriptions runs them
+    if (this.#subscriptions.insert) {
+      // Iterate for each subscription and activate the runner
+      this.#subscriptions.insert.forEach((rn) => rn(values, s));
     }
   }
 
@@ -314,7 +337,16 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     // Get the `y` index to delete
     const index = toRowIndex(_getDimension(this.#data), row);
     // Delete the selected data
-    return this.#data.splice(index, 1)[0];
+    const deleted = this.#data.splice(index, 1)[0];
+    // If there are subscriptions runs them
+    if (this.#subscriptions.remove) {
+      // Returns the removed offset
+      const _row = index + 1;
+      // Iterate for each subscription and activate the runner
+      this.#subscriptions.remove.forEach((rn) => rn(deleted, _row));
+    }
+    // Returns the deleted data
+    return deleted;
   }
 
   /**
@@ -345,8 +377,59 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     const spliced = this.#data.splice(index, count);
     // If the whole data was deleted insert an empty value at least
     if (!rows) this.#data = [[this.#format.empty as any]];
+    // If there are subscriptions runs them
+    if (this.#subscriptions.drop) {
+      // Returns the removed offset
+      const _from = index + 1;
+      // Iterate for each subscription and activate the runner
+      this.#subscriptions.drop.forEach((rn) => rn(spliced, _from, count));
+    }
     // Return the spliced data
     return spliced;
+  }
+
+  /** All the subscription to activate when some action is taken */
+  #subscriptions: {
+    [key in SpreadsheetSubscriberType]: Map<string, SpreadsheetRunner<key>>;
+  } = {} as any;
+
+  /**
+   * Subscribes to listen when some action is taken in the `spreadsheet` object
+   * @param type The action to listen to
+   * @param runner The runner to activate when the action is taken
+   * @returns An unique id from that specific listener
+   */
+  subscribe<T extends SpreadsheetSubscriberType>(
+    type: T,
+    runner: SpreadsheetRunner<T>,
+  ) {
+    // The unique id generated to identify the subscription
+    // @ts-ignore
+    const id = uuid();
+    // Adds map if does not exists
+    if (!this.#subscriptions[type])
+      (this.#subscriptions[type] as any) = new Map();
+    // Saves the new runner
+    this.#subscriptions[type].set(id, runner);
+    // retruns the unique id
+    return id;
+  }
+
+  /**
+   * Unsubscribes from the subscriptions the selected runner
+   * @param type The type of runner to remove the subscription
+   * @param id The id of the runner to be removed`
+   */
+  unsubscribe<T extends SpreadsheetSubscriberType>(type: T, id: string) {
+    // If the subscription does not exists throw an error
+    if (!this.#subscriptions[type].has(id))
+      throw Error(
+        `The subscriber "${type}" does not contain a registered runner with id "${id}".`,
+      );
+    // If the subscription does exists delete it
+    this.#subscriptions[type].delete(id);
+    // And if the subscriptions are empty remove the map from the object
+    if (this.#subscriptions[type].size < 1) delete this.#subscriptions[type];
   }
 
   /**
@@ -364,10 +447,13 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     this.#changed = true;
     // Check what type of header was passed and used it as reference for the column
     let x: number = -1;
-    if (typeof header === "string") x = this.headers.indexOf(header);
-    else if (typeof header === "number") x = header;
+    if (typeof header == "string") x = this.headers.indexOf(header);
+    else if (typeof header == "number") x = header;
     // Sort using the compare function
     this.#data.sort((a, b) => compareFn(a[x], b[x]));
+    // Runs the subscribers if exists
+    if (this.#subscriptions.sort)
+      this.#subscriptions.sort.forEach((rn) => rn(header));
   }
 
   /**

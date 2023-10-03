@@ -2,11 +2,17 @@
 
 Select a Spreadsheet Light version below to view the changelog history:
 
-- [Spreadsheet Light 0.1.10](#V0.1.11) **Current**
+- [Spreadsheet Light 0.2.0](#V0.2.0) **Current**
+- [Spreadsheet Light 0.1.11](#V0.1.11)
 - [Spreadsheet Light 0.1.10](#V0.1.10)
 - [Spreadsheet Light 0.1.9](#V0.1.9)
 - [Spreadsheet Light 0.1.7](#V0.1.7)
 - [Spreadsheet Light 0.1.6](#V0.1.6)
+
+## V0.2.0
+
+- Adding support for subcriptions for the functions: `write`, `bulk`, `insert`, `remove`, `drop` and `sort` to listen when these are called.
+- Fixing bug from `write` function where column and row values where evaluated wrong as they were crossed.
 
 ## V0.1.11
 

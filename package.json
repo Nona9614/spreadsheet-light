@@ -1,6 +1,6 @@
 {
   "name": "spreadsheet-light",
-  "version": "0.1.11",
+  "version": "0.2.0",
   "description": "",
   "type": "module",
   "main": "cjs/index.cjs",
@@ -14,9 +14,11 @@
     },
     "./esm": {
       "import": "./esm/index.mjs",
+      "require": "./esm/index.mjs",
       "types": "./index.d.ts"
     },
     "./cjs": {
+      "import": "./cjs/index.cjs",
       "require": "./cjs/index.cjs",
       "types": "./index.d.ts"
     },
@@ -57,6 +59,7 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.15.11",
     "chai": "^4.3.7",
+    "dotenv": "^16.3.1",
     "humps": "^2.0.1",
     "mocha": "^10.2.0",
     "rollup": "^3.27.0",

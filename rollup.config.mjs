@@ -11,10 +11,13 @@ import pkg from "./package.json" assert { type: "json" };
 // External
 import { empty, read, resolve, write, writeSync } from "xufs";
 import { replacer } from "dynason";
+// Environment Variables
+import { configDotenv } from "dotenv";
+configDotenv({ path: resolve(".env") });
 
 /** Bases the paths to the `lib` folder */
 function lib(...paths) {
-  return resolve("lib", ...paths);
+  return resolve(process.env.OUTPUT_DIR, ...paths);
 }
 
 /**
@@ -90,10 +93,12 @@ async function bundler({ inputOptions, outputOptions }) {
  * @type {import('rollup').InputOptions}
  * These options are meant to be used for `esm` code
  * such that the code is bundled but not minified
+ * @link https://rollupjs.org/configuration-options/#context
  */
 const ESM_INPUT_OPTIONS = {
   input: "src/exports/esm.ts",
-  external: ["dynason"],
+  context: "this",
+  external: ["dynason", "crypto"],
   plugins: [ts()],
 };
 
@@ -101,10 +106,12 @@ const ESM_INPUT_OPTIONS = {
  * @type {import('rollup').InputOptions}
  * These options are meant to be used for `cjs` code
  * such that the code is bundled but not minified
+ * @link https://rollupjs.org/configuration-options/#context
  */
 const CJS_INPUT_OPTIONS = {
   input: "src/exports/cjs.ts",
-  external: ["dynason"],
+  context: "this",
+  external: ["dynason", "crypto"],
   plugins: [ts()],
 };
 
@@ -118,6 +125,14 @@ const ESM_OUTPUT_OPTIONS = {
   file: lib(pkg.module),
   format: "esm",
   sourcemap: false,
+  /**
+   * Adds the uuid from the crypto library from NodeJS
+   * @link https://rollupjs.org/configuration-options/#output-intro-output-outro
+   */
+  intro: `
+import crypto from "crypto";
+const uuid = () => crypto.randomBytes(20).toString("hex");
+`.trim(),
 };
 
 /**
@@ -130,6 +145,14 @@ const CJS_OUTPUT_OPTIONS = {
   file: lib(pkg.main),
   format: "cjs",
   sourcemap: false,
+  /**
+   * Adds the uuid from the crypto library from NodeJS
+   * @link https://rollupjs.org/configuration-options/#output-intro-output-outro
+   */
+  intro: `
+const crypto = require("crypto");
+const uuid = () => crypto.randomBytes(20).toString("hex");
+`.trim(),
 };
 
 /**
@@ -157,6 +180,11 @@ const UMD_OUTPUT_OPTIONS = {
   file: lib("umd", "index.js"),
   format: "umd",
   sourcemap: true,
+  /**
+   * Adds the uuid from the global object crypto as it is what is expected
+   * @link https://rollupjs.org/configuration-options/#output-intro-output-outro
+   */
+  intro: "const uuid = crypto.randomUUID;",
 };
 
 /**
