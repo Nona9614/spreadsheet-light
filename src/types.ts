@@ -1,3 +1,5 @@
+import { TextFormat } from "./format";
+import { Spreadsheet } from "./spreadsheet/spreadsheet";
 import symbols from "./symbols";
 
 export interface SpreadhseetFormat {
@@ -166,6 +168,8 @@ export type MapOptions = {
   headers?: string[];
   /** The custom format to use when mapping the data */
   format?: SpreadhseetFormat;
+  /** Seriazer to be stored just in case the generated object will be updated */
+  serializer?: InputSerializer;
 };
 
 /** The types of subscriptions to listen for these actions in the object */
@@ -175,7 +179,8 @@ export type SpreadsheetSubscriberType =
   | "insert"
   | "remove"
   | "drop"
-  | "sort";
+  | "sort"
+  | "update";
 
 /** The action to be taken when a value is written in the `spreadsheet` object */
 export type WriteRunner<V extends ValueObject> = (
@@ -223,6 +228,11 @@ export type SortRunner = (
   /** The header where the sorting was applied */
   header: number | string,
 ) => void;
+/** The action to be taken when the data is updated */
+export type UpdateRunner<V extends ValueObject> = (
+  /** The updated object */
+  spreadsheet: Spreadsheet<V>,
+) => void;
 
 export type SpreadsheetRunner<T extends SpreadsheetSubscriberType> =
   T extends "write"
@@ -237,4 +247,33 @@ export type SpreadsheetRunner<T extends SpreadsheetSubscriberType> =
     ? DropRunner<any>
     : T extends "sort"
     ? SortRunner
+    : T extends "update"
+    ? UpdateRunner<any>
     : never;
+
+/** The for of the internal subscriptions from an Spreadsheet object */
+export type SpreadsheetSubscriptions = {
+  [key in SpreadsheetSubscriberType]: Map<string, SpreadsheetRunner<key>>;
+};
+
+/** Internal properties needed to build a Spreadsheet object  */
+export type SpreadsheetBuild<V extends ValueObject> = {
+  /** The data of the object */
+  data: ValueData<V>;
+  /** Indicates if when parsed this object was found to be a table */
+  isTable: boolean;
+  /** The spreadsheet format to be used */
+  format: TextFormat;
+  /** The flag to check if the content has headers */
+  hasHeaders: boolean;
+  /** The headers of the object if exists */
+  headers: string[];
+  /** The serializer from this object */
+  serializer: InputSerializer;
+  /** The string where the CSV object comes from */
+  clone?: string;
+  /** The subscriptions to the object actions */
+  subscriptions?: SpreadsheetSubscriptions;
+};
+
+export type UpdateOptions = Exclude<ParseOptions, "hasHeaders" | "format">;

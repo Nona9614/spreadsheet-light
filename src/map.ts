@@ -1,4 +1,4 @@
-import { NotAllowedValueError, NotValidHeaderError } from "./errors";
+import { NotAllowedValueError } from "./errors";
 import { isValueObject } from "./is-value-object";
 import { Spreadsheet } from "./spreadsheet/spreadsheet";
 import { MapOptions, ValueData, ValueObject, ValueObjects } from "./types";
@@ -83,7 +83,14 @@ function map(array: ValueObjects, options?: MapOptions) {
   }
 
   // Return a spreadsheet object
-  return new Spreadsheet(data, true, headers, true, format);
+  return new Spreadsheet({
+    data,
+    hasHeaders: true,
+    headers,
+    isTable: true,
+    format,
+    serializer: options?.serializer ?? ((string, header) => string),
+  });
 }
 
 export default map;

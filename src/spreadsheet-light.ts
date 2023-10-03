@@ -4,6 +4,23 @@ import { stringify } from "./stringify.js";
 import map from "./map.js";
 import symbols from "./symbols.js";
 import isJSON from "./is-json.js";
+import { ParseOptions } from "./types.js";
+import { Spreadsheet } from "./spreadsheet/spreadsheet.js";
+import { EmptyStringError, FirstCharacterInvalidError } from "./errors.js";
+import { ParseContext } from "./parser/context.js";
+
+/** A stringified CSV object */
+let stringified: boolean = false;
+let memoized: string | null = null;
+
+/** The current CSV data */
+let _csv: Spreadsheet<any>;
+
+/** Cleans the current memoization state */
+function cleanMemoization() {
+  memoized = null;
+  stringified = true;
+}
 
 /**
  * @module
@@ -13,9 +30,39 @@ const xsv = {
   /**
    * This function parses a string into a CSV object
    * @param {string} string The string to be processed
-   * @param options Parse options to customize behaviour
+   * @param {ParseOptions} options Parse options to customize behaviour
    */
-  parse,
+  parse(string: string, options?: ParseOptions) {
+    // Creates a new parse context
+    const context = new ParseContext(string, options);
+    // If the memoization option is on, check if the value was parsed already
+    if (options?.memoize === true) {
+      // Rterun the stored data if if memoization is found
+      if (memoized === string) return _csv;
+    }
+    // If strict mode is on and there is no content throw an error
+    if (string === "") {
+      if (context.strictMode) {
+        cleanMemoization();
+        throw EmptyStringError;
+      }
+    }
+    // If the content is just the character quote return an error
+    else if (context.format.isQuote(context.string)) {
+      cleanMemoization();
+      throw FirstCharacterInvalidError;
+    }
+
+    // Store new memoized on parsing success
+    if (options?.memoize) memoized = string;
+    // Generates the new CSV object
+    const csv = new Spreadsheet(parse(context));
+    // Saves in memory the recently created object
+    if (options?.memoize) _csv = csv;
+
+    // Return a copy to avoid reference issues with the memoized version
+    return csv.clone();
+  },
   /**
    * Transforms a data object into a string using the set format
    * @param object The data to be stringified to CSV format

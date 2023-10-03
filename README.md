@@ -342,6 +342,33 @@ Won,China
 sp.sort("name", (a, b) => a.localeCompare(b));
 ```
 
+### Updating
+
+Sometimes you may want the same `Spreadsheet` object with the same format and subscriptions to update the whole dataset. If that is the case the `update` function will help to generate new values with the same object.
+Keep in mind this is a complete update thus the last parse options that were passed are missing at this point, be sure to pass them again if you want to have the same behavior as before else the default ones will be used. Only the following values are preserved:
+
+- serializer
+- format
+- hasHeaders
+
+If any of the previous values are passed in the options these will be overwritten.
+
+```js
+import fs from "fs/promises";
+import xsv from "spreadsheet-light";
+
+async function main() {
+  const file_1 = await fs.readFile("file-1.csv");
+  const file_2 = await fs.readFile("file-2.csv");
+  // Generate the object
+  const sp = xsv.parse(file_1, { hasHeaders: true });
+  // Update with new options and preserve some ones
+  sp.update(file_2, { hasHeaders: false });
+}
+
+main().catch(console.error);
+```
+
 ### Serialization
 
 You can _serialize_ your content again if you want to use it for other purposes;
@@ -522,3 +549,21 @@ spreadsheet = xsv.map(list, options);
 ```
 
 > **_Note_:** If a value for a field is not found when mapping, the empty value from the format will be used.
+
+## Subscriptions
+
+The `Spreadsheet` object supports internally subscriptions to `write`, `bulk`, `insert`, `remove`, `drop`, `sort` and `update` functions. You can subscribe to listen for these actions when taken and update your app content. To subscribe call the `subscribe` function from the generated object with have two parameters. The first is the action to `function` to listen and the second a `listener` for when this action happens.
+
+```js
+import xsv from "spreadsheet-light";
+// Read some CSV file
+const csv = await fs.readFile("file.csv");
+// Generate your object
+const sp = xsv.parse(csv);
+// Subscribe to some action
+sp.subscribe("insert", (values, row) => {
+  // Do something when new data is inserted
+});
+// Take your action
+sp.insert([[1, 2, 3]], "@bottom");
+```

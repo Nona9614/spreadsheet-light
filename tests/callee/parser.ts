@@ -2,10 +2,12 @@ import { expect } from "chai";
 import _ from "../create-callee";
 import type { TestParser } from "../types";
 
+import xsv from "../../src/spreadsheet-light";
 import { transforms } from "../../src/parser/transforms";
 import { parse } from "../../src/parser/parse";
 import { process } from "../../src/parser/process";
 import { ParseContext } from "../../src/parser/context";
+import { Spreadsheet } from "../../src/spreadsheet/spreadsheet";
 
 export default function createParserTest(key: TestParser) {
   switch (key) {
@@ -58,18 +60,20 @@ export default function createParserTest(key: TestParser) {
       return _(
         key,
         function (item) {
-          const _parse = parse(item.string, item.options);
+          const context = new ParseContext(item.string, item.options);
+          const build = parse(context);
+          const csv = new Spreadsheet(build);
           const values: any = {
-            string: _parse.string,
-            hasHeaders: _parse.hasHeaders,
-            headers: _parse.headers,
-            data: _parse.toMatrix(item.ignoreHeaders),
-            isTable: _parse.isTable,
+            string: csv.string,
+            hasHeaders: csv.hasHeaders,
+            headers: csv.headers,
+            data: csv.toMatrix(item.ignoreHeaders),
+            isTable: csv.isTable,
           };
-          if (_parse.isTable) values.size = _parse.size;
+          if (csv.isTable) values.size = csv.size;
           expect(values).to.eql(item.expected);
         },
-        parse,
+        xsv.parse,
       );
     default:
       throw new Error(`Check if a parser '${key}' test is missing`);

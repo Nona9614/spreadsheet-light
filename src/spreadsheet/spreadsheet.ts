@@ -18,10 +18,17 @@ import type {
   RowSelector,
   SpreadsheetSubscriberType,
   SpreadsheetRunner,
+  SpreadsheetSubscriptions,
+  SpreadsheetBuild,
+  ParseOptions,
+  UpdateOptions,
+  InputSerializer,
 } from "../types.js";
 import { isValueObject } from "../is-value-object.js";
 import { clone } from "../clone.js";
 import { TextFormat } from "../format.js";
+import { parse } from "../parser/parse.js";
+import { ParseContext } from "../parser/context.js";
 
 /** Checks if some string can be considered as a limit */
 function toCellPosition(dimension: Pointer, s: string | number) {
@@ -121,24 +128,28 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     return this.#stringify();
   }
 
-  /**
-   * @param clone The string where the CSV object comes from
-   */
-  constructor(
-    data: ValueData<V>,
-    isTable: boolean,
-    headers: string[],
-    hasHeaders: boolean,
-    format: TextFormat,
-    clone?: string,
-  ) {
-    this.#data = data;
+  /** All the subscription to activate when some action is taken */
+  #subscriptions: SpreadsheetSubscriptions;
+  /** The serializer that was used to parse this object */
+  #serializer: InputSerializer;
 
+  constructor({
+    data,
+    isTable,
+    headers,
+    hasHeaders,
+    format,
+    clone,
+    subscriptions,
+    serializer,
+  }: SpreadsheetBuild<V>) {
+    this.#data = data;
     this.#isTable = isTable;
     this.#headers = headers;
     this.#hasHeaders = hasHeaders;
-    this.#data = data;
     this.#format = format;
+    this.#subscriptions = subscriptions ?? ({} as any);
+    this.#serializer = serializer;
 
     if (clone !== undefined) {
       this.#string = clone;
@@ -388,11 +399,6 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     return spliced;
   }
 
-  /** All the subscription to activate when some action is taken */
-  #subscriptions: {
-    [key in SpreadsheetSubscriberType]: Map<string, SpreadsheetRunner<key>>;
-  } = {} as any;
-
   /**
    * Subscribes to listen when some action is taken in the `spreadsheet` object
    * @param type The action to listen to
@@ -547,17 +553,57 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     else return this.#stringify();
   }
 
+  /**
+   * Creates a deep clone from this object and updates the data
+   * using the passed CSV string, keeping the format
+   * @param string The string to use to parse the new data
+   * @param options The parse options to use to generate the updated CSV object
+   * @remarks This is a complete update thus the last parse options that were passed are missing at this point,
+   * be sure to pass them again here if you want to have the same behavior as before else the default ones
+   * will be used. Only the following values are preserved:
+   * - serializer
+   * - format
+   * - hasHeaders
+   */
+  update(string: string, options?: UpdateOptions) {
+    // Preserved values before updating
+    const _options: ParseOptions = {
+      format: this.#format,
+      hasHeaders: this.#hasHeaders,
+      serializer: this.#serializer,
+    };
+    // Add to the default values the new ones if present
+    if (options) Object.assign(_options, options);
+    // Creates a new parse context
+    const context = new ParseContext(string, _options);
+    // Generates the new CSV object
+    const { data, isTable, headers } = parse(context);
+    this.#isTable = isTable;
+    this.#headers = headers;
+    this.#hasHeaders = context.hasHeaders;
+    this.#format = context.format;
+    this.#serializer = this.#serializer;
+    this.#data = data as ValueData<V>;
+    this.#string = context.string;
+    // Check if there are registered subscriptions and runs them
+    if (this.#subscriptions.update) {
+      this.#subscriptions.update.forEach((rn) => rn(this));
+    }
+  }
+
   /** Creates a deep clone from this object */
   clone() {
     const data = clone(this.#data);
     const headers = this.hasHeaders ? clone(this.#headers) : [];
-    return new Spreadsheet<V>(
+    return new Spreadsheet<V>({
       data,
-      this.#isTable,
+      isTable: this.#isTable,
       headers,
-      this.#hasHeaders,
-      this.#format,
-      this.#string,
-    );
+      hasHeaders: this.#hasHeaders,
+      format: this.#format,
+      serializer: this.#serializer,
+      subscriptions: this.#subscriptions,
+      clone: this.#string,
+    });
   }
 }

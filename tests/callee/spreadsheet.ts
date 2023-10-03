@@ -22,13 +22,14 @@ const buildCSV = function (item: any) {
     serializer: undefined | string;
   } = item;
 
-  return new Spreadsheet(
+  return new Spreadsheet({
     data,
-    content.isTable,
-    content.headers,
-    content.hasHeaders,
-    new TextFormat(item.format),
-  );
+    isTable: content.isTable,
+    headers: content.headers,
+    hasHeaders: content.hasHeaders,
+    format: new TextFormat(item.format),
+    serializer: (string, header) => string,
+  });
 };
 
 type InvalidCase = "undefined" | "symbol" | "function" | "class";
