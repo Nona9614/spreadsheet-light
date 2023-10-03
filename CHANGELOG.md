@@ -2,7 +2,8 @@
 
 Select a Spreadsheet Light version below to view the changelog history:
 
-- [Spreadsheet Light 0.2.0](#V0.2.1) **Current**
+- [Spreadsheet Light 0.2.0](#V0.2.2) **Current**
+- [Spreadsheet Light 0.2.0](#V0.2.1)
 - [Spreadsheet Light 0.2.0](#V0.2.0)
 - [Spreadsheet Light 0.1.11](#V0.1.11)
 - [Spreadsheet Light 0.1.10](#V0.1.10)
@@ -10,9 +11,13 @@ Select a Spreadsheet Light version below to view the changelog history:
 - [Spreadsheet Light 0.1.7](#V0.1.7)
 - [Spreadsheet Light 0.1.6](#V0.1.6)
 
+## V0.2.2
+
+- Fixing issues when generating subscriptions as in backend side will depend on the `crypto` library and in the client side will use the `crypto` from the `window` object.
+
 ## V0.2.1
 
-Adding support for updating the content within the same object with a new CSV string. To this function can be subscribed too.
+- Adding support for updating the content within the same object with a new CSV string. To this function can be subscribed too.
 
 ## V0.2.0
 

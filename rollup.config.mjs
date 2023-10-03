@@ -130,8 +130,13 @@ const ESM_OUTPUT_OPTIONS = {
    * @link https://rollupjs.org/configuration-options/#output-intro-output-outro
    */
   intro: `
-import crypto from "crypto";
-const uuid = () => crypto.randomBytes(20).toString("hex");
+let uuid;
+if (this && this.crypto) {
+  uuid = () => crypto.randomUUID();    
+} else {
+  const crypto = await import("crypto");
+  uuid = () => crypto.randomBytes(20).toString("hex");
+}
 `.trim(),
 };
 
@@ -150,8 +155,13 @@ const CJS_OUTPUT_OPTIONS = {
    * @link https://rollupjs.org/configuration-options/#output-intro-output-outro
    */
   intro: `
-const crypto = require("crypto");
-const uuid = () => crypto.randomBytes(20).toString("hex");
+  let uuid;
+  if (this && this.crypto) {
+    uuid = () => crypto.randomUUID();    
+  } else {
+    const crypto = require("crypto");
+    uuid = () => crypto.randomBytes(20).toString("hex");    
+  }
 `.trim(),
 };
 
@@ -184,7 +194,7 @@ const UMD_OUTPUT_OPTIONS = {
    * Adds the uuid from the global object crypto as it is what is expected
    * @link https://rollupjs.org/configuration-options/#output-intro-output-outro
    */
-  intro: "const uuid = crypto.randomUUID;",
+  intro: "const uuid = () => window.crypto.randomUUID();",
 };
 
 /**
