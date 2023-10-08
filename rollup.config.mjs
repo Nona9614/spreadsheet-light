@@ -131,7 +131,7 @@ const ESM_OUTPUT_OPTIONS = {
    */
   intro: `
 let uuid;
-if (this && this.crypto) {
+if (globalThis.crypto?.randomUUID) {
   uuid = () => crypto.randomUUID();    
 } else {
   const crypto = await import("crypto");
@@ -156,7 +156,7 @@ const CJS_OUTPUT_OPTIONS = {
    */
   intro: `
   let uuid;
-  if (this && this.crypto) {
+  if (globalThis.crypto?.randomUUID) {
     uuid = () => crypto.randomUUID();    
   } else {
     const crypto = require("crypto");
