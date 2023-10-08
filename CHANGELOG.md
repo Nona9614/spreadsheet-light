@@ -15,6 +15,7 @@ Select a Spreadsheet Light version below to view the changelog history:
 
 ## V0.2.4
 
+- Fixing `range` function is it was throwing `x` and `y` errors the opposite
 - Fixing bug for the `toRange` internal function, it was returning the opposite way the `x` and `y` cordintates
 - Fixing type options from `insert` to be optional as they really are
 - Fixing type `parse` function to accept a generic and start it as `ValueObject`

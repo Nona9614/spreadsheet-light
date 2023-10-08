@@ -143,9 +143,13 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
           const value = csv.range(from, to);
           expect(value).to.eql(expected);
         },
-        function (from: RangeSelector, to: RangeSelector) {
+        function (
+          values: ValueData<any>,
+          from: RangeSelector,
+          to: RangeSelector,
+        ) {
           const csv = buildCSV({
-            data: [["a"]],
+            data: values,
             content: {
               isTable: true,
               headers: [],

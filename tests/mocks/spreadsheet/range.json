@@ -143,6 +143,11 @@
             "throws": "The column 2 was not found in one of the lines",
             "message": "Should throw an error when is trying to read a non existsing column",
             "params": [
+                [
+                    [
+                        "a"
+                    ]
+                ],
                 {
                     "row": 1,
                     "column": 1
@@ -159,6 +164,11 @@
             "throws": "The row 2 was not found in one of the lines",
             "message": "Should throw an error when is trying to read a non existsing row",
             "params": [
+                [
+                    [
+                        "a"
+                    ]
+                ],
                 {
                     "row": 1,
                     "column": 1
