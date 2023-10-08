@@ -23,7 +23,7 @@ All of the examples in this document uses `ECMA` syntax to import or export code
 
 ```js
 // ECMA Syntax
-import { xsv } from "spreadsheet-light";
+import xsv from "spreadsheet-light";
 
 // CommonJS Syntax
 const { xsv } = require("spreadsheet-light");
@@ -33,12 +33,15 @@ const { xsv } = require("spreadsheet-light");
 // For these cases you can force the imports like below.
 
 // For ECMA Scripts
-import { xsv } from "spreadsheet-light/esm";
+import xsv from "spreadsheet-light/esm";
 // For CommonJS Scripts
 const { xsv } = require("spreadsheet-light/cjs");
 // For browser applications UMD
-const { xsv } = require("spreadsheet-light/umd");
+import * as xsv from "spreadsheet-light/umd";
+const xsv = require("spreadsheet-light/umd");
 ```
+
+> **Note:** This library uses a top level `await` when the `esm` mode is used. If you are using svelte, go to the [target](https://github.com/vitejs/vite/issues/13756) link for more information as this framework for retrocompatibility skips this types of imports. At this point if you go to the [can i use](https://caniuse.com/?search=top%20level%20await) page about this topic most modern browsers supports this feature. Set `optimizeDeps.esbuildOptions.target` and `build.target` to `esnext` in vite.config to enable this one if you would like to use it or if you really need to keep another `target` mode import the library as `cjs`.
 
 ## Format
 

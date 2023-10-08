@@ -2,7 +2,9 @@
 
 Select a Spreadsheet Light version below to view the changelog history:
 
-- [Spreadsheet Light 0.2.0](#V0.2.2) **Current**
+- [Spreadsheet Light 0.2.0](#V0.2.4) **Current**
+- [Spreadsheet Light 0.2.0](#V0.2.3)
+- [Spreadsheet Light 0.2.0](#V0.2.2)
 - [Spreadsheet Light 0.2.0](#V0.2.1)
 - [Spreadsheet Light 0.2.0](#V0.2.0)
 - [Spreadsheet Light 0.1.11](#V0.1.11)
@@ -10,6 +12,16 @@ Select a Spreadsheet Light version below to view the changelog history:
 - [Spreadsheet Light 0.1.9](#V0.1.9)
 - [Spreadsheet Light 0.1.7](#V0.1.7)
 - [Spreadsheet Light 0.1.6](#V0.1.6)
+
+## V0.2.4
+
+- Fixing bug for the `toRange` internal function, it was returning the opposite way the `x` and `y` cordintates
+- Fixing type options from `insert` to be optional as they really are
+- Fixing type `parse` function to accept a generic and start it as `ValueObject`
+
+## V0.2.3
+
+- Changing evaluation of `this` to `globalThis` to find the function `randomUUID` fixing errors like ECMA bundlers replacing `this` value to `void 0` making the evaluation nonsense.
 
 ## V0.2.2
 
