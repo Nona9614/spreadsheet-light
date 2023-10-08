@@ -1,18 +1,18 @@
 import { alphabet } from "./alphabet.js";
-import { Position } from "../types.js";
+import { CellPosition } from "../types.js";
 import { Pointer } from "./pointer.js";
 
 /**
  * A number, or a string containing a number.
  */
-export class Cursor implements Position {
+export class Cursor implements CellPosition {
   row: number = 1;
   column: number = 1;
 
   /**
    * Returns the current cursor position
    */
-  public get position(): Position {
+  public get position(): CellPosition {
     return {
       row: this.row,
       column: this.column,
@@ -22,7 +22,7 @@ export class Cursor implements Position {
   /**
    * @param position The start coordinates from the pointer
    */
-  constructor(position?: Position) {
+  constructor(position?: CellPosition) {
     if (position) {
       this.row = position.row;
       this.column =

@@ -11,7 +11,7 @@ import type {
   CellSelector,
   Size,
   RangeSelector,
-  Pointer,
+  CellPointer,
   SpreadsheetContent,
   ValueData,
   SpreadhseetInsertOptions,
@@ -31,7 +31,7 @@ import { parse } from "../parser/parse.js";
 import { ParseContext } from "../parser/context.js";
 
 /** Checks if some string can be considered as a limit */
-function toCellPosition(dimension: Pointer, s: string | number) {
+function toCellPosition(dimension: CellPointer, s: string | number) {
   switch (s) {
     case "@bottom":
       return dimension.y;
@@ -47,7 +47,7 @@ function toCellPosition(dimension: Pointer, s: string | number) {
 }
 
 /** Checks if some string can be considered as a limit */
-function toRowIndex(dimension: Pointer, s: RowSelector) {
+function toRowIndex(dimension: CellPointer, s: RowSelector) {
   if (s === "@bottom") {
     return dimension.y;
   } else {
@@ -57,7 +57,7 @@ function toRowIndex(dimension: Pointer, s: RowSelector) {
 }
 
 /** Checks if some string can be considered as a limit */
-function toRangePointer(dimension: Pointer, s: RangeSelector) {
+function toRangePointer(dimension: CellPointer, s: RangeSelector) {
   switch (s) {
     case "@left-bottom":
       return {
@@ -81,13 +81,13 @@ function toRangePointer(dimension: Pointer, s: RangeSelector) {
       };
     default:
       return {
-        x: toCellPosition(dimension, s.row),
-        y: toCellPosition(dimension, s.column),
+        y: toCellPosition(dimension, s.row),
+        x: toCellPosition(dimension, s.column),
       };
   }
 }
 
-const _getDimension = (data: any[][]): Pointer => {
+const _getDimension = (data: any[][]): CellPointer => {
   return {
     x: data[0].length - 1,
     y: data.length - 1,
@@ -242,16 +242,18 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     const dimension = _getDimension(this.#data);
     const s = toRangePointer(dimension, start);
     const v = {
-      x: s.x + values.length - 1,
+      x: 0,
       y: s.y + values.length - 1,
     };
 
     // Ignore values boyond the data scope
     if (dimension.y < v.y) v.y = dimension.y;
-    if (dimension.x < v.x) v.x = dimension.x;
 
     for (let y = s.y; y <= v.y; y++) {
       const column = values[y - s.y];
+      // Ignore values boyond the data scope
+      v.x = s.x + column.length - 1;
+      if (dimension.x < v.x) v.x = dimension.x;
       for (let x = s.x; x <= v.x; x++) {
         const value = column[x - s.x];
         // Validate the value exists

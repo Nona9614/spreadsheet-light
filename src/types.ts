@@ -27,7 +27,7 @@ export type Props = {
 /**
  * A row, column position
  */
-export type Position = {
+export type CellPosition = {
   row: number;
   column: number | string;
 };
@@ -35,7 +35,7 @@ export type Position = {
 /**
  * A x, y coordintates
  */
-export type Pointer = {
+export type CellPointer = {
   x: number;
   y: number;
 };
@@ -106,9 +106,9 @@ export interface SpreadsheetContent {
  */
 export type SpreadhseetInsertOptions = {
   /** The row to start writing the content (If not passed will be evaluated as 1) */
-  start: CellSelector;
+  start?: CellSelector;
   /**  If passed the data will be inserted after the desired row */
-  after: boolean;
+  after?: boolean;
 };
 
 /**

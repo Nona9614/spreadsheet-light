@@ -4,7 +4,7 @@ import { stringify } from "./stringify.js";
 import map from "./map.js";
 import symbols from "./symbols.js";
 import isJSON from "./is-json.js";
-import { ParseOptions } from "./types.js";
+import { ParseOptions, ValueObject } from "./types.js";
 import { Spreadsheet } from "./spreadsheet/spreadsheet.js";
 import { EmptyStringError, FirstCharacterInvalidError } from "./errors.js";
 import { ParseContext } from "./parser/context.js";
@@ -32,7 +32,7 @@ const xsv = {
    * @param {string} string The string to be processed
    * @param {ParseOptions} options Parse options to customize behaviour
    */
-  parse(string: string, options?: ParseOptions) {
+  parse<T extends ValueObject>(string: string, options?: ParseOptions) {
     // Creates a new parse context
     const context = new ParseContext(string, options);
     // If the memoization option is on, check if the value was parsed already
@@ -56,7 +56,7 @@ const xsv = {
     // Store new memoized on parsing success
     if (options?.memoize) memoized = string;
     // Generates the new CSV object
-    const csv = new Spreadsheet(parse(context));
+    const csv = new Spreadsheet<T>(parse(context));
     // Saves in memory the recently created object
     if (options?.memoize) _csv = csv;
 
