@@ -23,6 +23,7 @@ import type {
   ParseOptions,
   UpdateOptions,
   InputSerializer,
+  SpreadsheetReducer,
 } from "../types.js";
 import { isValueObject } from "../is-value-object.js";
 import { clone } from "../clone.js";
@@ -548,6 +549,41 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
   }
 
   /**
+   * Reduces the data to a custom object
+   * @param initialValue The value to start everything before reduce
+   * @param reducer The reduce function to transform each line to a value
+   * @param includeHeaders If the headers should be included when using the reducer or not (default is false)
+   */
+  reduce<T extends any>(
+    initialValue: T,
+    reducer: SpreadsheetReducer<T, V>,
+    includeHeaders: boolean = false,
+  ): T {
+    /** Start value */
+    let value = initialValue;
+    // Creates the headers
+    const headers =
+      this.#hasHeaders && includeHeaders === true
+        ? clone(this.headers)
+        : undefined;
+    // Creates a clone to avoid possible interaction with the current data
+    const data = clone(this.#data);
+    // If the headers option is set, use the reducer with the headers too
+    if (headers) value = reducer(headers, value, 0, data, false, headers);
+    // Check if the headers should be present and if so generate an offset of
+    // plus one
+    const offset = headers ? 1 : 0;
+    // Any other value will be reduced
+    const length = data.length + offset;
+    const last = length - 1;
+    for (let y = offset; y < length; y++) {
+      value = reducer(data[y - offset], value, y, data, y == last, headers);
+    }
+    // At the end returns the final generated value
+    return value;
+  }
+
+  /**
    * Returns the data set as a string
    */
   toString() {
@@ -568,6 +604,8 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
    * - hasHeaders
    */
   update(string: string, options?: UpdateOptions) {
+    // Mark as content changed
+    this.#changed = true;
     // Preserved values before updating
     const _options: ParseOptions = {
       format: this.#format,

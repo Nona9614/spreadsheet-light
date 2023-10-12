@@ -40,7 +40,7 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
       return _(key, function (item) {
         const csv = buildCSV(item);
         csv.sort(item.sortHeader, (a, b) => a.localeCompare(b));
-        expect(csv.toMatrix()).to.eql(item.expected);
+        expect(item.expected).to.eql(csv.toMatrix());
       });
     case "bulk":
       return _(
@@ -96,7 +96,7 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
           const { expected, options, writtable } = item;
           csv.insert(writtable, options);
           const data = csv.toMatrix();
-          expect(data).to.eql(expected);
+          expect(expected).to.eql(data);
         },
         function (is: InvalidCase, options?: SpreadhseetInsertOptions) {
           const csv = buildCSV({
@@ -141,7 +141,7 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
           const csv = buildCSV(item);
           const { expected, from, to } = item;
           const value = csv.range(from, to);
-          expect(value).to.eql(expected);
+          expect(expected).to.eql(value);
         },
         function (
           values: ValueData<any>,
@@ -164,7 +164,7 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
         const csv = buildCSV(item);
         const { expected, selector } = item;
         const v = csv.read(selector.row, selector.column);
-        expect(v).to.eql(expected);
+        expect(expected).to.eql(v);
       });
     case "write":
       return _(
@@ -214,14 +214,32 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
         const csv = buildCSV(item);
         const { expected } = item;
         const value = csv.toArray();
-        expect(value).to.eql(expected);
+        expect(expected).to.eql(value);
       });
     case "to-matrix":
       return _(key, function (item) {
         const csv = buildCSV(item);
         const { expected } = item;
         const value = csv.toMatrix();
-        expect(value).to.eql(expected);
+        expect(expected).to.eql(value);
+      });
+    case "reduce":
+      return _(key, function (item) {
+        const csv = buildCSV(item);
+        const { expected } = item;
+        const liner = (
+          line: any[],
+          value: string,
+          index: number,
+          data: any[],
+          isLast: boolean,
+        ) => value + line.join(",") + (isLast ? "" : "\r\n");
+        const value = csv.reduce<string>(
+          item.initialValue,
+          liner,
+          item.includeHeaders,
+        );
+        expect(expected).to.eql(value);
       });
     case "remove":
       return _(key, function (item) {
@@ -235,7 +253,7 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
         const csv = buildCSV(item);
         const { expected, rows } = item;
         csv.drop(rows);
-        expect(csv.toString()).to.eql(expected);
+        expect(expected).to.eql(csv.toString());
       });
     default:
       throw new Error(`Check if a spreadsheet '${key}' test is missing`);

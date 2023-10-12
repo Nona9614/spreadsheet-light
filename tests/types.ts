@@ -180,6 +180,16 @@ type ToMatrix = GeneralTest<
   ValueData<any>
 >;
 
+type Reduce = GeneralTest<
+  {
+    data: ValueData<any>;
+    content: SpreadsheetContent;
+    initialValue: string;
+    includeHeaders?: boolean;
+  },
+  any
+>;
+
 type Sort = GeneralTest<
   {
     data: ValueData<any>;
@@ -235,6 +245,7 @@ export type TestSpreadsheet =
   | "drop"
   | "to-array"
   | "to-matrix"
+  | "reduce"
   | "sort";
 
 export type TestSource = "clone" | "stringify" | "is-value-object" | "map";
@@ -256,6 +267,7 @@ export const isSpreadsheetTest = (value: string): value is TestSpreadsheet =>
   value === "drop" ||
   value === "to-array" ||
   value === "to-matrix" ||
+  value === "reduce" ||
   value === "sort";
 export const isSourceTest = (value: string): value is TestSource =>
   value === "stringify" ||
@@ -289,6 +301,8 @@ export type Test<T extends TestName> = T extends "transforms"
   ? RangeContent
   : T extends "to-matrix"
   ? ToMatrix
+  : T extends "reduce"
+  ? Reduce
   : T extends "to-array"
   ? ToArray
   : T extends "sort"

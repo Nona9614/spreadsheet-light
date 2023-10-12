@@ -276,4 +276,23 @@ export type SpreadsheetBuild<V extends ValueObject> = {
   subscriptions?: SpreadsheetSubscriptions;
 };
 
+/**
+ * The options to set a custom behavior to the `update` function
+ */
 export type UpdateOptions = Exclude<ParseOptions, "hasHeaders" | "format">;
+
+/** The spreadsheet reducer to be used to generate custom content from */
+export type SpreadsheetReducer<T extends any, V extends ValueObject> = (
+  /** The line to be proceessed by the reducer */
+  line: V[],
+  /** The value that is being generated on each reduction */
+  value: T,
+  /** The current index where the line is being used */
+  index: number,
+  /** The data that is used for the reducer */
+  data: ValueData<V>,
+  /** Check of the current line if it is the last or not */
+  isLast: boolean,
+  /** The posible headers that are being used by the reducer */
+  headers?: string[],
+) => T;

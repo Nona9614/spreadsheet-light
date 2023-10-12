@@ -1,0 +1,56 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d"
+                ]
+            ],
+            "reduce": true,
+            "content": {
+                "isTable": true,
+                "hasHeaders": true,
+                "headers": [
+                    "h1",
+                    "h2"
+                ]
+            },
+            "initialValue": "",
+            "includeHeaders": true,
+            "expected": "h1,h2\r\na,b\r\nc,d",
+            "message": "Should return the content as a string including the headers"
+        },
+        {
+            "skip": false,
+            "data": [
+                [
+                    "a",
+                    "b"
+                ],
+                [
+                    "c",
+                    "d"
+                ]
+            ],
+            "reduce": true,
+            "content": {
+                "isTable": true,
+                "hasHeaders": true,
+                "headers": [
+                    "h1",
+                    "h2"
+                ]
+            },
+            "initialValue": "",
+            "expected": "a,b\r\nc,d",
+            "message": "Should return the content as a string not including the headers"
+        }
+    ]
+}

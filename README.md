@@ -67,6 +67,10 @@ const format = new TextFormat(values);
 
 // In this function you can use it to create safe strings
 // that can be parsed easily on any CSV libary
+// The library already uses this internally so be carefull where you use this
+// any `SerializableInput` does not need it on the `toString` method as it managed this way already
+// The best use case for this is when you have your own algorithm that transforms
+// `ValueData` into CSV `string`
 const string = format.toSafeString('\r\n",'); // '"\r\n\"\","'
 
 // In this function you can evaluate if some string is a Quote string
@@ -390,6 +394,14 @@ let array = spreadsheet.toArray();
 // Or you can get a plain matrix of columns (y), rows (x) to play with
 // To access information you should place the y first like in matrix[y][x];
 let matrix = spreadsheet.toMatrix();
+
+// Or you can have a customized behavior using the `reduce` function
+// to go line by line and return your custom object
+// The function ignores the headers becuase as headers are already an
+// array and they be missing they can be reduced separately
+// Plus these can be added to the reducer as the first line setting the
+// option `ignore` option to false
+let reduced = spreadsheet.reduce(() => line, "");
 
 // Or you can create a clone from the original object if you don't want to
 // interfere with the data from the original one

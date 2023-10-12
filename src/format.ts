@@ -43,6 +43,7 @@ export class TextFormat implements Required<SpreadhseetFormat> {
    * using this format
    */
   toSafeString(object: ValueObject) {
+    if (object === this.empty) return "";
     const string =
       object !== null && hasJsonProtoype(object)
         ? JSON.stringify(object)
