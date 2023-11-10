@@ -98,7 +98,7 @@ async function bundler({ inputOptions, outputOptions }) {
 const ESM_INPUT_OPTIONS = {
   input: "src/exports/esm.ts",
   context: "this",
-  external: ["dynason", "crypto"],
+  external: ["crypto"],
   plugins: [ts()],
 };
 
@@ -111,7 +111,7 @@ const ESM_INPUT_OPTIONS = {
 const CJS_INPUT_OPTIONS = {
   input: "src/exports/cjs.ts",
   context: "this",
-  external: ["dynason", "crypto"],
+  external: ["crypto"],
   plugins: [ts()],
 };
 

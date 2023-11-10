@@ -1,17 +1,17 @@
-import { Coordinates } from "../types.js";
+import { CellPointer } from "../types.js";
 import { Cursor } from "./cursor.js";
 
 /**
  * An x,y position from a table
  */
-export class Pointer implements Coordinates {
+export class Pointer implements CellPointer {
   x: number = 0;
   y: number = 0;
 
   /**
    * Returns the current pointer coordinates
    */
-  public get coordinates(): Coordinates {
+  public get coordinates(): CellPointer {
     return {
       x: this.x,
       y: this.y,
@@ -21,7 +21,7 @@ export class Pointer implements Coordinates {
   /**
    * @param coordinates The start coordinates from the pointer
    */
-  constructor(coordinates?: Coordinates) {
+  constructor(coordinates?: CellPointer) {
     if (coordinates) {
       this.x = coordinates.x;
       this.y = coordinates.y;
@@ -31,7 +31,7 @@ export class Pointer implements Coordinates {
   /**
    * @param coordinates The new position for the coordinates
    */
-  go(coordinates: Partial<Coordinates>) {
+  go(coordinates: Partial<CellPointer>) {
     if (coordinates.x) this.x = coordinates.x;
     if (coordinates.y) this.y = coordinates.y;
     return this;
@@ -40,7 +40,7 @@ export class Pointer implements Coordinates {
   /**
    * @param coordinates Adds the passed coordinates to the current ones
    */
-  move(coordinates: Partial<Coordinates>) {
+  move(coordinates: Partial<CellPointer>) {
     if (coordinates.x) this.x += coordinates.x;
     if (coordinates.y) this.y += coordinates.y;
     return this;

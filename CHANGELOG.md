@@ -2,7 +2,8 @@
 
 Select a Spreadsheet Light version below to view the changelog history:
 
-- [Spreadsheet Light 0.2.0](#V0.2.8) **Current**
+- [Spreadsheet Light 0.2.0](#V0.2.9) **Current**
+- [Spreadsheet Light 0.2.0](#V0.2.8)
 - [Spreadsheet Light 0.2.0](#V0.2.6)
 - [Spreadsheet Light 0.2.0](#V0.2.5)
 - [Spreadsheet Light 0.2.0](#V0.2.4)
@@ -15,6 +16,10 @@ Select a Spreadsheet Light version below to view the changelog history:
 - [Spreadsheet Light 0.1.9](#V0.1.9)
 - [Spreadsheet Light 0.1.7](#V0.1.7)
 - [Spreadsheet Light 0.1.6](#V0.1.6)
+
+## V0.2.9
+
+- Removing external dependencies
 
 ## V0.2.8
 

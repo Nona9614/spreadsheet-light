@@ -1,4 +1,3 @@
-import { replacer, Matcher } from "dynason";
 import { WINDOWS_BREAK_LINE } from "./format.js";
 import { Spreadsheet } from "./spreadsheet/spreadsheet.js";
 import { ParseContext } from "./parser/context.js";
@@ -46,18 +45,21 @@ export const NotValidBase26String = new Error(
 
 export const NotValidMovement = new Error("The movement string is not valid");
 
-const NOT_TABLE_ERROR_TEMPLATE_STRING = `
+type TableErrorInformation = {
+  description: string;
+};
+const NOT_TABLE_ERROR_TEMPLATE_STRING = ({
+  description,
+}: TableErrorInformation) => `
 The CSV object must be validated as a table to take the following action:
-<description/>
+${description}
 `;
 
 /**
  * Thrown when an action is trying to be taken but the CSV is required to be a table
  */
 export const isNotTableError = (description: string) =>
-  new Error(
-    replacer(NOT_TABLE_ERROR_TEMPLATE_STRING, { description }, { mode: "xml" }),
-  );
+  new Error(NOT_TABLE_ERROR_TEMPLATE_STRING({ description }));
 
 export const NotAllowedValueError = new Error(`
 Values like undefined, symbols, classes and functions are not allowed, the only
@@ -87,8 +89,13 @@ export const NotValidLineLimitError = (l: string) =>
 export const NotValidRangeLimitError = (l: string) =>
   new Error(`The "${l}" is not a valid limit`);
 
-const INVAL_RANGE_SELECTOR_TEMPLATE_STRING = `
-"<value/>" is not a valid range selector, please use one of the following valid selectors:
+type RangeErrorInformation = {
+  value: string;
+};
+const INVAL_RANGE_SELECTOR_TEMPLATE_STRING = ({
+  value,
+}: RangeErrorInformation) => `
+"${value}" is not a valid range selector, please use one of the following valid selectors:
   - @left-up
   - @right-up
   - @left-down
@@ -97,20 +104,39 @@ const INVAL_RANGE_SELECTOR_TEMPLATE_STRING = `
 /**
  * Thrown when an invalid range string selector is passed
  */
-export const InvalidRangeSelector = (selector: string) =>
-  new Error(replacer(INVAL_RANGE_SELECTOR_TEMPLATE_STRING, { selector }));
+export const InvalidRangeSelector = (value: string) =>
+  new Error(INVAL_RANGE_SELECTOR_TEMPLATE_STRING({ value }));
 
+type ParseErrorInformation = {
+  startIndex: number;
+  errorIndex: number;
+  arrow: string;
+  here: string;
+  endOfLine: string;
+  breakLineMessage: string;
+  pre: string;
+  string: string;
+};
 /**
  * Parse error template string
  */
-const PARSE_ERROR_TEMPLATE_STRING = `
-Invalid string from position <start-index/> to position <error-index/>
+const PARSE_ERROR_TEMPLATE_STRING = ({
+  startIndex,
+  errorIndex,
+  here,
+  arrow,
+  pre,
+  string,
+  endOfLine,
+  breakLineMessage,
+}: ParseErrorInformation) => `
+Invalid string from position ${startIndex} to position ${errorIndex}
 -----------  CSV FILE  --------------
-<here/>
-<arrow/>
-<pre/><string/><end-of-line/>
+${here}
+${arrow}
+${pre}${string}${endOfLine}
 _____________________________________
-<break-line-message/>
+${breakLineMessage}
 `;
 
 /**
@@ -127,9 +153,9 @@ export const ParseError = (context: ParseContext) => {
   let spaces = "";
 
   // Replacer for the text file
-  const matcher: Matcher = {
-    startIndex: startIndex.toString(),
-    errorIndex: errorIndex.toString(),
+  const information: ParseErrorInformation = {
+    startIndex,
+    errorIndex,
     arrow: "",
     here: "",
     endOfLine: " (End of line)",
@@ -143,7 +169,7 @@ export const ParseError = (context: ParseContext) => {
 
   // Adding breakline message in case is not using the windows default break line
   if (brk === WINDOWS_BREAK_LINE)
-    matcher.breakLineMessage =
+    information.breakLineMessage =
       "\n\nDon't forget to check if the line breaker of your system is different than \\r\\n\n";
 
   // Tentative error message should not be longer thatn 25 characters
@@ -154,12 +180,12 @@ export const ParseError = (context: ParseContext) => {
     // Are the spaces to move the text arrow to reach the real character that caused the issue
     for (let index = 0; index <= errorIndex; index++) spaces += " ";
     // Sets the arrow to show the character that caused the error
-    matcher.here = spaces + "error here";
-    matcher.arrow = spaces + "↓";
+    information.here = spaces + "error here";
+    information.arrow = spaces + "↓";
     // In case the error is far from the end of line of the string remove it
-    if (!(slength - 1)) matcher.endOfLine = "";
+    if (!(slength - 1)) information.endOfLine = "";
     // Adds the string that caused the error
-    matcher.string = string;
+    information.string = string;
   }
   // When the string that caused the error is beyond the max characters
   // length another message will be displayed to fit in the screen
@@ -169,7 +195,7 @@ export const ParseError = (context: ParseContext) => {
     const isIndexSmall = errorIndex < MIN_LENGTH;
     // In the same way if there is lots of characters after the character
     // that caused the error, the end of line error will be replaced with dots
-    if (errorIndex !== slength - 1) matcher.endOfLine = TRIPLE_DOTS;
+    if (errorIndex !== slength - 1) information.endOfLine = TRIPLE_DOTS;
     // Checks if the space between the error and the start of the string is long
     // enough to write a "from-to" message
     const MINIMUM_FROM_TO_STRING_LENGTH = 20;
@@ -182,23 +208,23 @@ export const ParseError = (context: ParseContext) => {
       // Will create the spaces for the arrow relative to the index where the error was caused
       for (let i = startIndex; i <= errorIndex - (isIndexSmall ? 0 : 3); i++)
         spaces += " ";
-      matcher.here = tab + spaces + "error here";
+      information.here = tab + spaces + "error here";
     }
     // Creates a from-to message if the string that caused the error
     // is too long
     else {
       // Removes whitespaces with the offset that causes the "to here" message
       spaces = spaces.substring(7, spaces.length - 1);
-      matcher.here = tab + "from here" + spaces + "to here";
-      matcher.arrow = tab + "↓" + spaces + "↓";
+      information.here = tab + "from here" + spaces + "to here";
+      information.arrow = tab + "↓" + spaces + "↓";
     }
     // If there is much more characers before the character that caused
     // the error, some dots will be added to symbolize that
-    if (isIndexSmall) matcher.pre = TRIPLE_DOTS;
+    if (isIndexSmall) information.pre = TRIPLE_DOTS;
     // Cuts the part of the string that contains the error
-    matcher.string = string.substring(startIndex + 1, errorIndex);
+    information.string = string.substring(startIndex + 1, errorIndex);
   }
 
   // Finally returns the generated error message
-  return Error(replacer(PARSE_ERROR_TEMPLATE_STRING, matcher, { mode: "xml" }));
+  return Error(PARSE_ERROR_TEMPLATE_STRING(information));
 };
