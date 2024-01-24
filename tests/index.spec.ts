@@ -1,7 +1,9 @@
+import path from "path";
 import { describe, it } from "mocha";
 import { read, readSync, resolve, throu } from "xufs";
 import humps from "humps";
 
+// Types
 import {
   Callback,
   isParserTest,
@@ -14,19 +16,18 @@ import {
   ErrorCaseUnit,
   TestCaseUnit,
   isSourceTest,
-} from "./types";
-import path from "path";
+} from "./types.js";
 
 // Tests
-import createParserTest from "./callee/parser";
-import createSpreadsheetTest from "./callee/spreadsheet";
+import createParserTest from "./callee/parser.js";
+import createSpreadsheetTest from "./callee/spreadsheet.js";
 
 // System
 import url from "url";
-import createAlphabetTest from "./callee/alphabet";
 import { expect } from "chai";
 import { replacer } from "dynason";
-import createSourceTest from "./callee/source";
+import createAlphabetTest from "./callee/alphabet.js";
+import createSourceTest from "./callee/source.js";
 
 function capitalize(value: string) {
   const subs = value.substring(0, 1).toLocaleUpperCase();
@@ -67,7 +68,7 @@ async function collect() {
         if (!isFormatFile(pathname) && !isTemplateFile(pathname)) {
           const key = path
             .basename(pathname)
-            .replace(/.json/gi, "") as TestName;
+            .replace(/\.json/gi, "") as TestName;
           let callee: Callee<any>;
           if (isAlphabetTest(key)) {
             callee = createAlphabetTest(key);

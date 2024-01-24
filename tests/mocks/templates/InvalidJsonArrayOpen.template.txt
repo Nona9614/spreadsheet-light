@@ -1,0 +1,3 @@
+Parse error at position 0: The JSON array was never closed
+<fg-arrow/>↓<fg-reset/>
+<fg-error/>[<fg-reset/>1,"string",

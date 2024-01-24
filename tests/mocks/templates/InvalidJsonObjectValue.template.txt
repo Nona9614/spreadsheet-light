@@ -1,0 +1,3 @@
+Parse error at position 26: Between a value and the closing curly bracket '}', only spaces are valid
+                          <fg-arrow/>↓<fg-reset/>
+{"a":"item-0","b":"item-1"<fg-error/>X<fg-reset/>,"c":"item-1"}

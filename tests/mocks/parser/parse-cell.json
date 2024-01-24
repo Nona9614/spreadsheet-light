@@ -3,6 +3,96 @@
     "items": [
         {
             "skip": false,
+            "string": "\"a\"\"b\"\"c\"\"\"",
+            "expected": "a\"b\"c\"",
+            "message": "Should collect all of the double quote as quotes"
+        },
+        {
+            "skip": false,
+            "string": "",
+            "options": {
+                "format": {
+                    "empty": 0
+                }
+            },
+            "expected": 0,
+            "message": "Should return the empty value from an empty cell"
+        },
+        {
+            "skip": false,
+            "string": "\"\"",
+            "options": {
+                "format": {
+                    "empty": 0
+                }
+            },
+            "expected": 0,
+            "message": "Should reduce it as an empty value"
+        },
+        {
+            "skip": false,
+            "string": "\"\"\"\"",
+            "expected": "\"",
+            "message": "Should reduce it as a single quote"
+        },
+        {
+            "skip": false,
+            "string": "\"a\"",
+            "expected": "a",
+            "message": "Should remove surrounding quotes"
+        },
+        {
+            "skip": false,
+            "string": "a",
+            "expected": "a",
+            "message": "Should return any non special character as it is"
+        },
+        {
+            "skip": false,
+            "string": "a\"\"bb\"\"c\"\"",
+            "expected": "a\"bb\"c\"",
+            "message": "Should resolve any combination of special and normal characters"
+        },
+        {
+            "skip": false,
+            "string": "{\"a\":1}",
+            "expected": {
+                "a": 1
+            },
+            "message": "Should transform a text into an object"
+        },
+        {
+            "skip": false,
+            "string": "[\"a\"]",
+            "expected": [
+                "a"
+            ],
+            "message": "Should transform a text into an array"
+        },
+        {
+            "skip": false,
+            "string": "ab''''''cd''''''ef",
+            "options": {
+                "format": {
+                    "quote": "'''"
+                }
+            },
+            "expected": "ab'''cd'''ef",
+            "message": "Should resolve quotes longer than one character"
+        },
+        {
+            "skip": false,
+            "string": "ab''cd''ef",
+            "options": {
+                "format": {
+                    "quote": "'"
+                }
+            },
+            "expected": "ab'cd'ef",
+            "message": "Should resolve custom quotes"
+        },
+        {
+            "skip": false,
             "string": "abc",
             "expected": "abc",
             "message": "Should keep it as string"
@@ -139,18 +229,48 @@
             "serializer": "date",
             "expected": "2018/12/05",
             "message": "Should transform to customized case"
+        }
+    ],
+    "errors": [
+        {
+            "skip": false,
+            "name": "DoubleQuoteError",
+            "throws": {
+                "fg-arrow": "\u001B[36m",
+                "fg-error": "\u001B[93m",
+                "fg-reset": "\u001B[0m"
+            },
+            "message": "Should fail when the quotes are separated",
+            "params": [
+                "\"  \"X\"  \""
+            ]
         },
         {
             "skip": false,
-            "string": "{valueOf:function(){return 12}}",
-            "expected": "{valueOf:function(){return 12}}",
-            "message": "Should avoid to run script from valueOf function"
+            "name": "NotValidCloseQuote",
+            "throws": {
+                "fg-arrow": "\u001B[36m",
+                "fg-error": "\u001B[93m",
+                "fg-reset": "\u001B[0m"
+            },
+            "message": "Should fail when the finish quote is not followed by space or a special char",
+            "params": [
+                "\"\"   a,"
+            ]
         },
         {
             "skip": false,
-            "string": "{toString:function(){return \"12\"}}",
-            "expected": "{toString:function(){return \"12\"}}",
-            "message": "Should avoid to run script from toString function"
+            "name": "ObjectNeverClosed",
+            "throws": {
+                "fg-arrow": "\u001B[36m",
+                "fg-dots": "\u001B[91m",
+                "fg-error": "\u001B[93m",
+                "fg-reset": "\u001B[0m"
+            },
+            "message": "Should fail when a quoted value was not never closed",
+            "params": [
+                "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            ]
         }
     ]
 }

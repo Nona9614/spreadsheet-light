@@ -24,7 +24,7 @@
                 "headers": []
             },
             "writtable": "X",
-            "expected": "X,b\r\nc,d",
+            "expected": "X,b\nc,d",
             "message": "Should change the value at the selected number position"
         },
         {
@@ -50,7 +50,7 @@
                 "headers": []
             },
             "writtable": "X",
-            "expected": "a,b\r\nc,X",
+            "expected": "a,b\nc,X",
             "message": "Should change the value at the selected cell limit"
         }
     ],

@@ -1,0 +1,3 @@
+Parse error at position 4: Between a value and the closing bracket ']', only spaces are valid
+    <fg-arrow/>↓<fg-reset/>
+[0,1<fg-error/>R<fg-reset/>,2]

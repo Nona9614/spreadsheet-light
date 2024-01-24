@@ -1,4 +1,4 @@
-import type { Callback, Callee, TestName, Thrower } from "./types";
+import type { Callback, Callee, TestName, Thrower } from "./types.js";
 
 const noop: (...args: any[]) => any = () => {};
 export default function createCallee<T extends TestName>(

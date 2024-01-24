@@ -1,0 +1,190 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "string": "{\"string\":\"string\",\"number\":0,\"object\":{},\"array\":[],\"null\":null,\"infinity\":Infinity,\"negative-infinity\":-Infinity}",
+            "expected": {
+                "string": "string",
+                "number": 0,
+                "object": {},
+                "array": [],
+                "null": null,
+                "infinity": 99e99999,
+                "negative-infinity": -99e99999
+            },
+            "message": "Should transform a text into an object"
+        },
+        {
+            "skip": false,
+            "string": "[\"a\",1,null,{},[],Infinity,-Infinity]",
+            "expected": [
+                "a",
+                1,
+                null,
+                {},
+                [],
+                99e99999,
+                -99e99999
+            ],
+            "message": "Should transform a text into an array"
+        },
+        {
+            "skip": false,
+            "string": "{\"string\": \"\"}",
+            "expected": {
+                "string": ""
+            },
+            "message": "Should parse the zero string"
+        },
+        {
+            "skip": false,
+            "string": "{\"string\": \"\n\n\"}",
+            "expected": {
+                "string": "\n\n"
+            },
+            "message": "Should parse a string with line breakers"
+        },
+        {
+            "skip": false,
+            "string": "+10",
+            "expected": 10,
+            "message": "Should parse a number beggining with positive sign"
+        },
+        {
+            "skip": false,
+            "string": "-12",
+            "expected": -12,
+            "message": "Should parse a number beggining with negative sign"
+        },
+        {
+            "skip": false,
+            "string": "32e2",
+            "expected": 3200,
+            "message": "Should parse a number with  exponent"
+        },
+        {
+            "skip": false,
+            "string": "45e+3",
+            "expected": 45000,
+            "message": "Should parse a number with positive exponent"
+        },
+        {
+            "skip": false,
+            "string": "78E-2",
+            "expected": 0.78,
+            "message": "Should parse a number with negative exponent"
+        },
+        {
+            "skip": false,
+            "string": "+55",
+            "expected": 55,
+            "message": "Should parse a number starting with a positive sign"
+        },
+        {
+            "skip": false,
+            "string": "-39",
+            "expected": -39,
+            "message": "Should parse a number starting with a negative sign"
+        },
+        {
+            "skip": false,
+            "string": ".44",
+            "expected": 0.44,
+            "message": "Should parse a number starting with a dot sign"
+        }
+    ],
+    "errors": [
+        {
+            "skip": false,
+            "name": "InvalidJsonObjectOpen",
+            "throws": {
+                "fg-arrow": "\u001B[36m",
+                "fg-error": "\u001B[93m",
+                "fg-reset": "\u001B[0m"
+            },
+            "message": "Should fail when an object is not closed",
+            "params": [
+                "{\"string\":\"string\""
+            ]
+        },
+        {
+            "skip": false,
+            "name": "InvalidJsonArrayOpen",
+            "throws": {
+                "fg-arrow": "\u001B[36m",
+                "fg-error": "\u001B[93m",
+                "fg-reset": "\u001B[0m"
+            },
+            "message": "Should fail when an array is not closed",
+            "params": [
+                "[1,\"string\","
+            ]
+        },
+        {
+            "skip": false,
+            "name": "InvalidJsonString",
+            "throws": {
+                "fg-arrow": "\u001B[36m",
+                "fg-error": "\u001B[93m",
+                "fg-reset": "\u001B[0m"
+            },
+            "message": "Should fail when a string is not closed",
+            "params": [
+                "\"X"
+            ]
+        },
+        {
+            "skip": false,
+            "name": "InvalidJsonUnexpectedCharacter",
+            "throws": {
+                "fg-arrow": "\u001B[36m",
+                "fg-error": "\u001B[93m",
+                "fg-reset": "\u001B[0m"
+            },
+            "message": "Should fail when an unexpected character starts a value",
+            "params": [
+                "{\"key\":json}"
+            ]
+        },
+        {
+            "skip": false,
+            "name": "InvalidJsonKey",
+            "throws": {
+                "fg-arrow": "\u001B[36m",
+                "fg-error": "\u001B[93m",
+                "fg-reset": "\u001B[0m"
+            },
+            "message": "Should fail when a key is not surrounded by double quotes",
+            "params": [
+                "{key:\"json\"}"
+            ]
+        },
+        {
+            "skip": false,
+            "name": "InvalidJsonObjectValue",
+            "throws": {
+                "fg-arrow": "\u001B[36m",
+                "fg-error": "\u001B[93m",
+                "fg-reset": "\u001B[0m"
+            },
+            "message": "Should fail when the JSON Object has content after a value was parsed (after string)",
+            "params": [
+                "{\"a\":\"item-0\",\"b\":\"item-1\"X,\"c\":\"item-1\"}"
+            ]
+        },
+        {
+            "skip": false,
+            "name": "InvalidJsonArrayValue",
+            "throws": {
+                "fg-arrow": "\u001B[36m",
+                "fg-error": "\u001B[93m",
+                "fg-reset": "\u001B[0m"
+            },
+            "message": "Should fail when the JSON Array has content after a value was parsed (after number)",
+            "params": [
+                "[0,1R,2]"
+            ]
+        }
+    ]
+}

@@ -27,9 +27,9 @@ import type {
 } from "../types.js";
 import { isValueObject } from "../is-value-object.js";
 import { clone } from "../clone.js";
-import { TextFormat } from "../format.js";
-import { parse } from "../parser/parse.js";
-import { ParseContext } from "../parser/context.js";
+import TextFormat from "../format.js";
+import parse from "../parser/parse.js";
+import ParseContext from "../parser/context.js";
 
 /** Checks if some string can be considered as a limit */
 function toCellPosition(dimension: CellPointer, s: string | number) {

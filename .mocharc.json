@@ -1,6 +1,4 @@
 {
-    "require": "ts-node/register",
-    "loader": "ts-node/esm",
     "check-leaks": true,
     "extensions": [
         "ts",
@@ -14,6 +12,7 @@
     ],
     "node-option": [
         "experimental-specifier-resolution=node",
-        "loader=ts-node/esm"
+        "import=tsx/esm",
+        "trace-uncaught"
     ]
 }

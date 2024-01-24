@@ -29,7 +29,7 @@
                 "hasHeaders": false,
                 "headers": []
             },
-            "expected": "r1\r\nr2\r\nr4\r\nr5\r\nr6",
+            "expected": "r1\nr2\nr4\nr5\nr6",
             "message": "Should delete the selected row"
         },
         {
@@ -60,7 +60,7 @@
                 "hasHeaders": false,
                 "headers": []
             },
-            "expected": "r1\r\nr2\r\nr3\r\nr4\r\nr5",
+            "expected": "r1\nr2\nr3\nr4\nr5",
             "message": "Should delete the selected row using the shorthand"
         },
         {
@@ -91,7 +91,7 @@
                 "hasHeaders": false,
                 "headers": []
             },
-            "expected": "r1\r\nr2\r\nr3\r\nr4\r\nr5",
+            "expected": "r1\nr2\nr3\nr4\nr5",
             "message": "Should cap the row value if exceeds the number of rows"
         },
         {
@@ -122,7 +122,7 @@
                 "hasHeaders": false,
                 "headers": []
             },
-            "expected": "r2\r\nr3\r\nr4\r\nr5\r\nr6",
+            "expected": "r2\nr3\nr4\nr5\nr6",
             "message": "Should cap the row value if is below 0"
         }
     ]

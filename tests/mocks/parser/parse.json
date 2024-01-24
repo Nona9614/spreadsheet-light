@@ -3,9 +3,9 @@
     "items": [
         {
             "skip": false,
-            "string": "\"\"\",\r\n\",\"\"\"\"\r\n\",\",\"\r\n\"",
+            "string": "\"\"\",\n\",\"\"\"\"\n\",\",\"\n\"",
             "expected": {
-                "string": "\"\"\",\r\n\",\"\"\r\n\",\",\"\r\n\"",
+                "string": "\"\"\",\n\",\"\"\n\",\",\"\n\"",
                 "isTable": true,
                 "hasHeaders": false,
                 "headers": [],
@@ -15,12 +15,12 @@
                 },
                 "data": [
                     [
-                        "\",\r\n",
+                        "\",\n",
                         "\""
                     ],
                     [
                         ",",
-                        "\r\n"
+                        "\n"
                     ]
                 ]
             },
@@ -28,13 +28,13 @@
         },
         {
             "skip": false,
-            "string": "h1,h2,h3\r\na1,b1,c1\r\na2,b2,c2\r\na3,,\r\n",
+            "string": "h1,h2,h3\na1,b1,c1\na2,b2,c2\na3,,\n",
             "ignoreHeaders": true,
             "options": {
                 "hasHeaders": true
             },
             "expected": {
-                "string": "h1,h2,h3\r\na1,b1,c1\r\na2,b2,c2\r\na3,,",
+                "string": "h1,h2,h3\na1,b1,c1\na2,b2,c2\na3,,",
                 "isTable": true,
                 "hasHeaders": true,
                 "headers": [
@@ -68,13 +68,13 @@
         },
         {
             "skip": false,
-            "string": "h1,h2,h3\r\na1,b1,c1\r\na2,b2,c2\r\na3,b3,\r\n",
+            "string": "h1,h2,h3\na1,b1,c1\na2,b2,c2\na3,b3,\n",
             "ignoreHeaders": true,
             "options": {
                 "hasHeaders": true
             },
             "expected": {
-                "string": "h1,h2,h3\r\na1,b1,c1\r\na2,b2,c2\r\na3,b3,",
+                "string": "h1,h2,h3\na1,b1,c1\na2,b2,c2\na3,b3,",
                 "isTable": true,
                 "hasHeaders": true,
                 "headers": [
@@ -108,13 +108,13 @@
         },
         {
             "skip": false,
-            "string": "h1,h2,h3\r\na1,,\r\na2,b2,c2",
+            "string": "h1,h2,h3\na1,,\na2,b2,c2",
             "ignoreHeaders": true,
             "options": {
                 "hasHeaders": true
             },
             "expected": {
-                "string": "h1,h2,h3\r\na1,,\r\na2,b2,c2",
+                "string": "h1,h2,h3\na1,,\na2,b2,c2",
                 "isTable": true,
                 "hasHeaders": true,
                 "headers": [
@@ -143,13 +143,13 @@
         },
         {
             "skip": false,
-            "string": "h1,h2,h3\r\na1,,\r\na2,b2,c2",
+            "string": "h1,h2,h3\na1,,\na2,b2,c2",
             "ignoreHeaders": true,
             "options": {
                 "hasHeaders": true
             },
             "expected": {
-                "string": "h1,h2,h3\r\na1,,\r\na2,b2,c2",
+                "string": "h1,h2,h3\na1,,\na2,b2,c2",
                 "isTable": true,
                 "hasHeaders": true,
                 "headers": [
@@ -178,13 +178,13 @@
         },
         {
             "skip": false,
-            "string": "\"h1\",\"h2\",\"h3\",\"h4\"\r\n\"a1\",\"b1\",\"c1\",\"d1\"\r\n\"a2\",\"b2\",\"c2\",\"d2\"\r\n\"a3\",\"b3\",\"c3\",\"d3\"\r\n\"a4\",\"b4\",\"c4\",\"d4\"\r\n",
+            "string": "\"h1\",\"h2\",\"h3\",\"h4\"\n\"a1\",\"b1\",\"c1\",\"d1\"\n\"a2\",\"b2\",\"c2\",\"d2\"\n\"a3\",\"b3\",\"c3\",\"d3\"\n\"a4\",\"b4\",\"c4\",\"d4\"\n",
             "options": {
                 "hasHeaders": true
             },
             "ignoreHeaders": true,
             "expected": {
-                "string": "h1,h2,h3,h4\r\na1,b1,c1,d1\r\na2,b2,c2,d2\r\na3,b3,c3,d3\r\na4,b4,c4,d4",
+                "string": "h1,h2,h3,h4\na1,b1,c1,d1\na2,b2,c2,d2\na3,b3,c3,d3\na4,b4,c4,d4",
                 "isTable": true,
                 "hasHeaders": true,
                 "headers": [
@@ -250,9 +250,9 @@
         },
         {
             "skip": false,
-            "string": "a\r\nb\r\nc",
+            "string": "a\nb\nc",
             "expected": {
-                "string": "a\r\nb\r\nc",
+                "string": "a\nb\nc",
                 "isTable": true,
                 "hasHeaders": false,
                 "headers": [],
@@ -276,9 +276,9 @@
         },
         {
             "skip": false,
-            "string": "a,\r\nb,\r\nc,d",
+            "string": "a,\nb,\nc,d",
             "expected": {
-                "string": "a,\r\nb,\r\nc,d",
+                "string": "a,\nb,\nc,d",
                 "isTable": true,
                 "hasHeaders": false,
                 "headers": [],
@@ -305,9 +305,9 @@
         },
         {
             "skip": false,
-            "string": "a,b\r\nc,d",
+            "string": "a,b\nc,d",
             "expected": {
-                "string": "a,b\r\nc,d",
+                "string": "a,b\nc,d",
                 "isTable": true,
                 "hasHeaders": false,
                 "headers": [],
@@ -352,9 +352,9 @@
         },
         {
             "skip": false,
-            "string": "a\r\n\r\nb",
+            "string": "a\n\nb",
             "expected": {
-                "string": "a\r\nb",
+                "string": "a\nb",
                 "isTable": true,
                 "hasHeaders": false,
                 "headers": [],
@@ -375,12 +375,12 @@
         },
         {
             "skip": false,
-            "string": "a\r\n\"\"\r\nb",
+            "string": "a\n\"\"\nb",
             "format": {
                 "ignoreEmptyLines": false
             },
             "expected": {
-                "string": "a\r\n\r\nb",
+                "string": "a\n\nb",
                 "isTable": true,
                 "hasHeaders": false,
                 "headers": [],
@@ -405,34 +405,23 @@
         {
             "skip": false,
             "string": "",
-            "options": {
-                "strictMode": false
-            },
             "expected": {
                 "string": "",
-                "isTable": true,
+                "isTable": false,
                 "hasHeaders": false,
                 "headers": [],
-                "size": {
-                    "columns": 1,
-                    "rows": 1
-                },
-                "data": [
-                    [
-                        ""
-                    ]
-                ]
+                "data": []
             },
             "message": "Should return an empty table on zero string"
         },
         {
             "skip": false,
-            "string": "a,b,c\r\nd,e",
+            "string": "a,b,c\nd,e",
             "format": {
                 "strictMode": false
             },
             "expected": {
-                "string": "a,b,c\r\nd,e",
+                "string": "a,b,c\nd,e",
                 "isTable": false,
                 "hasHeaders": false,
                 "headers": [],
@@ -452,12 +441,12 @@
         },
         {
             "skip": false,
-            "string": "h1,h2,h3\r\na,b,c",
+            "string": "h1,h2,h3\na,b,c",
             "options": {
                 "hasHeaders": true
             },
             "expected": {
-                "string": "h1,h2,h3\r\na,b,c",
+                "string": "h1,h2,h3\na,b,c",
                 "isTable": true,
                 "hasHeaders": true,
                 "headers": [
@@ -486,12 +475,12 @@
         },
         {
             "skip": false,
-            "string": "h1,h2,h3\r\na,b",
+            "string": "h1,h2,h3\na,b",
             "options": {
                 "hasHeaders": true
             },
             "expected": {
-                "string": "h1,h2,h3\r\na,b",
+                "string": "h1,h2,h3\na,b",
                 "isTable": false,
                 "hasHeaders": true,
                 "headers": [
@@ -517,88 +506,17 @@
     "errors": [
         {
             "skip": false,
-            "name": "FirstCharacterInvalidError",
-            "throws": "Text began with an invalid character",
-            "message": "Should throw error when the first character is a quote the string lenght is only 1",
+            "name": "NotValidSpecialStrings",
+            "throws": "The empty value, delimiter, breaker and quote symbol cannot be similar between them in any of their characters",
+            "message": "Should not allow when cross characters are found on special strings",
             "params": [
-                "\""
-            ]
-        },
-        {
-            "skip": false,
-            "name": "EmptyStringError",
-            "throws": "Trying to parse empty string",
-            "message": "Should throw error when strict mode and is empty",
-            "params": [
-                ""
-            ]
-        },
-        {
-            "skip": false,
-            "name": "NotValidHeaderError",
-            "throws": "The object was never closed, it was opened since position 8",
-            "message": "Should detect when object is never closed",
-            "params": [
-                "a,b,c,d,\"e"
-            ]
-        },
-        {
-            "skip": false,
-            "name": "NotValidHeaderError",
-            "throws": "Header must be a string value that is not empty, the delimiter, the quote or the breaker string",
-            "message": "Should detect when is not a valid header (breaker with no following value)",
-            "params": [
-                "A,C,\r\n,d,e",
+                "string",
                 {
-                    "hasHeaders": true
-                }
-            ]
-        },
-        {
-            "skip": false,
-            "name": "NotValidHeaderError",
-            "throws": "Header must be a string value that is not empty, the delimiter, the quote or the breaker string",
-            "message": "Should detect when is not a valid header (number)",
-            "params": [
-                "A,C,0\r\n,d,e",
-                {
-                    "hasHeaders": true
-                }
-            ]
-        },
-        {
-            "skip": false,
-            "name": "NotValidHeaderError",
-            "throws": "Header must be a string value that is not empty, the delimiter, the quote or the breaker string",
-            "message": "Should detect when is not a valid header (null)",
-            "params": [
-                "A,C,null\r\n,d,e",
-                {
-                    "hasHeaders": true
-                }
-            ]
-        },
-        {
-            "skip": false,
-            "name": "NotValidHeaderError",
-            "throws": "Header must be a string value that is not empty, the delimiter, the quote or the breaker string",
-            "message": "Should detect when is not a valid header (empty)",
-            "params": [
-                "A,B,,\r\n,d,e",
-                {
-                    "hasHeaders": true
-                }
-            ]
-        },
-        {
-            "skip": false,
-            "name": "HeadersWithoutDataError",
-            "throws": "A CSV with headers must contain data",
-            "message": "Should detect when headers were pushed but there is not data",
-            "params": [
-                "A,B,C",
-                {
-                    "hasHeaders": true
+                    "format": {
+                        "delimiter": "||_=",
+                        "quote": ":}:\\_",
+                        "brk": "[?+\\"
+                    }
                 }
             ]
         }

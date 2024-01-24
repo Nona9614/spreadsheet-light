@@ -1,4 +1,4 @@
-import hasJsonProtoype from "./utils/has-json-proto";
+import hasJsonProtoype from "./utils/has-json-proto.js";
 
 /**
  * Checks if a value can be considered a plain JSON object

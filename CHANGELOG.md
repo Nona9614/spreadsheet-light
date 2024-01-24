@@ -2,20 +2,55 @@
 
 Select a Spreadsheet Light version below to view the changelog history:
 
-- [Spreadsheet Light 0.2.0](#V0.2.9) **Current**
-- [Spreadsheet Light 0.2.0](#V0.2.8)
-- [Spreadsheet Light 0.2.0](#V0.2.6)
-- [Spreadsheet Light 0.2.0](#V0.2.5)
-- [Spreadsheet Light 0.2.0](#V0.2.4)
-- [Spreadsheet Light 0.2.0](#V0.2.3)
-- [Spreadsheet Light 0.2.0](#V0.2.2)
-- [Spreadsheet Light 0.2.0](#V0.2.1)
+- [Spreadsheet Light 0.3.0](#V0.3.0) **Current**
+- [Spreadsheet Light 0.2.9](#V0.2.9)
+- [Spreadsheet Light 0.2.8](#V0.2.8)
+- [Spreadsheet Light 0.2.6](#V0.2.6)
+- [Spreadsheet Light 0.2.5](#V0.2.5)
+- [Spreadsheet Light 0.2.4](#V0.2.4)
+- [Spreadsheet Light 0.2.3](#V0.2.3)
+- [Spreadsheet Light 0.2.2](#V0.2.2)
+- [Spreadsheet Light 0.2.1](#V0.2.1)
 - [Spreadsheet Light 0.2.0](#V0.2.0)
 - [Spreadsheet Light 0.1.11](#V0.1.11)
 - [Spreadsheet Light 0.1.10](#V0.1.10)
 - [Spreadsheet Light 0.1.9](#V0.1.9)
 - [Spreadsheet Light 0.1.7](#V0.1.7)
 - [Spreadsheet Light 0.1.6](#V0.1.6)
+
+## V0.3.0
+
+- Now the project is full `ESM`.
+
+- The parse logic was replaced to be more efficient and to evaluate character by character when parsing. Thus the errors are tracked more easily and at the exact point.
+
+- The parse error was updated to be more readable and clean.
+
+- The limitation to have only string headers was removed. Any type of header is now valid.
+
+- The `serializer` function will be launched every time a cell is parsed as now the `transform` flag was removed. Still this won't luanch on headers parsing.
+
+- When a parsed cell is launched in the `serializer` function, the headers will be replaced by an `Excel` like column letter when the flag `hasHeaders` is false.
+
+- The `empty` value now can be of any `primitive` type not including `object` , `array` and `function`.
+
+- The default line break was changed to `\n` and an internal method was added to quickly change the default one to `\r\n` using the function `TextFormat.useWindowsBreaker()`
+
+- An empty CSV string is parsed as a `matrix` that is an empty array, does not throw any `error` and `isTable` is set to `false`.
+
+- The JSON parser it is now embed in the CSV parser. For better performance between them is based on the [ECMA-404](https://www.json.org/json-en.html) standard. You can read the [README.md](README.md#json-parser) file to know more.
+
+- Now the JSON objects, JSON arrays and CSV escaped values can contain whitespaces between delimiters, breakers or the end of line and still the parser will recognize them and remove the extra spaces.
+
+- An escaped CSV string that was never closed will be marked always as an error.
+
+- Added control for verification of appropiate CSV format for the parser.
+
+- Memoization was removed as is intended that once a spreadsheet is loaded by the parser, that is the one that should be manipulated via the `Spreadsheet` instance methods.
+
+- Added missing documentation about the use of `Excel` like columns when using the selectors for a `Spreadsheet` instance.
+
+- Improving `clone` logic when generating arrays by creating one with a preset size.
 
 ## V0.2.9
 

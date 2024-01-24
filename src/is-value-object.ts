@@ -1,6 +1,6 @@
-import symbols from "./symbols";
-import { ValueObject } from "./types";
-import hasJsonProtoype from "./utils/has-json-proto";
+import symbols from "./symbols.js";
+import { ValueObject } from "./types.js";
+import hasJsonProtoype from "./utils/has-json-proto.js";
 
 /**
  * Checks if the passed value is a valid ValueObject that only contains:

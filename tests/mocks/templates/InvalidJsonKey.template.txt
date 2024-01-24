@@ -1,0 +1,3 @@
+Parse error at position 1: JSON objects with not double quote surrounded keys are not supported
+ <fg-arrow/>↓<fg-reset/>
+{<fg-error/>k<fg-reset/>ey:"json"}

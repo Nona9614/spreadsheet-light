@@ -1,8 +1,8 @@
-import { NotAllowedValueError } from "./errors";
-import { isValueObject } from "./is-value-object";
-import { Spreadsheet } from "./spreadsheet/spreadsheet";
-import { MapOptions, ValueData, ValueObject, ValueObjects } from "./types";
-import { TextFormat } from "./format";
+import { NotAllowedValueError } from "./errors.js";
+import { isValueObject } from "./is-value-object.js";
+import { Spreadsheet } from "./spreadsheet/spreadsheet.js";
+import { MapOptions, ValueData, ValueObject, ValueObjects } from "./types.js";
+import TextFormat from "./format.js";
 
 /**
  * Maps an array into a simple object. It will try to guess the headers

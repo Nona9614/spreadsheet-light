@@ -8,7 +8,7 @@ import {
   ValueData,
   ValueObjects,
 } from "../src/types";
-import { TextFormat } from "../src/format";
+import TextFormat from "../src/format";
 
 export type TestCaseUnit<I, X> = {
   _id: string;
@@ -38,31 +38,26 @@ type GeneralTest<I, X> = {
 
 // Parse Tests
 
-type Transforms = GeneralTest<
-  {
-    _id: string;
-    string: string;
-    serializer: string;
-  },
-  string | null | undefined | number
->;
-
-type Process = GeneralTest<
-  {
-    _id: string;
-    word: string;
-    isQuoted: boolean;
-    isJSON: boolean;
-    isDate: boolean;
-  },
-  any
->;
-
 type Parse = GeneralTest<
   {
     string: string;
     ignoreHeaders: boolean;
     options: ParseOptions;
+  },
+  SpreadsheetContent & { data: ValueData<any> }
+>;
+
+type ParseJson = GeneralTest<
+  {
+    string: string;
+  },
+  any
+>;
+
+type ParseCell = GeneralTest<
+  {
+    string: string;
+    options?: ParseOptions;
   },
   SpreadsheetContent & { data: ValueData<any> }
 >;
@@ -233,7 +228,7 @@ type Mapping = GeneralTest<
 /// TEST CASES
 
 export type TestAlphabet = "from-number" | "get-number";
-export type TestParser = "transforms" | "process" | "parse";
+export type TestParser = "parse" | "parse-cell" | "parse-json";
 export type TestSpreadsheet =
   | "sort"
   | "write"
@@ -256,7 +251,7 @@ export type TestName = TestAlphabet | TestParser | TestSpreadsheet | TestSource;
 export const isAlphaetTest = (value: string): value is TestAlphabet =>
   value === "from-number" || value === "get-number";
 export const isParserTest = (value: string): value is TestParser =>
-  value === "transforms" || value === "process" || value === "parse";
+  value === "parse-json" || value === "parse-cell" || value === "parse";
 export const isSpreadsheetTest = (value: string): value is TestSpreadsheet =>
   value === "write" ||
   value === "read" ||
@@ -275,12 +270,12 @@ export const isSourceTest = (value: string): value is TestSource =>
   value === "clone" ||
   value === "map";
 
-export type Test<T extends TestName> = T extends "transforms"
-  ? Transforms
-  : T extends "process"
-  ? Process
-  : T extends "parse"
+export type Test<T extends TestName> = T extends "parse"
   ? Parse
+  : T extends "parse-json"
+  ? ParseJson
+  : T extends "parse-cell"
+  ? ParseCell
   : T extends "from-number"
   ? FromNumber
   : T extends "get-number"

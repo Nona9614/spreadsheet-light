@@ -1,0 +1,3 @@
+Parse error at position 5: A closing quote symbol must be followed by a delimiter, a breaker or an end of a line with optional space between
+     <fg-arrow/>↓<fg-reset/>
+""   <fg-error/>a<fg-reset/>,

@@ -32,7 +32,7 @@
                 "hasHeaders": false,
                 "headers": []
             },
-            "expected": "r1\r\nr5\r\nr6",
+            "expected": "r1\nr5\nr6",
             "message": "Should delete the selected rows"
         },
         {
@@ -66,7 +66,7 @@
                 "hasHeaders": false,
                 "headers": []
             },
-            "expected": "r1\r\nr2",
+            "expected": "r1\nr2",
             "message": "Should delete the selected rows using the shorthand"
         },
         {
@@ -100,7 +100,7 @@
                 "hasHeaders": false,
                 "headers": []
             },
-            "expected": "r1\r\nr2",
+            "expected": "r1\nr2",
             "message": "Should swap values when detected"
         },
         {
@@ -133,7 +133,7 @@
                 "hasHeaders": false,
                 "headers": []
             },
-            "expected": "r5\r\nr6",
+            "expected": "r5\nr6",
             "message": "Should resolve missing selector from as index 0"
         },
         {
@@ -166,7 +166,7 @@
                 "hasHeaders": false,
                 "headers": []
             },
-            "expected": "r1\r\nr2",
+            "expected": "r1\nr2",
             "message": "Should resolve missing selector to as index 0"
         },
         {

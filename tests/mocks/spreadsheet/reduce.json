@@ -24,7 +24,7 @@
             },
             "initialValue": "",
             "includeHeaders": true,
-            "expected": "h1,h2\r\na,b\r\nc,d",
+            "expected": "h1,h2\na,b\nc,d",
             "message": "Should return the content as a string including the headers"
         },
         {
@@ -49,7 +49,7 @@
                 ]
             },
             "initialValue": "",
-            "expected": "a,b\r\nc,d",
+            "expected": "a,b\nc,d",
             "message": "Should return the content as a string not including the headers"
         }
     ]

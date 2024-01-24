@@ -46,39 +46,50 @@ const xsv = require("spreadsheet-light/umd");
 ## Format
 
 You can pass a `SpreadsheetFormat` object to many of the functions for this libarry to create the best spreadsheet that fits your needs.
+This class contains help functions to use the CSV in your own way.
 
-```typescript
-import { TextFormat } from "spreadsheet-light";
+> **_Note:_** All of the following examples are shown using the above text format in the example.
 
-// This example is the default values for the text format
+### Format default values
+
+```js
+import TextFormat from "spreadsheet-light";
+
 const values = {
   // The string to scape special values
   quote: '"',
   // The string to separate columns
   delimiter: ",",
   // The string to separate columns
-  brk: "\r\n",
+  brk: "\n",
   // What to do write when finding no content in a CSV cell
   empty: "",
 };
-
-// This class contains help functions to create your own CSV
-const format = new TextFormat(values);
-
-// In this function you can use it to create safe strings
-// that can be parsed easily on any CSV libary
-// The library already uses this internally so be carefull where you use this
-// any `SerializableInput` does not need it on the `toString` method as it managed this way already
-// The best use case for this is when you have your own algorithm that transforms
-// `ValueData` into CSV `string`
-const string = format.toSafeString('\r\n",'); // '"\r\n\"\","'
-
-// In this function you can evaluate if some string is a Quote string
-// based on the format
-format.isQuote("_"); // This is false
 ```
 
-> **_Note:_** All of the following examples are shown using the above text format in the example.
+### Format function `verify`
+
+If you want to test if your new format will work you can use the `verifiy` function that will check that any of the characters between the special strings are not repeated in any way.
+This function is costly, use it only for test purposes;
+
+```js
+import TextFormat from "spreadsheet-light";
+const format = new TextFormat({ delimiter: "\n", brk: "\n" });
+format.verify(); // Throws an error as the delimiter and the breaker are the same
+```
+
+### Format function `toSafeString`
+
+You can use this function to create safe strings that can be parsed easily on any CSV libary the library already uses this internally so be carefull where you use this any `SerializableInput` does not need it on the `toString` method as it managed this way already.
+
+The best use case for this is when you have your own algorithm that transforms
+`ValueData` into CSV `string`.
+
+```js
+import TextFormat from "spreadsheet-light";
+const format = new TextFormat();
+const string = format.toSafeString('\r\n",'); // '"\r\n\"\","'
+```
 
 ## Value Object
 
@@ -87,7 +98,7 @@ A _Value Object_ is any valid javascript primitive that can be parsed without is
 - Strings
 - Numbers
 - _null_
-- JSON and Arrays containing the previous ones
+- JSON Objects and Arrays containing the previous ones
 
 Classes, functions, symbols or _undefined_ are not supported as this library tries to help you to keep your CSV content consistent.
 
@@ -123,14 +134,8 @@ const options = {
   // If the string comes from contains a not well formatted file,
   // here can be set to true if there is not ending character there
   hasEndCharacter: false,
-  // This flag allows you find possible issues in your CSV content
-  strictMode: true,
   // If your content contains headers set this to true
   hasHeaders: false,
-  // Avoids repeating the algorithm when parsing the same string
-  memoize: true,
-  // Allow transformation from text to JSON or Arrays objects
-  transform: true,
   // The function to serialize special strings when transforming values
   serializer: String,
 };
@@ -147,6 +152,34 @@ spreadsheet.isTable == true;
 spreadsheet.hasHeaders == false;
 // And what the headers are
 spreadsheet.headers == false;
+```
+
+### JSON Parser
+
+Instead of the native one the CSV parser uses an embed JSON parser that is based on the standard [ECMA-404](https://www.json.org/json-en.html). The most important features to focus are:
+
+- `JSON` objects cannot have comments.
+- The `key` names must be surrounded by double quotes.
+- Inside an `array` or `object` leading commas are not valid.
+- The `undefined` and `NaN` values are not valid.
+
+As the CSV strings are intended for storage, there are some edge cases that will be parsed:
+
+- The `Infinity` and `-Infinity` numbers will be parsed.
+- Hexadecimal numbers will be parsed.
+- Numbers smaller than `1` can start without digits before the `.` symbol.
+- Numbers can start with `+` or `-` or none (none will be taken as a positive number).
+
+### OS Compatibility
+
+To allow compatibility between the common Operational Systems on default line breakers (i.e. Windows uses `\r\n` while Linux uses `\n`). There are special static methods in the `TextFormat` class that allows to change between those breaklines quickly. Must be used before any parsing.
+
+```js
+import TextFormat from "spreadsheet-light";
+// Sets the breaker for Windows files
+TextFormat.useWindowsBreaker();
+// Sets the breaker for Linux files
+TextFormat.useLinuxBreaker();
 ```
 
 ### Spreadsheet Comparison
@@ -300,8 +333,14 @@ Each can be represented in the following way:
 **Cell Selector**:
 
 - Any `number` that is within the bounds of `x` or `y`
+- Any `letter` that represents a column like excel
 - The `@bottom` shorthand that is the maximum `y` value from the table
 - The `@right` shorthand that is the maximum `x` value from the table
+
+```js
+// This is how a selector may look as excel
+const selector = "E"; // This should select the 2th column
+```
 
 **Range Selector**:
 
@@ -425,7 +464,7 @@ let string = xsv.stringify([
 
 ## Object Serializer
 
-If the **text format** flags `strictMode` and `transforms` are set to true you can create `Serializable Objects`. For this an object should follow the next rules:
+To create `Serializable Objects` should follow the next rules:
 The xsv contains a `symbol` called _clone_ that can be used to set a class as _Clonable_ where you will assign a function that returns the mentioned clone.
 The other important function is `toString` that will be when the object is being serialized to the mentioned type.
 
@@ -467,7 +506,7 @@ class Day {
 
 ### Input Serializing
 
-The `serializer` function will be called each time non _quoted_ (escaped) values are passed to the CSV string. These values are expected to be objects or arrays ussually and handled by the parser, but with this function you can identify and transform special strings to complex objects.
+The `serializer` function will be called each time a cell is parsed. These values are expected to be objects or arrays ussually and handled by the parser, but with this function you can identify and transform special strings to complex objects.
 
 ```js
 import xsv from "spreadsheet-light";
@@ -482,7 +521,7 @@ const serializer = function (string, header) {
   // Start the matches as null
   let matches = null;
   // Chec if the header is Date
-  if (header === "Date") {
+  if (typeof string === "string" && header === "Date") {
     // Execute your cutom regex to fin what you are looking for
     matches = DATE_REGEX.exec(string);
     // And if found create your custom object

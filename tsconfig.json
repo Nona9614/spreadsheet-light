@@ -1,6 +1,4 @@
 {
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "lib", "**/tests", "**/*.spec.ts", "docs/**/*"],
   "compilerOptions": {
     "strict": true,
     "resolveJsonModule": true,
@@ -17,6 +15,5 @@
     "allowJs": true,
     // Generate d.ts files
     "declaration": true
-  },
-  "files": ["src/index.ts"]
+  }
 }

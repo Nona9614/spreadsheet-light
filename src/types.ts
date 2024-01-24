@@ -1,4 +1,4 @@
-import { TextFormat } from "./format";
+import TextFormat from "./format";
 import { Spreadsheet } from "./spreadsheet/spreadsheet";
 import symbols from "./symbols";
 
@@ -13,7 +13,7 @@ export interface SpreadhseetFormat {
    * The empty value to place when a empty cell is found during parsing
    * @default empty = ""
    */
-  empty?: ValueEmpty;
+  empty: string | number | bigint | boolean | symbol | null | undefined;
 }
 
 export type Props = {
@@ -63,7 +63,14 @@ export type Size = {
 };
 
 /** Reprecents a cell value that is empty */
-export type ValueEmpty = "" | 0 | null;
+export type ValueEmpty =
+  | string
+  | number
+  | bigint
+  | boolean
+  | symbol
+  | null
+  | undefined;
 /** Represents the types that a cell from the CSV object may contain */
 export type ValueObject =
   | string
@@ -114,10 +121,10 @@ export type SpreadhseetInsertOptions = {
 /**
  * This function serializes strings to a customize type.
  * When a passed string is not quoted (escaped) will activate this function.
- * @param string The value to be converted to a custom type
+ * @param value The value to be converted to a custom type
  * @param header If present, will be the relative header to this value
  */
-export type InputSerializer<T = any> = (string: string, header?: string) => T;
+export type InputSerializer<T = any> = (value: any, header?: string) => T;
 
 /**
  * Marks an object class as serializable
@@ -138,26 +145,10 @@ export type ParseOptions = {
   serializer?: InputSerializer;
   /** If set to true, all parsed `cells` will have their content trimmed */
   trim?: boolean;
-  /** If set, all memoization logic will be used otherwise will be ignored */
-  memoize?: boolean;
   /** Use this so the parser assumes the first line of the string are the headers */
   hasHeaders?: boolean;
-  /** If set an open quoted value that was never closed will be rejected */
-  strictMode?: boolean;
   /** Empty lines (No content between two breakers) will be ignored */
   ignoreEmptyLines?: boolean;
-  /** Use in case your string contains the end character */
-  hasEndCharacter?: boolean;
-  /**
-   * Only if the strict mode is activated, parses the following texts
-   * as JavaScript values if they are not quoted:
-   * - numbers
-   * - true, false, TRUE, FALSE
-   * - null, NULL
-   * - JSON Objects
-   * - Custom types generated from the object input serializer
-   */
-  transform?: boolean;
 };
 
 /**

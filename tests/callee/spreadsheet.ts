@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import _ from "../create-callee";
-import { TestSpreadsheet } from "../types";
-import { Spreadsheet } from "../../src/spreadsheet/spreadsheet";
+import _ from "../create-callee.js";
+import { TestSpreadsheet } from "../types.js";
+import { Spreadsheet } from "../../src/spreadsheet/spreadsheet.js";
 
 import {
   CellSelector,
@@ -9,8 +9,8 @@ import {
   SpreadhseetInsertOptions,
   SpreadsheetContent,
   ValueData,
-} from "../../src/types";
-import { TextFormat } from "../../src/format";
+} from "../../src/types.js";
+import TextFormat from "../../src/format.js";
 
 const buildCSV = function (item: any) {
   const {
@@ -233,7 +233,7 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
           index: number,
           data: any[],
           isLast: boolean,
-        ) => value + line.join(",") + (isLast ? "" : "\r\n");
+        ) => value + line.join(",") + (isLast ? "" : "\n");
         const value = csv.reduce<string>(
           item.initialValue,
           liner,

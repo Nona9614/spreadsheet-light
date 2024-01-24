@@ -1,6 +1,0 @@
-
-To avoid compatiblity issues, quotes as a character can only be used when input twice to escape it (This only apply if is not a JSON Object or Array).
- - "a""b""c" ✓ (Valid)
- - "a"b"c"   ⛌ (Invalid)
- - a""b""c   ✓ (Valid)
- - a"b"c   ⛌ (Invalid)

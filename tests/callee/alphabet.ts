@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import _ from "../create-callee";
-import type { TestAlphabet } from "../types";
+import _ from "../create-callee.js";
+import type { TestAlphabet } from "../types.js";
 
-import { alphabet } from "../../src/spreadsheet/alphabet";
+import { alphabet } from "../../src/spreadsheet/alphabet.js";
 
 export default function createAlphabetTest(key: TestAlphabet) {
   switch (key) {

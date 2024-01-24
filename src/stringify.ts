@@ -1,8 +1,8 @@
-import { NotAllowedValueError } from "./errors";
-import { TextFormat } from "./format";
-import { isValueObject } from "./is-value-object";
-import { Spreadsheet } from "./spreadsheet/spreadsheet";
-import { ValueData } from "./types";
+import { NotAllowedValueError } from "./errors.js";
+import TextFormat from "./format.js";
+import { isValueObject } from "./is-value-object.js";
+import { Spreadsheet } from "./spreadsheet/spreadsheet.js";
+import { ValueData } from "./types.js";
 
 /**
  * Transforms a data object into a string using the set format

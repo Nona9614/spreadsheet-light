@@ -1,4 +1,4 @@
-import { TextFormat } from "../format.js";
+import TextFormat from "../format.js";
 import xsv from "../spreadsheet-light.js";
 import symbols from "../symbols.js";
 

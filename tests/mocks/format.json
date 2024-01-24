@@ -1,11 +1,9 @@
 {
     "quote": "\"",
     "delimiter": ",",
-    "brk": "\r\n",
+    "brk": "\n",
     "hasEndCharacter": false,
     "strictMode": true,
     "hasHeaders": false,
-    "memoize": true,
-    "transform": true,
-    "empty": {}
+    "empty": ""
 }

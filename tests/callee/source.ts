@@ -1,22 +1,17 @@
 // Test
 import { expect } from "chai";
-import _ from "../create-callee";
+import _ from "../create-callee.js";
 
 // Types
-import { TestSource } from "../types";
-import {
-  MapOptions,
-  SerializableObject,
-  ValueData,
-  ValueObjects,
-} from "../../src/types";
+import { TestSource } from "../types.js";
+import { MapOptions, SerializableObject, ValueData } from "../../src/types.js";
 
 // Functions
-import { isValueObject } from "../../src/is-value-object";
-import { stringify } from "../../src/stringify";
-import { clone } from "../../src/clone";
+import { isValueObject } from "../../src/is-value-object.js";
+import { stringify } from "../../src/stringify.js";
+import { clone } from "../../src/clone.js";
 import map from "../../src/map.js";
-import symbols from "../../src/symbols";
+import symbols from "../../src/symbols.js";
 
 export default function createSourceTest(key: TestSource) {
   switch (key) {

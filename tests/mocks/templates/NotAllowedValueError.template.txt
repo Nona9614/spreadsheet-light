@@ -6,4 +6,4 @@ primitives allowed for the CSV format:
  - Numbers
  - Null
  - Serializable Objects
- - Objects or Arrays containing the previous ones
+ - JSON Objects or Arrays containing the previous ones

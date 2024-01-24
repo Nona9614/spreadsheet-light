@@ -1,0 +1,3 @@
+Parse error at position 0: The string was never closed
+<fg-arrow/>↓<fg-reset/>
+<fg-error/>"<fg-reset/>Lorem ipsum dolor sit amet<fg-dots/>...<fg-reset/>
