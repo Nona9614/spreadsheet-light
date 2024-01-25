@@ -36,15 +36,6 @@
         },
         {
             "skip": false,
-            "name": "NotAllowedValueError",
-            "throws": {},
-            "message": "Should throw an error when a symbol is passsed",
-            "params": [
-                "symbol"
-            ]
-        },
-        {
-            "skip": false,
             "is": "function",
             "name": "NotAllowedValueError",
             "throws": {},

@@ -1,5 +1,5 @@
 import { SpreadhseetFormat, ValueEmpty, ValueObject } from "./types.js";
-import hasJsonProtoype from "./utils/has-json-proto.js";
+import { hasArrayPrototype, hasJsonProtoype } from "./utils/has-json-proto.js";
 
 const ZERO_STRING: ValueEmpty = "";
 let BREAK_LINE: string = "\n";
@@ -41,7 +41,6 @@ class TextFormat implements Required<SpreadhseetFormat> {
     // Checks the empty value is a primitive value
     if (
       !(
-        this.empty === undefined ||
         this.empty === null ||
         typeof this.empty === "symbol" ||
         typeof this.empty === "string" ||
@@ -86,17 +85,21 @@ class TextFormat implements Required<SpreadhseetFormat> {
    * using this format
    */
   toSafeString(object: ValueObject) {
+    // Empty values will be returned as zero string
     if (object === this.empty) return "";
-    const string =
-      object !== null && hasJsonProtoype(object)
-        ? JSON.stringify(object)
-        : String(object).replace(this.quote, this.quote + this.quote);
-    if (
-      (object && string.includes(this.delimiter)) ||
-      string.includes(this.brk)
-    ) {
+    // Falsy values will be just stringified
+    if (!object) return String(object);
+    // JSON objects will be returned stringified
+    if (hasJsonProtoype(object) || hasArrayPrototype(object))
+      return JSON.stringify(object);
+    // Transforms the value changing escaping quotes
+    const string = String(object).replace(this.quote, this.quote + this.quote);
+    // If the new string contains the delimiter scape it
+    if (string.includes(this.delimiter) || string.includes(this.brk)) {
       return this.quote + string + this.quote;
-    } else return string;
+    }
+    // Else just returns the generated string
+    else return string;
   }
 
   /**

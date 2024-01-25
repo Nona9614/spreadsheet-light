@@ -44,7 +44,8 @@ const xsv = {
    */
   map,
   /**
-   * Checks if a value can be considered a plain JSON object
+   * Checks if a value can be considered a plain JSON object or array
+   * (subclasses of `Array` will be ignored)
    * @param value The value to be evaluated
    */
   isJSON,

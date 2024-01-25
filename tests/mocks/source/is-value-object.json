@@ -61,13 +61,13 @@
             "skip": false,
             "value": "undefined",
             "expected": false,
-            "message": "Should not allow undefined"
+            "message": "Should allow undefined"
         },
         {
             "skip": false,
             "value": "symbol",
-            "expected": false,
-            "message": "Should not allow symbol"
+            "expected": true,
+            "message": "Should allow symbol"
         },
         {
             "skip": false,

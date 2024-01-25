@@ -2,7 +2,8 @@
 
 Select a Spreadsheet Light version below to view the changelog history:
 
-- [Spreadsheet Light 0.3.1](#V0.3.1) **Current**
+- [Spreadsheet Light 0.3.2](#V0.3.2) **Current**
+- [Spreadsheet Light 0.3.1](#V0.3.1)
 - [Spreadsheet Light 0.3.0](#V0.3.0)
 - [Spreadsheet Light 0.2.9](#V0.2.9)
 - [Spreadsheet Light 0.2.8](#V0.2.8)
@@ -18,6 +19,12 @@ Select a Spreadsheet Light version below to view the changelog history:
 - [Spreadsheet Light 0.1.9](#V0.1.9)
 - [Spreadsheet Light 0.1.7](#V0.1.7)
 - [Spreadsheet Light 0.1.6](#V0.1.6)
+
+## V0.3.2
+
+- Fixed bug that not detects empty values before EOL.
+- `symbol` was added as a new possible value in the serialization yet `undefined` remains invalid, even for empty values.
+- Adding information on how to use the `empty` value.
 
 ## V0.3.1
 

@@ -67,6 +67,25 @@ const values = {
 };
 ```
 
+### Format `empty` value
+
+This is the equivalent value to parse when the content of a cell is empty. By default is the zero string (`""`). Any other value can be used here and these are some recomendations:
+
+- For `SQL` data like, replace them with `null` as any engine would do that.
+- For `number` tables replace it with `0` to save text space in values that has no content.
+- For `JSON` data, use a `symbol` so any time this value is found on serialization will be easy to identify.
+
+```js
+import TextFormat from "spreadsheet-light";
+
+// Save this `symbol` in some file so can be accessed anywhere in your code
+const empty = Symbol("empty");
+// And once you can access it, set it in your format
+const format = new TextFormat(empty);
+```
+
+> **_Note:_** When the format flag `trim` is not set and a cell with spaces is found, this will not be taken as empty. To add spaces to text is preferable to escape the content surrounding it with `quote` symbols.
+
 ### Format function `verify`
 
 If you want to test if your new format will work you can use the `verifiy` function that will check that any of the characters between the special strings are not repeated in any way.

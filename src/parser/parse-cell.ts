@@ -170,7 +170,7 @@ export default function parseCell(context: ParseContext) {
 
   // Skips the delimiter that stopped the content if found
   // and marks that there is a pending cell
-  if (string[context.index] === ",") {
+  if (context.isDelimiter()) {
     context.pending = true;
     context.index += context.format.delimiter.length;
   }

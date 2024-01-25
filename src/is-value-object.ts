@@ -1,13 +1,14 @@
 import symbols from "./symbols.js";
 import { ValueObject } from "./types.js";
-import hasJsonProtoype from "./utils/has-json-proto.js";
+import { hasArrayPrototype, hasJsonProtoype } from "./utils/has-json-proto.js";
 
 /**
  * Checks if the passed value is a valid ValueObject that only contains:
  * - Text
  * - Booleans
  * - Numbers
- * - Objects or Arrays containing the previous ones
+ * - Symbols
+ * - JSON Objects or Arrays containing the previous ones
  */
 export function isValueObject(value: any): value is ValueObject {
   if (value === null) return true;
@@ -16,13 +17,14 @@ export function isValueObject(value: any): value is ValueObject {
     type === "string" ||
     type === "number" ||
     type === "bigint" ||
-    type === "boolean"
+    type === "boolean" ||
+    type === "symbol"
   ) {
     return true;
-  } else if (type === "function" || type === "symbol" || type === "undefined") {
+  } else if (type === "function" || type === "undefined") {
     return false;
   } else {
-    if (Array.isArray(value)) {
+    if (hasArrayPrototype(value)) {
       for (let i = 0; i < value.length; i++) {
         const isValid = isValueObject(value[i]);
         if (!isValid) return false;

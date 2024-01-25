@@ -1,6 +1,6 @@
 import { NotAllowedValueError } from "./errors.js";
 import symbols from "./symbols.js";
-import hasJsonProtoype from "./utils/has-json-proto.js";
+import { hasArrayPrototype, hasJsonProtoype } from "./utils/has-json-proto.js";
 
 /**
  * Creates a new object with deep cloning only allowing serializable objects
@@ -12,13 +12,14 @@ export function clone(value: any): any {
     type === "string" ||
     type === "number" ||
     type === "bigint" ||
-    type === "boolean"
+    type === "boolean" ||
+    type === "symbol"
   ) {
     return value;
-  } else if (type === "function" || type === "symbol" || type === "undefined") {
+  } else if (type === "function" || type === "undefined") {
     throw NotAllowedValueError;
   } else {
-    if (Array.isArray(value)) {
+    if (hasArrayPrototype(value)) {
       const array = new Array(value.length);
       for (let i = 0; i < value.length; i++) {
         array[i] = clone(value[i]);

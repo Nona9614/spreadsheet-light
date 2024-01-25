@@ -8,8 +8,8 @@ export default function parseLine(context: ParseContext) {
   context.line = [];
   // Stops each time a breaker is found or there is pending content
   while (
-    context.index < context.string.length &&
-    (!context.isBreaker() || context.pending)
+    (context.index < context.string.length && !context.isBreaker()) ||
+    context.pending
   ) {
     // Stops each time a delimiter is found
     parseCell(context);

@@ -30,12 +30,13 @@ export const isNotTableError = (description: string) =>
   new Error(NOT_TABLE_ERROR_TEMPLATE_STRING({ description }));
 
 export const NotAllowedValueError = new Error(`
-Values like undefined, symbols, classes and functions are not allowed, the only
+Values like undefined, classes and functions are not allowed, the only
 primitives allowed for the CSV format:
  - Text
  - Booleans
  - Numbers
  - Null
+ - Symbols
  - Serializable Objects
  - JSON Objects or Arrays containing the previous ones
 `);

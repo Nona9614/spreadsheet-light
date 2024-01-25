@@ -68,6 +68,46 @@
         },
         {
             "skip": false,
+            "string": "h1,h2,h3\na1,b1,c1\na2,b2,c2\na3,b3,",
+            "ignoreHeaders": true,
+            "options": {
+                "hasHeaders": true
+            },
+            "expected": {
+                "string": "h1,h2,h3\na1,b1,c1\na2,b2,c2\na3,b3,",
+                "isTable": true,
+                "hasHeaders": true,
+                "headers": [
+                    "h1",
+                    "h2",
+                    "h3"
+                ],
+                "size": {
+                    "rows": 3,
+                    "columns": 3
+                },
+                "data": [
+                    [
+                        "a1",
+                        "b1",
+                        "c1"
+                    ],
+                    [
+                        "a2",
+                        "b2",
+                        "c2"
+                    ],
+                    [
+                        "a3",
+                        "b3",
+                        ""
+                    ]
+                ]
+            },
+            "message": "Should transform big matrix with a leading empty value before EOL"
+        },
+        {
+            "skip": false,
             "string": "h1,h2,h3\na1,b1,c1\na2,b2,c2\na3,b3,\n",
             "ignoreHeaders": true,
             "options": {

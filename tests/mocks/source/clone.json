@@ -33,6 +33,18 @@
         },
         {
             "skip": false,
+            "value": "undefined",
+            "expected": "undefined",
+            "message": "Should clone \"undefined\" values"
+        },
+        {
+            "skip": false,
+            "value": "symbol",
+            "expected": "symbol",
+            "message": "Should clone \"symbol\" values"
+        },
+        {
+            "skip": false,
             "value": {
                 "string": "string",
                 "number": 0,
@@ -69,15 +81,6 @@
     "errors": [
         {
             "skip": false,
-            "message": "Should throw error on undefined value",
-            "name": "NotAllowedValueError",
-            "throws": {},
-            "params": [
-                "undefined"
-            ]
-        },
-        {
-            "skip": false,
             "message": "Should throw an error when a non serializable object is passsed",
             "name": "NotAllowedValueError",
             "throws": {},
@@ -92,15 +95,6 @@
             "throws": {},
             "params": [
                 "function"
-            ]
-        },
-        {
-            "skip": false,
-            "message": "Should throw error on symbol value",
-            "name": "NotAllowedValueError",
-            "throws": {},
-            "params": [
-                "symbol"
             ]
         }
     ]

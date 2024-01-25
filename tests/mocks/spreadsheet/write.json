@@ -70,17 +70,6 @@
             "skip": false,
             "name": "NotAllowedValueError",
             "throws": {},
-            "message": "Should throw an error when a symbol is passsed",
-            "params": [
-                "symbol",
-                1,
-                1
-            ]
-        },
-        {
-            "skip": false,
-            "name": "NotAllowedValueError",
-            "throws": {},
             "message": "Should throw an error when a function is passsed",
             "params": [
                 "function",
