@@ -6,9 +6,6 @@ import {
 import ParseContext from "./context.js";
 import parseJSON from "./parse-json.js";
 
-/** Used to isolate generated values */
-type InnerContext = { value: string };
-
 /**
  * Checks if some character is a whitespace:
  * - Space
@@ -34,12 +31,12 @@ export default function parseCell(context: ParseContext) {
   /** Restarts with empty value the cell */
   context.value = context.format.empty;
   /** Loops the content before matching a special char */
-  function loopText(this: InnerContext) {
+  function loopText(value: string = "") {
     // The flag indicating if some of the values were special characters
     // Iterate until a word is obtained
     while (!context.isSpecial()) {
       // Attaches the character to the word if it is not a special character
-      this.value += string[context.index];
+      value += string[context.index];
       context.index++;
     }
     // Checks if the last saved value is the quote symbol
@@ -51,21 +48,23 @@ export default function parseCell(context: ParseContext) {
       // If it is a double quote, save the special character and start again
       else {
         // Attaches the quote symbol to the word
-        this.value += quote;
+        value += quote;
         // Skips the double quote symbols
         context.index += quote.length * 2;
         // Starts again the loop
-        loopText.call(this);
+        value = loopText(value);
       }
     }
+    // Returns the generated value
+    return value;
   }
 
   /** Loops the content until a quote is found */
-  function loopWord(this: InnerContext) {
+  function loopWord(value: string = "") {
     // Iterate until the quote symbol or the EOL is found
     while (context.index <= string.length && !context.isQuote()) {
       // Attaches the content to the value
-      this.value += string[context.index];
+      value += string[context.index];
       // Updates to the following index
       context.index++;
     }
@@ -73,15 +72,9 @@ export default function parseCell(context: ParseContext) {
     if (string[context.index] === undefined) {
       const quote = context.format.quote;
       // Removes from the value the word `undefined`
-      this.value = this.value.substring(
-        0,
-        this.value.length - "undefined".length,
-      );
+      value = value.substring(0, value.length - "undefined".length);
       // Replaces single quotes by double quotes for the message
-      const original = this.value.replace(
-        new RegExp(quote, "gui"),
-        quote + quote,
-      );
+      const original = value.replace(new RegExp(quote, "gui"), quote + quote);
       // Points the index where the quote started
       context.index = string.length - original.length - 1;
       throw ObjectNeverClosedError(context);
@@ -89,11 +82,11 @@ export default function parseCell(context: ParseContext) {
     // If it is a double quote, save the special character and start again
     else if (context.isQuote(context.format.quote.length)) {
       // Attaches the quote symbol to the word
-      this.value += quote;
+      value += quote;
       // Skips the double quote symbols
       context.index += quote.length * 2;
       // Starts again the loop
-      loopWord.call(this);
+      value = loopWord(value);
     }
     // The text is closed with a quote symbol
     else {
@@ -110,6 +103,8 @@ export default function parseCell(context: ParseContext) {
           );
       }
     }
+    // Returns the generated value
+    return value;
   }
 
   // Starts the iteration until a delimiter is found
@@ -127,12 +122,10 @@ export default function parseCell(context: ParseContext) {
     if (context.isQuote()) {
       // Start collecting content after first quote symbol
       context.index += quote.length;
-      // The `this` of the loop
-      const self = { value: "" };
       // Loops simple text until a special character is found
-      loopWord.call(self);
+      const value = loopWord();
       // Saves the content with the start space found
-      if (self.value !== "") context.value = space + self.value;
+      if (value !== "") context.value = space + value;
     }
     // If not only values are expected
     else {
@@ -148,18 +141,16 @@ export default function parseCell(context: ParseContext) {
       else {
         // The index where the content started to be parsed
         const startIndex = context.index;
-        // The `this` of the loop
-        const self = { value: "" };
         // Loops for the first time the text
-        loopText.call(self);
+        const value = loopText();
         // Trims the content to see if has special values
-        const _ = self.value.trimEnd();
+        const _ = value.trimEnd();
         // If there was content update the context
         if (startIndex < context.index) {
           // If should trim and there is no content return empty
           if (!_ && context.trim) context.value = context.format.empty;
           // If the parsed value is a not a number just store it
-          else if (isNaN(self.value as any)) {
+          else if (isNaN(value as any)) {
             // Checks some of the special values
             // Check the following characters spells `true`
             if (_ === "true" || _ === "TRUE") context.value = true;
@@ -168,10 +159,10 @@ export default function parseCell(context: ParseContext) {
             // Check the following characters spells `false`
             else if (_ === "false" || _ === "FALSE") context.value = false;
             // Collects as simple string and trims if needed
-            else context.value = context.trim ? _ : space + self.value;
+            else context.value = context.trim ? _ : space + value;
           }
           // If it is a number reparse it to a number object then store it
-          else context.value = Number(self.value);
+          else context.value = Number(value);
         }
       }
     }

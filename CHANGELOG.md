@@ -2,7 +2,8 @@
 
 Select a Spreadsheet Light version below to view the changelog history:
 
-- [Spreadsheet Light 0.3.0](#V0.3.0) **Current**
+- [Spreadsheet Light 0.3.1](#V0.3.1) **Current**
+- [Spreadsheet Light 0.3.0](#V0.3.0)
 - [Spreadsheet Light 0.2.9](#V0.2.9)
 - [Spreadsheet Light 0.2.8](#V0.2.8)
 - [Spreadsheet Light 0.2.6](#V0.2.6)
@@ -17,6 +18,10 @@ Select a Spreadsheet Light version below to view the changelog history:
 - [Spreadsheet Light 0.1.9](#V0.1.9)
 - [Spreadsheet Light 0.1.7](#V0.1.7)
 - [Spreadsheet Light 0.1.6](#V0.1.6)
+
+## V0.3.1
+
+- Fixed bundler issue that ignores some evaluation as takes it always true when is not taking into account the inner function context. This cauased to skip escaped CSV strings logic.
 
 ## V0.3.0
 
