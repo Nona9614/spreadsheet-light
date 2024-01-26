@@ -2,7 +2,8 @@
 
 Select a Spreadsheet Light version below to view the changelog history:
 
-- [Spreadsheet Light 0.3.2](#V0.3.2) **Current**
+- [Spreadsheet Light 0.3.3](#V0.3.3) **Current**
+- [Spreadsheet Light 0.3.2](#V0.3.2)
 - [Spreadsheet Light 0.3.1](#V0.3.1)
 - [Spreadsheet Light 0.3.0](#V0.3.0)
 - [Spreadsheet Light 0.2.9](#V0.2.9)
@@ -19,6 +20,11 @@ Select a Spreadsheet Light version below to view the changelog history:
 - [Spreadsheet Light 0.1.9](#V0.1.9)
 - [Spreadsheet Light 0.1.7](#V0.1.7)
 - [Spreadsheet Light 0.1.6](#V0.1.6)
+
+## V0.3.3
+
+- Fixed bug that not detects multiple quote symbols when using the function `toSafeString`.
+- Improving the error notification of the `NotAllowedValueError` to let know the user the type of value found and if it is the case who is the parent object.
 
 ## V0.3.2
 

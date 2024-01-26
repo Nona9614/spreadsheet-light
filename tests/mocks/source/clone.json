@@ -83,7 +83,9 @@
             "skip": false,
             "message": "Should throw an error when a non serializable object is passsed",
             "name": "NotAllowedValueError",
-            "throws": {},
+            "throws": {
+                "typeof": "object"
+            },
             "params": [
                 "class"
             ]
@@ -92,7 +94,9 @@
             "skip": false,
             "message": "Should throw error on function value",
             "name": "NotAllowedValueError",
-            "throws": {},
+            "throws": {
+                "typeof": "function"
+            },
             "params": [
                 "function"
             ]

@@ -93,7 +93,10 @@ class TextFormat implements Required<SpreadhseetFormat> {
     if (hasJsonProtoype(object) || hasArrayPrototype(object))
       return JSON.stringify(object);
     // Transforms the value changing escaping quotes
-    const string = String(object).replace(this.quote, this.quote + this.quote);
+    const string = String(object).replace(
+      new RegExp(`${this.quote}`, "gi"),
+      this.quote + this.quote,
+    );
     // If the new string contains the delimiter scape it
     if (string.includes(this.delimiter) || string.includes(this.brk)) {
       return this.quote + string + this.quote;

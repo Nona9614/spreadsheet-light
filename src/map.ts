@@ -74,7 +74,8 @@ function map(array: ValueObjects, options?: MapOptions) {
       const value =
         headers[x] in array[y] ? array[y][headers[x]] : format.empty;
       // Check if tha values passed are valid
-      if (!isValueObject(value)) throw NotAllowedValueError;
+      if (!isValueObject(value))
+        throw NotAllowedValueError(value, array[y], true);
       // Pass the value to the array
       values[x] = value;
     }

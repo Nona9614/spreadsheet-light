@@ -29,9 +29,22 @@ ${description}
 export const isNotTableError = (description: string) =>
   new Error(NOT_TABLE_ERROR_TEMPLATE_STRING({ description }));
 
-export const NotAllowedValueError = new Error(`
-Values like undefined, classes and functions are not allowed, the only
-primitives allowed for the CSV format:
+/** Transforms a value to readable text */
+const stringify = (value: any) =>
+  !value
+    ? String(value)
+    : typeof value === "string"
+    ? value
+    : JSON.stringify(value);
+
+export const NotAllowedValueError = (
+  value: any,
+  parent: any,
+  deep: boolean,
+) => {
+  let text = `
+Error when cloning a "${typeof value}". Values like undefined, classes and functions
+are not allowed, the only primitives allowed for the CSV format:
  - Text
  - Booleans
  - Numbers
@@ -39,7 +52,12 @@ primitives allowed for the CSV format:
  - Symbols
  - Serializable Objects
  - JSON Objects or Arrays containing the previous ones
-`);
+`;
+  if (deep) {
+    text += `Invalid value found on parent object:\n${stringify(parent)}`;
+  }
+  return new Error(text);
+};
 
 /**
  * Thrown when an action is trying to access a column in that is undefined

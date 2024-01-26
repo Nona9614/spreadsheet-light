@@ -60,9 +60,9 @@ export default function createSourceTest(key: TestSource) {
             }
             const object = new Parent("message");
             const copy = new Parent("message");
-            expect(clone(object)).to.eql(copy);
+            expect(clone(object, object)).to.eql(copy);
           } else {
-            expect(clone(item.value)).to.eql(item.expected);
+            expect(clone(item.value, item.value)).to.eql(item.expected);
           }
         },
         function (is: string) {
@@ -88,7 +88,7 @@ export default function createSourceTest(key: TestSource) {
               break;
           }
 
-          clone(_values);
+          clone(_values, _values);
         },
       );
     case "stringify":

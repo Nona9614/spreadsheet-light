@@ -104,7 +104,9 @@
             "skip": false,
             "message": "Should throw error on undefined value",
             "name": "NotAllowedValueError",
-            "throws": {},
+            "throws": {
+                "typeof": "undefined"
+            },
             "params": [
                 "undefined"
             ]

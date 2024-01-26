@@ -22,13 +22,30 @@
             ],
             "expected": "a,b,c\nd,e,f\ng,h,i",
             "message": "Should transform the array to a string"
+        },
+        {
+            "skip": false,
+            "object": [
+                [
+                    "a\"",
+                    "b"
+                ],
+                [
+                    "c\"d\"",
+                    "e"
+                ]
+            ],
+            "expected": "a\"\",b\nc\"\"d\"\",e",
+            "message": "Should transform the matrix with strings to safe strings"
         }
     ],
     "errors": [
         {
             "skip": false,
             "name": "NotAllowedValueError",
-            "throws": {},
+            "throws": {
+                "typeof": "undefined"
+            },
             "message": "Should throw an error when undefined is passsed",
             "params": [
                 "undefined"
@@ -38,7 +55,9 @@
             "skip": false,
             "is": "function",
             "name": "NotAllowedValueError",
-            "throws": {},
+            "throws": {
+                "typeof": "function"
+            },
             "message": "Should throw an error when a function is passsed",
             "params": [
                 "function"
@@ -47,7 +66,9 @@
         {
             "skip": false,
             "name": "NotAllowedValueError",
-            "throws": {},
+            "throws": {
+                "typeof": "object"
+            },
             "message": "Should throw an error when a non serializable object is passsed",
             "params": [
                 "class"

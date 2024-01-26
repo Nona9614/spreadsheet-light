@@ -5,7 +5,7 @@ import { hasArrayPrototype, hasJsonProtoype } from "./utils/has-json-proto.js";
 /**
  * Creates a new object with deep cloning only allowing serializable objects
  */
-export function clone(value: any): any {
+export function clone(value: any, parent: any, deep: boolean = false): any {
   if (value === null) return null;
   let type = typeof value;
   if (
@@ -17,12 +17,12 @@ export function clone(value: any): any {
   ) {
     return value;
   } else if (type === "function" || type === "undefined") {
-    throw NotAllowedValueError;
+    throw NotAllowedValueError(value, parent, deep);
   } else {
     if (hasArrayPrototype(value)) {
       const array = new Array(value.length);
       for (let i = 0; i < value.length; i++) {
-        array[i] = clone(value[i]);
+        array[i] = clone(value[i], value, true);
       }
       return array;
     } else {
@@ -30,7 +30,7 @@ export function clone(value: any): any {
         let entries = Object.entries(value);
         const object: Record<string, any> = {};
         for (let i = 0; i < entries.length; i++) {
-          object[entries[i][0]] = clone(entries[i][1]);
+          object[entries[i][0]] = clone(entries[i][1], value);
         }
         return object;
       } else {
@@ -39,7 +39,7 @@ export function clone(value: any): any {
           typeof value[symbols.clone] === "function"
         ) {
           return value[symbols.clone]();
-        } else throw NotAllowedValueError;
+        } else throw NotAllowedValueError(value, parent, deep);
       }
     }
   }

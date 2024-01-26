@@ -24,7 +24,8 @@ export function stringify(
     const column = data[y];
     for (let x = 0; x < column.length; x++) {
       let element: any = column[x];
-      if (!isValueObject(element)) throw NotAllowedValueError;
+      if (!isValueObject(element))
+        throw NotAllowedValueError(element, column, true);
       string += _format.toSafeString(element);
       if (x < column.length - 1) string += delimiter;
     }

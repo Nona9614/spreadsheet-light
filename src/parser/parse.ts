@@ -1,5 +1,5 @@
 import ParseContext from "./context.js";
-import { InputSerializer, ParseOptions, SpreadsheetBuild } from "../types.js";
+import { SpreadsheetBuild } from "../types.js";
 import parseLine from "./parse-line.js";
 
 /**

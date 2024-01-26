@@ -1,6 +1,6 @@
 
-Values like undefined, classes and functions are not allowed, the only
-primitives allowed for the CSV format:
+Error when cloning a "<typeof/>". Values like undefined, classes and functions
+are not allowed, the only primitives allowed for the CSV format:
  - Text
  - Booleans
  - Numbers

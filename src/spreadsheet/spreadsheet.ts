@@ -210,7 +210,7 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
   write(value: V, row: CellSelector, column: CellSelector) {
     if (!this.isTable)
       throw isNotTableError("Write specific value within the table");
-    if (!isValueObject(value)) throw NotAllowedValueError;
+    if (!isValueObject(value)) throw NotAllowedValueError(value, value, false);
     this.#changed = true;
     const dimension = _getDimension(this.#data);
 
@@ -258,7 +258,8 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
       for (let x = s.x; x <= v.x; x++) {
         const value = column[x - s.x];
         // Validate the value exists
-        if (!isValueObject(value)) throw NotAllowedValueError;
+        if (!isValueObject(value))
+          throw NotAllowedValueError(value, column, true);
         this.#data[y][x] = value;
       }
     }
@@ -301,7 +302,8 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
       for (let x = 0; x <= v.x; x++) {
         const value = column[x];
         // Validate the value exists
-        if (!isValueObject(value)) throw NotAllowedValueError;
+        if (!isValueObject(value))
+          throw NotAllowedValueError(value, column, true);
         newColumn.push(value);
       }
       const start = after ? y + 1 : y;
@@ -505,7 +507,7 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
       const column = this.#data[y];
       const object: any = {};
       for (let x = 0; x <= dimension.x; x++) {
-        object[headers[x]] = clone(column[x]);
+        object[headers[x]] = clone(column[x], column[x]);
       }
       array.push(object);
     }
@@ -534,17 +536,17 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     if (this.#hasHeaders && !ignoreHeaders) {
       const dimension = _getDimension(this.#data);
       let data: ValueData<V> = [];
-      data.push(clone(this.#headers as any[]));
+      data.push(clone(this.#headers as any[], this.#headers));
       for (let y = 0; y <= dimension.y; y++) {
         const column: any[] = [];
         for (let x = 0; x <= dimension.x; x++) {
-          column.push(clone(this.#data[y][x]));
+          column.push(clone(this.#data[y][x], this.#data[y][x]));
         }
         data.push(column);
       }
       return data as any;
     } else {
-      return clone(this.#data as any);
+      return clone(this.#data as any, this.#data);
     }
   }
 
@@ -564,10 +566,10 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
     // Creates the headers
     const headers =
       this.#hasHeaders && includeHeaders === true
-        ? clone(this.headers)
+        ? clone(this.headers, this.headers)
         : undefined;
     // Creates a clone to avoid possible interaction with the current data
-    const data = clone(this.#data);
+    const data = clone(this.#data, this.#data);
     // If the headers option is set, use the reducer with the headers too
     if (headers) value = reducer(headers, value, 0, data, false, headers);
     // Check if the headers should be present and if so generate an offset of
@@ -633,8 +635,8 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
 
   /** Creates a deep clone from this object */
   clone() {
-    const data = clone(this.#data);
-    const headers = this.hasHeaders ? clone(this.#headers) : [];
+    const data = clone(this.#data, this.#data);
+    const headers = this.hasHeaders ? clone(this.#headers, this.#headers) : [];
     return new Spreadsheet<V>({
       data,
       isTable: this.#isTable,
