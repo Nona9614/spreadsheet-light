@@ -1,0 +1,102 @@
+{
+    "skip": false,
+    "items": [
+        {
+            "skip": false,
+            "data": [
+                [
+                    45,
+                    "variable",
+                    1000
+                ]
+            ],
+            "content": {
+                "isTable": true,
+                "hasHeaders": true,
+                "headers": [
+                    "id",
+                    "name",
+                    "value"
+                ]
+            },
+            "mode": "array",
+            "predicate": {
+                "header": "id",
+                "value": 45
+            },
+            "expected": [
+                45,
+                "variable",
+                1000
+            ]
+        },
+        {
+            "skip": false,
+            "data": [
+                [
+                    45,
+                    "variable",
+                    1000
+                ]
+            ],
+            "content": {
+                "isTable": true,
+                "hasHeaders": true,
+                "headers": [
+                    "id",
+                    "name",
+                    "value"
+                ]
+            },
+            "mode": "object",
+            "predicate": {
+                "header": "id",
+                "value": "40"
+            },
+            "expected": {
+                "id": 45,
+                "name": "variable",
+                "value": 1000
+            }
+        },
+        {
+            "skip": false,
+            "data": [
+                [
+                    45,
+                    "variable",
+                    1000
+                ]
+            ],
+            "content": {
+                "isTable": true,
+                "hasHeaders": true,
+                "headers": [
+                    "id",
+                    "name",
+                    "value"
+                ]
+            },
+            "mode": "array",
+            "predicate": {
+                "header": "id",
+                "value": "40"
+            },
+            "expected": {
+                "value": null,
+                "row": -1
+            }
+        }
+    ],
+    "errors": [
+        {
+            "skip": false,
+            "name": "InvalidReturnMode",
+            "throws": "The passed mode \"any\" is not valid, only \"array\" or \"object\" are valid",
+            "message": "Should throw an error when a not valid mode is passed",
+            "params": [
+                "any"
+            ]
+        }
+    ]
+}

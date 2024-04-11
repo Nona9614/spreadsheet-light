@@ -257,5 +257,18 @@ export default function createSpreadsheetTest(key: TestSpreadsheet) {
       });
     default:
       throw new Error(`Check if a spreadsheet '${key}' test is missing`);
+    case "find":
+    case "match":
+      return _(key, function (item) {
+        const csv = buildCSV(item);
+        const {
+          expected,
+          mode,
+          predicate: { header, value },
+        } = item;
+        const predicate = (v: any) => v[header] == value;
+        const found = csv[key](predicate, mode);
+        expect(expected).to.eql(found);
+      });
   }
 }

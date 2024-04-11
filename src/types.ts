@@ -108,6 +108,17 @@ export interface SpreadsheetContent {
   readonly size: Size;
 }
 
+/** The match or finding type mode */
+export type MatchReturnType = "array" | "object";
+
+/** On finding functions will return information about the object collected */
+export type MatchValue<M extends MatchReturnType, T> = {
+  /** The row number where this value was found */
+  row: number;
+  /** The found value itself */
+  value: (M extends "array" ? T[] : { [key in string]: T }) | null;
+};
+
 /**
  * The insert options for the spreadsheet
  */

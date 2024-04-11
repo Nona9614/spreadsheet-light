@@ -1,11 +1,13 @@
 import {
   CellSelector,
+  MatchValue,
   ParseOptions,
   RangeSelector,
   RowSelector,
   SpreadhseetInsertOptions,
   SpreadsheetContent,
   ValueData,
+  ValueObject,
   ValueObjects,
 } from "../src/types";
 import TextFormat from "../src/format";
@@ -159,10 +161,32 @@ type DropContent = GeneralTest<
   string
 >;
 
+type Find = GeneralTest<
+  {
+    data: ValueData<any>;
+    content: SpreadsheetContent;
+    predicate: { header: string; value: any };
+    mode: "array" | "object";
+  },
+  MatchValue<any, ValueObject>
+>;
+
+type Match = GeneralTest<
+  {
+    data: ValueData<any>;
+    content: SpreadsheetContent;
+    predicate: { header: string; value: any };
+    mode: "array" | "object";
+  },
+  MatchValue<any, ValueObject>[]
+>;
+
 type ToArray = GeneralTest<
   {
     data: ValueData<any>;
     content: SpreadsheetContent;
+    predicate: { header: string; value: any };
+    mode: "array" | "object";
   },
   any[]
 >;
@@ -238,6 +262,8 @@ export type TestSpreadsheet =
   | "insert"
   | "remove"
   | "drop"
+  | "find"
+  | "match"
   | "to-array"
   | "to-matrix"
   | "reduce"
@@ -259,6 +285,8 @@ export const isSpreadsheetTest = (value: string): value is TestSpreadsheet =>
   value === "range" ||
   value == "insert" ||
   value === "remove" ||
+  value === "find" ||
+  value === "match" ||
   value === "drop" ||
   value === "to-array" ||
   value === "to-matrix" ||
@@ -298,6 +326,10 @@ export type Test<T extends TestName> = T extends "parse"
   ? ToMatrix
   : T extends "reduce"
   ? Reduce
+  : T extends "find"
+  ? Find
+  : T extends "match"
+  ? Match
   : T extends "to-array"
   ? ToArray
   : T extends "sort"

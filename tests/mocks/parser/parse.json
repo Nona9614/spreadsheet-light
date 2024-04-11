@@ -8,7 +8,10 @@
                 "string": "\"\"\",\n\",\"\"\n\",\",\"\n\"",
                 "isTable": true,
                 "hasHeaders": false,
-                "headers": [],
+                "headers": [
+                    "A",
+                    "B"
+                ],
                 "size": {
                     "rows": 2,
                     "columns": 2
@@ -273,7 +276,11 @@
                 "string": "a,b,c",
                 "isTable": true,
                 "hasHeaders": false,
-                "headers": [],
+                "headers": [
+                    "A",
+                    "B",
+                    "C"
+                ],
                 "size": {
                     "columns": 3,
                     "rows": 1
@@ -295,7 +302,9 @@
                 "string": "a\nb\nc",
                 "isTable": true,
                 "hasHeaders": false,
-                "headers": [],
+                "headers": [
+                    "A"
+                ],
                 "size": {
                     "columns": 1,
                     "rows": 3
@@ -321,7 +330,10 @@
                 "string": "a,\nb,\nc,d",
                 "isTable": true,
                 "hasHeaders": false,
-                "headers": [],
+                "headers": [
+                    "A",
+                    "B"
+                ],
                 "size": {
                     "columns": 2,
                     "rows": 3
@@ -350,7 +362,10 @@
                 "string": "a,b\nc,d",
                 "isTable": true,
                 "hasHeaders": false,
-                "headers": [],
+                "headers": [
+                    "A",
+                    "B"
+                ],
                 "size": {
                     "columns": 2,
                     "rows": 2
@@ -375,7 +390,11 @@
                 "string": "a,,b",
                 "isTable": true,
                 "hasHeaders": false,
-                "headers": [],
+                "headers": [
+                    "A",
+                    "B",
+                    "C"
+                ],
                 "size": {
                     "columns": 3,
                     "rows": 1
@@ -397,7 +416,9 @@
                 "string": "a\nb",
                 "isTable": true,
                 "hasHeaders": false,
-                "headers": [],
+                "headers": [
+                    "A"
+                ],
                 "size": {
                     "columns": 1,
                     "rows": 2
@@ -423,7 +444,9 @@
                 "string": "a\n\nb",
                 "isTable": true,
                 "hasHeaders": false,
-                "headers": [],
+                "headers": [
+                    "A"
+                ],
                 "size": {
                     "columns": 1,
                     "rows": 3
@@ -464,7 +487,11 @@
                 "string": "a,b,c\nd,e",
                 "isTable": false,
                 "hasHeaders": false,
-                "headers": [],
+                "headers": [
+                    "A",
+                    "B",
+                    "C"
+                ],
                 "data": [
                     [
                         "a",

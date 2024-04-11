@@ -94,6 +94,9 @@ const INVAL_RANGE_SELECTOR_TEMPLATE_STRING = ({
 export const InvalidRangeSelector = (value: string) =>
   new Error(INVAL_RANGE_SELECTOR_TEMPLATE_STRING({ value }));
 
+export const InvalidReturnMode = (mode: any) =>
+  `The passed mode "${mode}" is not valid, only "array" or "object" are valid`;
+
 /**
  * Notifies that the double quote symbol syntax was not present
  * @param {ParseContext} context The current parse context

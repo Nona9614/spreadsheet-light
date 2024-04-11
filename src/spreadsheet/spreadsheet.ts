@@ -5,6 +5,7 @@ import {
   NotFoundColumnError,
   NotAllowedValueError,
   NotFoundRowError,
+  InvalidReturnMode,
 } from "../errors.js";
 import type {
   ValueObject,
@@ -24,6 +25,8 @@ import type {
   UpdateOptions,
   InputSerializer,
   SpreadsheetReducer,
+  MatchValue,
+  MatchReturnType,
 } from "../types.js";
 import { isValueObject } from "../is-value-object.js";
 import { clone } from "../clone.js";
@@ -105,10 +108,23 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
   get isTable() {
     return this.#isTable;
   }
+
   #headers: string[];
+  /** Returns the set headers and if not set will use the alphabet (xlsx like) as headers */
   get headers() {
-    return this.#headers;
+    let headers = [];
+    if (this.#hasHeaders) headers = this.#headers;
+    else if (this.#data.length == 0) return [];
+    else {
+      const dimension = _getDimension(this.#data);
+      const right = dimension.x + 1;
+      for (let i = 1; i <= right; i++) {
+        headers.push(alphabet.fromNumber(i));
+      }
+    }
+    return headers;
   }
+
   #hasHeaders: boolean;
   get hasHeaders() {
     return this.#hasHeaders;
@@ -468,6 +484,109 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
   }
 
   /**
+   * Will search in the CSV data line by line until the passed predicate
+   * returns true.
+   * @param predicate The predicate that matches the content to be searched
+   * @param mode Depending on the mode returns the found object either as an array or as an object
+   *
+   * @example
+   *
+   * import { xsv } from "spreadsheet-light";
+   *
+   * xsv.format = { hasHeaders: true }
+   * const csv = xsv.parse(`
+   * id,name,value
+   * 45,variable,1000
+   * `);
+   *
+   * // Obtains the found value and returns it
+   * const id = 45;
+   * const found = csv.find((v) => v.id == id);
+   *
+   */
+  find<M extends MatchReturnType>(
+    predicate: (value: { [key in string]: V }, row: number) => boolean,
+    mode?: M,
+  ): MatchValue<M, V> {
+    if (!arguments[1]) mode = "array" as M;
+    const headers = this.headers;
+    const dimension = _getDimension(this.#data);
+    let value: any = { value: null, row: -1 };
+    for (let y = 0; y <= dimension.y; y++) {
+      const column = clone(this.#data[y], this.#data[y]);
+      const object: any = {};
+      const row = y + 1;
+      for (let x = 0; x <= column.length; x++) {
+        object[headers[x] ?? alphabet.fromNumber(x)] = column[x];
+      }
+      if (predicate(object, row)) {
+        if (mode === "object") value = object;
+        else if (mode === "array") value = column;
+        else throw InvalidReturnMode(mode);
+        value = {
+          row,
+          value,
+        };
+        break;
+      }
+    }
+    return value;
+  }
+
+  /**
+   * Will search in the CSV data line by line until all values that passed
+   * the predicate returns.
+   * @param predicate The predicate that matches the content to be searched
+   * @param mode Depending on the mode returns the found object either as an array or as an object
+   *
+   * @example
+   *
+   * import { xsv } from "spreadsheet-light";
+   *
+   * xsv.format = { hasHeaders: true }
+   * const csv = xsv.parse(`
+   * id,country,code
+   * 1,mexico,52
+   * 2,france,33
+   * 3,mexico,52
+   * `);
+   *
+   * // Obtains the found value and returns it
+   * const country = "mexico";
+   * const matches = csv.match((v) => v.country == country);  // matches.length == 2
+   *
+   */
+  match<M extends "array" | "object">(
+    predicate: (value: { [key in string]: V }, row: number) => boolean,
+    mode?: M,
+  ): MatchValue<M, V>[] {
+    if (!arguments[1]) mode = "array" as M;
+    const matches = [];
+    const headers = this.headers;
+    const dimension = _getDimension(this.#data);
+    for (let y = 0; y <= dimension.y; y++) {
+      const row = y + 1;
+      const column = clone(this.#data[y], this.#data[y]);
+      const object: any = {};
+      for (let x = 0; x <= column.length; x++) {
+        object[headers[x] ?? alphabet.fromNumber(x)] = column[x];
+      }
+      if (predicate(object, row)) {
+        let value: any;
+        if (mode === "object") value = object;
+        else if (mode === "array") value = column;
+        else throw InvalidReturnMode(mode);
+        // If the found value
+        matches.push({
+          row,
+          value,
+        });
+      }
+    }
+    return matches;
+  }
+
+  /**
    * When the default function "valueOf" is called will return the data
    */
   valueOf() {
@@ -476,8 +595,7 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
   }
 
   /**
-   * The data from the CSV object. Will return an array of objects using the by default headers,
-   * otherwise will use the alphabet as headers.
+   * The data from the CSV object. Will return an array of objects using the headers as keys.
    * @param ignoreHeaders If set will ignore headers on parsing
    *
    * @example
@@ -495,14 +613,7 @@ export class Spreadsheet<V extends ValueObject> implements SpreadsheetContent {
   toArray<T extends ValueObject>(ignoreHeaders?: boolean): T[] {
     const dimension = _getDimension(this.#data);
     const array: T[] = [];
-    let headers = [];
-    if (this.#hasHeaders && !ignoreHeaders) headers = this.#headers;
-    else {
-      const right = dimension.x + 1;
-      for (let i = 1; i <= right; i++) {
-        headers.push(alphabet.fromNumber(i));
-      }
-    }
+    const headers = this.headers;
     for (let y = 0; y <= dimension.y; y++) {
       const column = this.#data[y];
       const object: any = {};

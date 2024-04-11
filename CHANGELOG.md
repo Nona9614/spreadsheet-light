@@ -2,10 +2,12 @@
 
 Select a Spreadsheet Light version below to view the changelog history:
 
-- [Spreadsheet Light 0.3.3](#V0.3.3) **Current**
+- [Spreadsheet Light 0.3.4](#V0.3.4) **Current**
+- [Spreadsheet Light 0.3.3](#V0.3.3)
 - [Spreadsheet Light 0.3.2](#V0.3.2)
 - [Spreadsheet Light 0.3.1](#V0.3.1)
 - [Spreadsheet Light 0.3.0](#V0.3.0)
+
 - [Spreadsheet Light 0.2.9](#V0.2.9)
 - [Spreadsheet Light 0.2.8](#V0.2.8)
 - [Spreadsheet Light 0.2.6](#V0.2.6)
@@ -15,11 +17,18 @@ Select a Spreadsheet Light version below to view the changelog history:
 - [Spreadsheet Light 0.2.2](#V0.2.2)
 - [Spreadsheet Light 0.2.1](#V0.2.1)
 - [Spreadsheet Light 0.2.0](#V0.2.0)
+
 - [Spreadsheet Light 0.1.11](#V0.1.11)
 - [Spreadsheet Light 0.1.10](#V0.1.10)
 - [Spreadsheet Light 0.1.9](#V0.1.9)
 - [Spreadsheet Light 0.1.7](#V0.1.7)
 - [Spreadsheet Light 0.1.6](#V0.1.6)
+
+## V0.3.4
+
+- The `find` and `match` functions where added to the spreadsheet object.
+- The date regex example was fixed as it was using the wrong order on the `$` and `^` symbols.
+- Changed logic of `headers` property of the spreadsheet object to always return information althou headers are not set. The only time a empty array is returned is in the case that the object has no `data`.
 
 ## V0.3.3
 

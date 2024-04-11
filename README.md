@@ -343,6 +343,60 @@ spreadsheet.drop({ from, to });
 > - Any selector below 0 will be capped to `0` and any value beyond the bottom will be capped to `@bottom`.
 > - When using the `drop` function the selectors will be swapped if the `from` value is bigger than the `to` value.
 
+### Find and Match
+
+You can find a set of _rows_ (`match`) or one _row_ (`find`) in the spreadsheet object.
+
+This functions will iterate throu each row and will transform this as an `object` where headers will be used as the `key` of the value. Each row will call the passed `predicate` function and that will that has as parameters the row number and the `object`.
+
+```js
+// The table in the CSV string looks like this
+//
+// name   | country
+// -----------------
+// Andres | Mexico
+// Maria  | Brasil
+// Won    | China
+// Carlos | Mexico
+
+import { xsv } from "spreadsheet-light";
+
+const sp = xsv.parse(`
+name,country
+Maria,Brasil
+Andres,Mexico
+Won,China
+Carlos,Mexico
+`,
+  { hasHeader: true },
+);
+
+// The `find` function will return a single row
+const { value, row } = sp.find((v) => v.country == "Mexico"); // value == ["Andres", "Mexico"]
+
+// This also can be returned as an object
+const { value, row } = sp.find((v) => v.country == "Mexico", "object");
+// value == { name: "Andres", country: "Mexico"}
+
+// Here the value will be null as the record was not found
+const { value, row } = sp.find((v) => v.country == "Germany"); // value == null
+
+// The `match` function will return all the rows from the predicate criteria
+const [row1, row4] = sp.match((v) => v.country == "Mexico");
+// row1 == [ "Andres", "Mexico" ]
+// row1 == [ "Carlos", "Mexico" ]
+
+// This also can be turned into objects
+const [row1, row4] = sp.match((v) => v.country == "Mexico", "object");
+// row1 == { name: "Andres", country: "Mexico"}
+// row4 == { name: "Carlos", country: "Mexico"}
+
+// In case the match did not find anything will return an empty array
+const empty = sp.match((v) => v.country == "Germany"); // empty == []
+
+const
+```
+
 ### Shorthands
 
 As mentioned before to access or modify the data there are two objects _CellSelector_ and _RangeSelector_. These can be numbers, objects or shorthands.
@@ -531,7 +585,7 @@ The `serializer` function will be called each time a cell is parsed. These value
 import xsv from "spreadsheet-light";
 
 // Looks for a string like DD/MM/YYYY or DD-MM-YYY
-const DATE_REGEX = /$(\d{2})[\/-](\d{2})[\/-](\d{4})^/gu;
+const DATE_REGEX = /^(\d{2})[\/-](\d{2})[\/-](\d{4})$/gu;
 
 // In this example:
 // - If found by a regex transforms the value
